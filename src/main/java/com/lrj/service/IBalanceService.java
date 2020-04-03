@@ -10,5 +10,5 @@ import javax.servlet.http.HttpServletRequest;
  * @date 2020/4/2 9:20
  */
 public interface IBalanceService {
-    FormerResult findBalanceByUserId(Object userId, FormerResult result, HttpServletRequest request);
+    FormerResult findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request);
 }

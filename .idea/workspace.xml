@@ -2,51 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="85015892-cd19-4834-ac5e-b0790c0f47b1" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/FormerResult.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/Result.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/UserLevelVo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/UserMoneyInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/common/Constant.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/BalanceMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/GivenBalanceMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/LevelUserRelationMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/MemberServiceUserRelationMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/UserCouponMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/UserLevelVoMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/Balance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/GivenBalance.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/LevelUserRelation.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IMemberServiceUserRelationService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IUserLevelVoService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/MemberServiceUserRelationServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/UserLevelVoServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/util/CommonUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/util/DateUtils.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/util/RequestParameterUtil.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/BalanceMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/GivenBalanceMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/MemberServiceUserRelation.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/UserCouponMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/UserLeveVoMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lrj-app.iml" beforeDir="false" afterPath="$PROJECT_DIR$/lrj-app.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/LrjAppApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/LrjAppApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/Controller.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/Mapper.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/IService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/ServiceImpl.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/lrj/LrjAppApplication.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/lrj/LrjAppApplication.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/lrj/controller/Controller.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/lrj/mapper/Mapper.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/lrj/service/IService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/lrj/service/impl/ServiceImpl.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -152,7 +111,7 @@
       <workItem from="1585539870541" duration="2339000" />
       <workItem from="1585542400530" duration="4419000" />
       <workItem from="1585552387831" duration="838000" />
-      <workItem from="1585725909962" duration="35073000" />
+      <workItem from="1585725909962" duration="36423000" />
     </task>
     <task id="LOCAL-00001" summary="app">
       <created>1585542745631</created>
@@ -168,7 +127,21 @@
       <option name="project" value="LOCAL" />
       <updated>1585548464858</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="app-user">
+      <created>1585880699362</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1585880699362</updated>
+    </task>
+    <task id="LOCAL-00004" summary="app-user">
+      <created>1585880757437</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1585880757437</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -176,7 +149,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="app" />
-    <option name="LAST_COMMIT_MESSAGE" value="app" />
+    <MESSAGE value="app-user" />
+    <option name="LAST_COMMIT_MESSAGE" value="app-user" />
   </component>
   <component name="WindowStateProjectService">
     <state x="574" y="116" key="#com.intellij.ide.util.MemberChooser" timestamp="1585878757044">
@@ -187,46 +161,46 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1585819194821" />
-    <state x="370" y="0" key="CommitChangelistDialog2" timestamp="1585880739465">
+    <state x="370" y="0" key="CommitChangelistDialog2" timestamp="1585880756594">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="370" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1585880739465" />
+    <state x="370" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1585880756594" />
     <state x="549" y="168" key="FileChooserDialogImpl" timestamp="1585790015498">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="549" y="168" key="FileChooserDialogImpl/0.0.1536.824@0.0.1536.824" timestamp="1585790015498" />
-    <state width="1493" height="336" key="GridCell.Tab.0.bottom" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.0.bottom" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
-    <state width="1493" height="336" key="GridCell.Tab.0.center" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.0.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
+    <state width="1493" height="129" key="GridCell.Tab.0.center" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
-    <state width="1493" height="336" key="GridCell.Tab.0.left" timestamp="1585880656587">
+    <state width="1493" height="129" key="GridCell.Tab.0.center/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
+    <state width="1493" height="129" key="GridCell.Tab.0.left" timestamp="1585881887739">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1585880656587" />
-    <state width="1493" height="336" key="GridCell.Tab.0.right" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.0.left/0.0.1536.824@0.0.1536.824" timestamp="1585881887739" />
+    <state width="1493" height="129" key="GridCell.Tab.0.right" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
-    <state width="1493" height="336" key="GridCell.Tab.1.bottom" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.0.right/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
+    <state width="1493" height="129" key="GridCell.Tab.1.bottom" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
-    <state width="1493" height="336" key="GridCell.Tab.1.center" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.1.bottom/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
+    <state width="1493" height="129" key="GridCell.Tab.1.center" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
-    <state width="1493" height="336" key="GridCell.Tab.1.left" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.1.center/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
+    <state width="1493" height="129" key="GridCell.Tab.1.left" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
-    <state width="1493" height="336" key="GridCell.Tab.1.right" timestamp="1585880656588">
+    <state width="1493" height="129" key="GridCell.Tab.1.left/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
+    <state width="1493" height="129" key="GridCell.Tab.1.right" timestamp="1585881887740">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state width="1493" height="336" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1585880656588" />
+    <state width="1493" height="129" key="GridCell.Tab.1.right/0.0.1536.824@0.0.1536.824" timestamp="1585881887740" />
     <state x="299" y="68" key="Maven.ArtifactSearchDialog" timestamp="1585726160231">
       <screen x="0" y="0" width="1536" height="824" />
     </state>

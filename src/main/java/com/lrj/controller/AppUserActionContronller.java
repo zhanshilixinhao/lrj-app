@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,7 @@ import java.util.Map;
  * @author Lxh
  * @date 2020/4/1 17:37
  */
-@Controller
+@RestController
 public class AppUserActionContronller {
     @Resource
     private IBalanceService iBalanceService;
@@ -31,13 +32,13 @@ public class AppUserActionContronller {
     @Resource
     private IUserLevelVoService iUserLevelVoService;
     @RequestMapping(value = "/getUserMoneyInfo", method = RequestMethod.POST)
-    @ResponseBody
     public FormerResult getUserMoneyInfo(FormerResult result, HttpServletRequest request){
         try {
             if (RequestParameterUtil.checkRequestParametersIsNull(request,new String[]{"userId"},result)) {
                 return result;
             }
-            int userId = Integer.parseInt(request.getParameter("userId"));
+            /** 获取参数 **/
+            Integer userId = Integer.valueOf(request.getParameter("userId"));
             return iBalanceService.findBalanceByUserId(userId,result,request);
         } catch (Exception e) {
             return CommonUtil.FAIL(result,null,e.getMessage());
@@ -54,14 +55,14 @@ public class AppUserActionContronller {
      * @版本:1.0
      */
     @RequestMapping(value = "/getUserLevelInfo/v4", method = RequestMethod.POST)
-    @ResponseBody
     public FormerResult getUserLevelInfo(FormerResult result, HttpServletRequest request) throws Exception {
 
         /** 校验必要参数 **/
         if (RequestParameterUtil.checkRequestParametersIsNull(request, new String[] { "userId" }, result)) {
             return result;
         }
-        int userId = Integer.parseInt(request.getParameter("userId"));
+        /** 获取参数 **/
+        Integer userId = Integer.valueOf(request.getParameter("userId"));
         return iUserLevelVoService.findCurrentUserLevelInfo(userId,result);
     }
 
@@ -75,11 +76,10 @@ public class AppUserActionContronller {
      * @throws Exception
      * @返回类型:FormerResult
      * @方法名称:getResidueLimit
-     * @作者:SAM QZL
+     * @作者:SAM QZL lxh
      * @版本:1.0
      */
     @RequestMapping(value = "/getResidueLimit/v3", method = RequestMethod.POST)
-    @ResponseBody
     public FormerResult getResidueLimit(FormerResult result, HttpServletRequest request) throws Exception {
 
         /** 校验必须字段 **/
@@ -120,7 +120,6 @@ public class AppUserActionContronller {
      * @版本:1.0
      */
     @RequestMapping(value = "/judgeUserIsMemberService/v3", method = RequestMethod.POST)
-    @ResponseBody
     public FormerResult judgeUserIsMemberService(FormerResult result, HttpServletRequest request) throws Exception {
         /** 校验必须字段 **/
         if (RequestParameterUtil.checkRequestParametersIsNull(request, new String[] { "userId" }, result)) {

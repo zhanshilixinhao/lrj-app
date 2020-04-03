@@ -36,7 +36,7 @@ public class BalanceServiceImpl implements IBalanceService {
     private UserCouponMapper userCouponMapper;
 
     @Override
-    public FormerResult findBalanceByUserId(Object userId, FormerResult result, HttpServletRequest request) {
+    public FormerResult findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
 
         Balance balance = balanceMapper.selectByPrimaryKey(userId);
         BigDecimal reBalance = balance.getBalance();
