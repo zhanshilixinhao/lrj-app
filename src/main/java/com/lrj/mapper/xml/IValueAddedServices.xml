@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+		>
+
+<mapper namespace="com.lrj.mapper.IValueAddedServicesMapper">
+
+	<!--获取所有增值服务 -->
+	<select id="listValueAddedServices"
+		resultType="com.lrj.Vo.ValueAddedServicesVo">
+		SELECT
+		a.valueAddedServicesId,
+		a.categoryId,
+		a.serviceName,
+		a.servicePrice,
+		a.serviceDescription
+		FROM
+		valueAddedServices a
+		ORDER BY
+		a.sort ASC
+	</select>
+</mapper>

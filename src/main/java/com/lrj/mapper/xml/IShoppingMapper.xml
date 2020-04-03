@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+                >
+<mapper namespace="com.lrj.mapper.IShoppingMapper">
+    <select id="getShoppingDetails" resultType="com.lrj.Vo.ShoppingPriceVo" parameterType="String">
+       SELECT
+				i.app_item_id AS itemId,
+				i.item_name AS itemName,
+				i.price,
+				i.picture,
+				i.item_unit AS itemUnit,
+				i.item_category_id AS itemCategoryId,
+				s.is_pouch AS isPouch,
+				s.support_value AS supportValue,
+				s.support_scope AS supportScope,
+				s.support_money AS supportMoney,
+				s.quantity,
+				s.app_shopping_id AS shoppingId,
+				s.first
+			FROM
+				app_shopping s
+			LEFT JOIN app_item i ON s.item_id = i.app_item_id
+			WHERE
+			 s.user_id = #{userId}
+    </select>
+
+</mapper>

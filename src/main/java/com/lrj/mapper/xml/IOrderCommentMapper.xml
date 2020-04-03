@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+                >
+<mapper namespace="com.lrj.mapper.IOrderCommentMapper">
+
+    <select id="listLatestOrderComment" resultType="com.lrj.Vo.OrderCommentVo">
+        SELECT
+        a.comment_content AS commentContent,
+        a.create_time AS createTime,
+        IFNULL(
+        ROUND(
+        (
+        a.distributionStar + a.qualityStar + a.serviceStar
+        ) / 3
+        ),
+        a.comment_level
+        ) AS star,
+        a.commentImage,
+        b.head_photo AS headPhoto,
+        IFNULL(b.nickname,
+        '匿名用户') AS nickname,
+        b.user_phone as userPhone
+        FROM
+        order_comment a
+        LEFT JOIN app_user
+        b ON a.user_id = b.app_user_id
+        WHERE
+        a.isVisible =1 <!--可显示的 -->
+        ORDER BY
+        a.create_time DESC
+        LIMIT 0,20
+    </select>
+</mapper>
