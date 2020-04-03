@@ -3,9 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="85015892-cd19-4834-ac5e-b0790c0f47b1" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -111,7 +108,7 @@
       <workItem from="1585539870541" duration="2339000" />
       <workItem from="1585542400530" duration="4419000" />
       <workItem from="1585552387831" duration="838000" />
-      <workItem from="1585725909962" duration="36423000" />
+      <workItem from="1585725909962" duration="36674000" />
     </task>
     <task id="LOCAL-00001" summary="app">
       <created>1585542745631</created>
@@ -141,7 +138,14 @@
       <option name="project" value="LOCAL" />
       <updated>1585880757437</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="app-user">
+      <created>1585881910513</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1585881910513</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -161,10 +165,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1585819194821" />
-    <state x="370" y="0" key="CommitChangelistDialog2" timestamp="1585880756594">
+    <state x="370" y="0" key="CommitChangelistDialog2" timestamp="1585881909553">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="370" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1585880756594" />
+    <state x="370" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1585881909553" />
     <state x="549" y="168" key="FileChooserDialogImpl" timestamp="1585790015498">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
