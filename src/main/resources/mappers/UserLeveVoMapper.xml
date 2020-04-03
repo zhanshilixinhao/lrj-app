@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.mapper.UserLevelVoMapper">
+	<!--留着以后用  -->
+	<!--获取当前用户等级信息 -->
+	<select id="getCurrentUserLevelInfo" parameterType="java.util.Map"
+			resultType="com.lrj.VO.UserLevelVo" >
+		SELECT
+		a.currentPoints AS currentPoints,
+		b.levelName AS
+		currentLevelName,
+		c.levelName AS nextLevelName,
+		IFNULL(c.points,b.points)
+		AS
+		nextLevelPoints
+		FROM
+		levelUserRelation a
+		LEFT JOIN `level` b ON
+		a.currentLevelId = b.levelId
+		LEFT JOIN `level` c ON b.digimarc + 1 =
+		c.digimarc
+		WHERE
+		a.userId = #{userId}
+	</select>
+	<!--创建用户等级信息 -->
+
+	<insert id="insert" parameterType="com.lrj.pojo.LevelUserRelation" >
+		INSERT INTO levelUserRelation
+		(
+		userId,
+		currentPoints,
+		currentLevelId
+		)
+		VALUES
+		(#{userId},#{currentPoints},#{currentLevelId})
+	</insert>
+</mapper>

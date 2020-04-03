@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.mapper.MemberServiceUserRelationMapper">
+
+	<!--留着以后用  -->
+	<!--通过用户id获取用户会员截止日期 -->
+	<select id="getMemberServiceEndTimeByUserId" parameterType="java.lang.Integer"
+			resultType="java.lang.String" >
+		select
+		memberServiceEndTime
+		from
+		memberServiceUserRelation
+		where
+		userId=#{userId}
+	</select>
+	<!--根据用户id获取用户当月剩余额度 -->
+	<select id="getResidueLimitByUserId" parameterType="java.lang.Integer"
+			resultType="java.math.BigDecimal" >
+		select
+		residueLimit
+		from
+		memberServiceUserRelation
+		where
+		userId=#{userId}
+	</select>
+</mapper>

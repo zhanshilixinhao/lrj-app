@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.mapper.UserCouponMapper">
+	<!--留着以后用  -->
+	<!-- 通过用户ID查询用户优惠券数量 -->
+	<select id="selectQuantityByUserId"
+			resultType="java.lang.Integer"
+			parameterType="java.util.Map">
+		SELECT
+		(a.num1 + b.count) as count
+		FROM
+		(SELECT
+		if(SUM(quantity) is null,0,SUM(quantity)) as num1
+		FROM
+		user_coupon a
+		LEFT JOIN coupon b ON a.coupon_id
+		= b.coupon_id
+		WHERE
+		user_id = #{userId}
+		AND b.active = 1 and a.limittime is null) a,
+
+		(select
+		if(SUM(count) is null,0,SUM(count)) as count
+		FROM
+		(SELECT
+		a.limittime as limittime, a.quantity as count
+		FROM
+		user_coupon a
+		LEFT JOIN coupon b ON a.coupon_id
+		= b.coupon_id
+		WHERE
+		user_id = #{userId}
+		AND b.active = 1 and a.limittime is not null) a
+		WHERE NOW() <![CDATA[ < ]]> a.limittime) b
+	</select>
+</mapper>
