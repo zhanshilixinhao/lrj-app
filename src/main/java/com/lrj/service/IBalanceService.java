@@ -1,7 +1,6 @@
 package com.lrj.service;
 
 import com.lrj.VO.FormerResult;
-import com.lrj.pojo.Balance;
 
 import javax.servlet.http.HttpServletRequest;
 
