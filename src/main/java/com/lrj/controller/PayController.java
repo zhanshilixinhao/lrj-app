@@ -6,9 +6,8 @@ import com.lrj.VO.ResultVo;
 import com.lrj.config.PayConfig;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IPayService;
-import com.lrj.util.MD5Util;
+
 import com.lrj.util.WXPayUtil;
-import net.sf.json.JSONObject;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;

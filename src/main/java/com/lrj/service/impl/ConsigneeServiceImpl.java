@@ -27,7 +27,7 @@ public class ConsigneeServiceImpl implements IConsigneeService {
         Example example = new Example(Consignee.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",consignee.getUserId()).andEqualTo("active",1);
-        /* 查询是否为第一个地址 **/
+        /*查询是否为第一个地址 **/
         int count = consigneeMapper.selectCountByExample(example);
         /*第一次添加为默认地址**/
         if (count==0) {

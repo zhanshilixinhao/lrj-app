@@ -39,7 +39,7 @@ public class UserController {
     /**
      * 一键登录
      */
-    @RequestMapping(value = "/toOauthLogin",method = {RequestMethod.GET,RequestMethod.POST})
+    /*@RequestMapping(value = "/toOauthLogin",method = {RequestMethod.GET,RequestMethod.POST})
     public Map<String,Object> oauthLogin(HttpServletRequest request){
         String token = request.getParameter("token");
         Map<String,Object> resultMap = new HashMap<String,Object>();
@@ -51,7 +51,7 @@ public class UserController {
         System.out.println(result);
         resultMap.put("result", "success");
         return resultMap;
-    }
+    }*/
 
     /**
      * 获取短信验证码(被邀请时)
@@ -122,13 +122,13 @@ public class UserController {
     /**
      * 获取用户的地址
      */
-    @RequestMapping(value = "/getUserAddressList",method = {RequestMethod.GET,RequestMethod.POST})
+    /*@RequestMapping(value = "/getUserAddressList",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo getUserAddressList(Integer userId){
-        /** 校验必须参数 **/
+        *//** 校验必须参数 **//*
         if (userId == null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
         List<ConsigneeVo> consigneeVoList= userService.findUserAddressByUserId(userId);
         return new ResultVo("success",0,"查询成功",consigneeVoList);
-    }
+    }*/
 }
