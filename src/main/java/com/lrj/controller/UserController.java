@@ -34,7 +34,7 @@ public class UserController {
     @Resource
     private IUserService userService;
 
-    //定义全局变量 codeMap 存放用户手机验证码
+    //定义全局变量 codeMap 存放用户手机验证ma
     Map<String, Object> codeMap = new HashMap<String, Object>();
     /**
      * 一键登录
