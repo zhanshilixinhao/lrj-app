@@ -8,7 +8,7 @@
 
 	<!--获取所有增值服务 -->
 	<select id="listValueAddedServices"
-		resultType="com.lrj.Vo.ValueAddedServicesVo">
+		resultType="com.lrj.VO.ValueAddedServicesVo">
 		SELECT
 		a.valueAddedServicesId,
 		a.categoryId,

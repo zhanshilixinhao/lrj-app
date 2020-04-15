@@ -35,29 +35,29 @@ public class BalanceServiceImpl implements IBalanceService {
     @Resource
     private UserCouponMapper userCouponMapper;
 
-    @Override
+
     public FormerResult findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
 
         Balance balance = balanceMapper.selectByPrimaryKey(userId);
         BigDecimal reBalance = balance.getBalance();
         Integer nums = userCouponMapper.selectQuantityByUserId(userId);
         List<GivenBalance> all = givenBalanceMapper.selectAllByUserId(userId);
-        List<GivenBalance> list = new ArrayList<>();
+        List<GivenBalance> list = new ArrayList<GivenBalance>();
         Integer isDaixi = null;
         if (request.getParameter("isDaixi") != null) {
             isDaixi = Integer.parseInt(request.getParameter("isDaixi"));
         }
         if (isDaixi != null) {
             if (isDaixi == 1 && all.size() > 0) {
-                for (GivenBalance givenBalance: all) {
+                for (GivenBalance givenBalance : all) {
                     if (givenBalance.getStatus() == null) {
                         list.add(givenBalance);
                     } else if (givenBalance.getStatus().intValue() == 3 || givenBalance.getStatus().intValue() == 1) {
                         list.add(givenBalance);
                     }
                 }
-            } else if(isDaixi == 2 && all.size() > 0 ) {
-                for (GivenBalance givenBalance: all) {
+            } else if (isDaixi == 2 && all.size() > 0) {
+                for (GivenBalance givenBalance : all) {
                     if (givenBalance.getStatus() == null) {
                         list.add(givenBalance);
                     } else if (givenBalance.getStatus().intValue() == 4 || givenBalance.getStatus().intValue() == 1) {
@@ -67,8 +67,7 @@ public class BalanceServiceImpl implements IBalanceService {
             } else {
                 list = all;
             }
-        }
-        else {
+        } else {
             list = all;
         }
         UserMoneyInfo umf = new UserMoneyInfo();

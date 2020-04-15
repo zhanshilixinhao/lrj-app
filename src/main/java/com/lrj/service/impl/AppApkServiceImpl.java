@@ -20,6 +20,7 @@ public class AppApkServiceImpl implements IAppApkService {
 
     @Resource
     private IAppApkVersionMapper appApkVersionMapper;
+
     public List<AppApkVersionVo> getApkVersion() {
         return appApkVersionMapper.getApkVersion();
     }

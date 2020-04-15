@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+                >
+<mapper namespace="com.lrj.mapper.IOrderMapper">
+	<!--<insert id="createOrder" parameterType="com.lrj.VO.OrderVO" useGeneratedKeys="true" keyProperty="appOrderId">
+		INSERT INTO sys_order (app_order_id,user_id,total_price,status,pay_status,take_address,receive_address,is_lock,trace_status,take_time,create_time,order_type,monthCardId)
+		VALUES  (#{appOrderId},#{userId},#{totalPrice},#{status},#{payStatus},#{takeAddress},#{receiveAddress},#{isLock},#{traceStatus},#{takeTime},#{createTime},#{orderType},#{monthCardId})
+	</insert>
+
+	<select id="getOrderByOrderId" parameterType="Integer" resultType="com.lrj.VO.OrderVo">
+		  SELECT * FROM sys_order WHERE app_order_id=#{appOrderId}
+	</select>-->
+</mapper>

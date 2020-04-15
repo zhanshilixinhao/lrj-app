@@ -4,7 +4,7 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
 <mapper namespace="com.lrj.mapper.IShoppingMapper">
-    <select id="getShoppingDetails" resultType="com.lrj.Vo.ShoppingPriceVo" parameterType="String">
+    <select id="getShoppingDetails" resultType="com.lrj.VO.ShoppingPriceVo" parameterType="String">
        SELECT
 				i.app_item_id AS itemId,
 				i.item_name AS itemName,

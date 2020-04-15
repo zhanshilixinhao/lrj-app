@@ -4,7 +4,7 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
 <mapper namespace="com.lrj.mapper.IAppApkVersionMapper">
-    <select id="getApkVersion" resultType="com.lrj.Vo.AppApkVersionVo">
+    <select id="getApkVersion" resultType="com.lrj.VO.AppApkVersionVo">
         SELECT apkId AS apkId,
                apkMsg AS apkMsg,
                upTime AS upTime,

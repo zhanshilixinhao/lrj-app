@@ -2,6 +2,7 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.AppItemVo;
 import com.lrj.VO.ConsigneeVo;
+import com.lrj.VO.UserInfoVo;
 import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IUserMapper;
 import com.lrj.service.IUserService;
@@ -26,5 +27,20 @@ public class IUserServiceImpl implements IUserService{
 
     public List<ConsigneeVo> findUserAddressByUserId(Integer userId) {
         return userMapper.findUserAddressByUserId(userId);
+    }
+
+    @Override
+    public UserInfoVo findUserInfoByUserPhone(String userPhone) {
+        return userMapper.getUserInfoByUserPhone(userPhone);
+    }
+
+    @Override
+    public UserInfoVo findUserByInviteCode(String inviteCode) {
+        return userMapper.getUserByInviteCode(inviteCode);
+    }
+
+    @Override
+    public Integer addUser(UserInfoVo userPhone) {
+        return userMapper.addUser(userPhone);
     }
 }

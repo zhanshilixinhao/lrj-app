@@ -5,7 +5,7 @@
                 >
 <mapper namespace="com.lrj.mapper.IOrderCommentMapper">
 
-    <select id="listLatestOrderComment" resultType="com.lrj.Vo.OrderCommentVo">
+    <select id="listLatestOrderComment" resultType="com.lrj.VO.OrderCommentVo">
         SELECT
         a.comment_content AS commentContent,
         a.create_time AS createTime,

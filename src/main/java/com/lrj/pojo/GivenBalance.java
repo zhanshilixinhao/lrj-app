@@ -6,11 +6,8 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
-import	java.util.Date;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Date;
 
 /**
  * @author Lxh

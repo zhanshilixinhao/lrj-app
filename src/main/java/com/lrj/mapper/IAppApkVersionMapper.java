@@ -1,7 +1,6 @@
 package com.lrj.mapper;
 
 import com.lrj.VO.AppApkVersionVo;
-import com.lrj.VO.BannerVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

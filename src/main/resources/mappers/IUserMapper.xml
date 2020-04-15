@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+        <!DOCTYPE mapper
+                PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+                "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
+                >
+<mapper namespace="com.lrj.mapper.IUserMapper">
+    <select id="findUserAddressByUserId" parameterType="String" resultType="com.lrj.VO.ConsigneeVo">
+        SELECT
+			  app_consignee_id AS consigneeId,
+			  consignee_name AS consigneeName,
+			  consignee_mobile AS consigneeMobile,
+			  name,
+			  address,
+			  is_default AS isDefault
+			FROM
+				app_consignee
+			WHERE
+				user_id = #{userId}
+			AND
+				active = 1
+    </select>
+
+	<select id="getUserInfoByUserPhone" parameterType="String" resultType="com.lrj.VO.UserInfoVo">
+		SELECT
+				*
+			FROM
+				app_user
+			WHERE
+				user_phone = #{userPhone}
+	</select>
+	<select id="getUserByInviteCode"  parameterType="String" resultType="com.lrj.VO.UserInfoVo">
+		SELECT
+				*
+			FROM
+				app_user
+			WHERE
+				invitation_code = #{inviteCode}
+	</select>
+
+	<insert id="addUser" parameterType="com.lrj.VO.UserInfoVo" useGeneratedKeys="true" keyProperty="appUserId">
+		INSERT INTO sys_user (user_phone,user_password,nickname,head_photo,device_token,active,create_time,ischeck,invitedCode)
+		VALUES  (#{userPhone},#{userPassword},#{nickname},#{headPhoto},#{deviceToken},#{active},#{createTime},#{ischeck},#{invitedCode})
+	</insert>
+
+</mapper>

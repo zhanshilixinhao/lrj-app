@@ -39,7 +39,7 @@ public class ItemController {
         paramMap.put("rows", rows); // 每页要显示多少条
         paramMap.put("categoryId", categoryId); // 商品类表id
         /** 查询商品列表 **/
-        List<AppItemVo> appItemVoList = itemService.getItemListByCategoryId(paramMap);
+        List<AppItemVo> appItemVoList = itemService.getItemListByCategoryId(categoryId);
         /** 获取请求地址 **/
         StringBuffer url = request.getRequestURL();
         /** 拼接 **/

@@ -17,7 +17,7 @@ public interface IItemService {
      * 通过商品类ID  查询该类别下的所有商品
      * @return
      */
-    List<AppItemVo> getItemListByCategoryId(Map<String,Integer> paramMap);
+    List<AppItemVo> getItemListByCategoryId(Integer categoryId);
 
     /**
      * 根据商品ID获取商品的顶层类别ID

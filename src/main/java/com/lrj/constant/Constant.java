@@ -33,29 +33,41 @@ public class Constant {
      * <!>注意<!><!>注意<!><!>注意<!>
      * 
      */
-    /** 已注册 **/
-    public static final int HASREGESITER = 1;
-    /** 未注册 **/
-    public static final int UNREGESITER = 2;
-    /** 优惠券邀请码赠送的ID **/
-    public static int COUPONID = 2;
-    /** 支付订单后的分享红包 **/
-    public static List<Integer> PAYORDERCOUPONID = new ArrayList<Integer>() {
+/**--------------------------订单常量定义---------------------------------------------**/
+    /** 订单未完成 **/
+    public static final int ORDER_STATUS_UNFINISHED = 0;
+    /** 订单已完成 **/
+    public static final int ORDER_STATUS_FINISHED = 1;
+    /** 订单已退款 **/
+    public static final int ORDER_STATUS_REFUND = 2;
+    /** 订单未抢 **/
+    public static final int ORDER_ISLOCK_NO = 0;
+    /** 订单已抢 **/
+    public static final int ORDER_ISLOCK_YES = 1;
+    /**订单未支付**/
+    public static final int ORDER_PAYSTATUS_NOPAY = 0;
+    /** 线上支付 **/
+    public static final int ORDER_PAYSTATUS_ONLINE = 1;
+    /** 线下支付 **/
+    public static final int ORDER_PAYSTATUS_PRIVATE = 2;
+    /** 订单类型**/
+    public static final int ORDER_TYPE_PUBLIC = 1; //普通订单
+    public static final int ORDER_TYPE_MONTH = 2; //月卡订单
+    /**订单追踪状态**/
+    public static final int ORDER_TRANSSTATUS_TAKEING =1; //小哥上门收件中
+    public static final int ORDER_TRANSSTATUS_TAKED = 2;// //已取衣
+    public static final int ORDER_TRANSSTATUS_BINDING = 3;//订单绑定成功
+    public static final int ORDER_TRANSSTATUS_GO = 4;//衣物飞奔入场
+    public static final int ORDER_TRANSSTATUS_SORTING = 5;//衣物分拣中
+    public static final int ORDER_TRANSSTATUS_WASHING = 6;//衣服洗涤中
+    public static final int ORDER_TRANSSTATUS_STERILIZED = 7;//衣物烘干消毒
+    public static final int ORDER_TRANSSTATUS_IRONING = 8;//衣服熨烫完毕
+    public static final int ORDER_TRANSSTATUS_TAKED_PACK = 9;//衣物打包
+    public static final int ORDER_TRANSSTATUS_RECEIVEING = 10; //正在送回
+    public static final int ORDER_TRANSSTATUS_RECEIVED = 11;//已送回
 
-        private static final long serialVersionUID = -5900646957409713128L;
-        {
-            add(1);
-            add(2);
-            add(3);
-            add(4);
-            add(5);
-            add(6);
-            add(7);
-            add(8);
-            add(9);
-            add(10);
-        }
-    };;
+
+/**--------------------------------------------------------------------------------------------------------------------------**/
     /** 被邀请着赠送余额 **/
     public static BigDecimal INVITECODEBANLANCE = new BigDecimal("10.00");
     /** 优惠券系统赠送 **/
@@ -68,20 +80,13 @@ public class Constant {
     public static final int COUPONGETFRIENDSHARE = 2;
     /** banner活动获取 **/
     public static final int COUPONGETFROMBANNER = 3;
-    /** 订单未完成 **/
-    public static final int UNFINISHED = 1;
-    /** 订单已完成 **/
-    public static final int FINISHED = 2;
+
     /** 优惠券最低金额比例 **/
     public static final double MINMUCOUNPBILI = 0.25;
     /** 过期 1 **/
     public static final int EXPIRED = 1;
     /** 没过期 0 **/
     public static final int NOEXPIRED = 0;
-    /** 1订单退款标记 **/
-    public static final int REFUND = 1;
-    /** 0此订单非退款 **/
-    public static final int NOREFUND = 0;
     /**
      * 1:代表该用户或者角色等为可用状态.
      */
@@ -162,6 +167,7 @@ public class Constant {
     public static final int ONLINEPAY = 1;
     /** 线下支付 **/
     public static final int OFFLINEPAY = 2;
+
     /**
      * 上传图片类型
      */
