@@ -1,20 +1,14 @@
 package com.lrj.service;
 
-import com.lrj.VO.ConsigneeVo;
+import com.lrj.pojo.User;
 
 import java.util.List;
 
 /**
- * @author : cwj
- * @describe : 用户服务
- * @date : 2020-4-3
+ * @author Lxh
+ * @date 2020/4/7 14:30
  */
 public interface IUserService {
+    List<User> findUserByPhone(String phoneNum);
 
-    /**
-     * 通过userId 查询用户地址
-     * @param userId
-     * @return
-     */
-    List<ConsigneeVo> findUserAddressByUserId(Integer userId);
 }
