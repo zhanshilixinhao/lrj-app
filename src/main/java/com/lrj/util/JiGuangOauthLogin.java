@@ -4,12 +4,12 @@ import org.springframework.util.Base64Utils;
 
 import javax.crypto.Cipher;
 import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
+
 import java.security.PrivateKey;
-import java.security.spec.InvalidKeySpecException;
+
 import java.security.spec.PKCS8EncodedKeySpec;
 
-import java.security.spec.X509EncodedKeySpec;
+
 import java.util.Base64;
 
 /**
@@ -20,9 +20,7 @@ import java.util.Base64;
 public class JiGuangOauthLogin {
 
     public static String decrypt(String cryptograph, String prikey) throws Exception {
-        java.security.Security.addProvider(
-                new org.bouncycastle.jce.provider.BouncyCastleProvider()
-        );
+
         byte [] keyBytes;
         byte[] bytes = prikey.getBytes();
         keyBytes = Base64Utils.decode(bytes);

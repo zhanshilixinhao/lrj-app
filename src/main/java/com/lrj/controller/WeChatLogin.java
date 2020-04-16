@@ -1,14 +1,17 @@
 package com.lrj.controller;
 import	java.util.HashMap;
 
+
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.parser.ParserConfig;
+
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.ReturnResult;
 import com.lrj.service.IWeChatLoginService;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.HttpClientTool;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
