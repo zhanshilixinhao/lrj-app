@@ -20,6 +20,6 @@ import java.math.BigDecimal;
 public class Order_houseServiceVo  extends OrderVo{
 
     private Integer status;  //状态
-    private String serviceAddress;//服务地址
-
+    private Integer itemId;  //服务项目
+    private Integer isLock;  //是否抢单 0：未抢   1：已抢
 }

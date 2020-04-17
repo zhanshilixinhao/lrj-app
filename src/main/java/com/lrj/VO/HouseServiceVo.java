@@ -23,7 +23,7 @@ public class HouseServiceVo {
     private Integer serviceTime; //服务时长
     private Double price;  //价格
     private String serviceExplain; //服务说明
-    private String img; //图片路劲
+    private String img; //图片路径
     private Integer active; //状态 0：下架 1：上架
 
 }
