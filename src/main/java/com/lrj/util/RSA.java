@@ -64,7 +64,7 @@ public class RSA {
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
 
-        Map<String, Object> keyMap = new HashMap<>(4);
+        Map<String, Object> keyMap = new HashMap<String,Object>(4);
         keyMap.put(PUBLIC_KEY, publicKey);
         keyMap.put(PRIVATE_KEY, privateKey);
 

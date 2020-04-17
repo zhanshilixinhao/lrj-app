@@ -27,10 +27,10 @@ import javax.servlet.http.HttpServletRequest;
 public class WeChatLogin {
     @Resource
     private IWeChatLoginService weChatLoginService;
-    @RequestMapping("toGetAccessToken")
+    @RequestMapping("/toGetAccessToken")
     public FormerResult getAccessToken(HttpServletRequest request){
         FormerResult formerResult = new FormerResult();
-        HashMap<String, String> parameter = new HashMap<>();
+        HashMap<String, String> parameter = new HashMap<String,String>();
         String appid = request.getParameter("appid");
         String secret = request.getParameter("secret");
         String code = request.getParameter("code");
@@ -63,14 +63,14 @@ public class WeChatLogin {
     }
 
     private String getUserInfo(String accessToken, String openId) {
-        HashMap<String, String> parameter = new HashMap<>();
+        HashMap<String, String> parameter = new HashMap<String,String>();
         parameter.put("access_token",accessToken);
         parameter.put("openid",openId);
         return HttpClientTool.doGet("https://api.weixin.qq.com/sns/userinfo", parameter);
     }
 
     private ReturnResult refreshAccessToken(String appid, String refreshToken) {
-        HashMap<String, String> parameter = new HashMap<>();
+        HashMap<String, String> parameter = new HashMap<String,String>();
         parameter.put("appid",appid);
         parameter.put("refresh_token",refreshToken);
         parameter.put("grant_type","refresh_token");
@@ -79,7 +79,7 @@ public class WeChatLogin {
     }
 
     private String inspectionAuthorization(String accessToken, String openId) {
-        HashMap<String, String> parameter = new HashMap<>();
+        HashMap<String, String> parameter = new HashMap<String,String>();
         parameter.put("access_token",accessToken);
         parameter.put("openid",openId);
         String result = HttpClientTool.doGet("https://api.weixin.qq.com/sns/auth", parameter);

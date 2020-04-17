@@ -263,8 +263,6 @@ public class CommonUtil {
     }
     public static FormerResult SUCCESS(FormerResult result, String tip, Object data) {
 
-
-        objectToRemoveNull2(data);
         result.setRequestStatus(Constant.SUCCESS);
         result.setErrorCode(Constant.YES);
         result.setErrorTip("获取成功!");

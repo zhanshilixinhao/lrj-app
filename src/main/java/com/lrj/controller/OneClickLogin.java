@@ -51,14 +51,23 @@ public class OneClickLogin {
         try {
             String phoneNum = JiGuangOauthLogin.decrypt(loginMess.getPhone(), prikey);
             List<User> userList = userService.findUserByPhone(phoneNum);
+            //如果没有注册过
             if (userList.size()==0||userList==null) {
                 User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(new Date());
                 int insert = userMapper.insert(user);
                 if (insert==0) {
                     return CommonUtil.FAIL(formerResult,"用户添加失败!",null);
+                }else {
+                    List<User> userListNew = userService.findUserByPhone(phoneNum);
+                    return CommonUtil.SUCCESS(formerResult,"用户登录成功!",userListNew);
                 }
+             //已经注册过了
+            }else {
+                for (User user : userList) {
+                    return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user);
+                }
+
             }
-            return CommonUtil.SUCCESS(formerResult,"用户登录成功!",null);
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);

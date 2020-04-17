@@ -23,12 +23,6 @@ public class OrderVo {
     private BigDecimal totalPrice; // 总价
     private Integer status; // 订单状态
     private Integer payStatus; //  支付状态
-    private Integer takeAddress; // 取件地址
-    private Integer receiveAddress; // 送件地址
-    private Integer isLock; //  订单是否已抢
-    private Integer traceStatus; //  订单当前追踪状态
-    private String takeTime = ""; // 取件时间
     private String createTime = ""; // 生成时间
-    private Integer orderType;          //订单类型  1.普通订单，2.月卡订单
-    private Integer monthCardId; //月卡订单详情
+    private Integer orderType;       //订单类型  1.洗衣订单 2.洗衣月卡订单  3.单项家政服务  4.定制家政服务
 }

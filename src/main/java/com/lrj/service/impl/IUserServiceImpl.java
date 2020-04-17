@@ -30,28 +30,27 @@ public class IUserServiceImpl implements IUserService{
     @Resource
     private UserMapper userMapper;
 
-    @Override
+
     public List<ConsigneeVo> findUserAddressByUserId(Integer userId) {
         return userMapper.findUserAddressByUserId(userId);
     }
 
-    @Override
     public UserInfoVo findUserInfoByUserPhone(String userPhone) {
         return userMapper.getUserInfoByUserPhone(userPhone);
     }
 
-    @Override
+
     public UserInfoVo findUserByInviteCode(String inviteCode) {
         return userMapper.getUserByInviteCode(inviteCode);
     }
 
-    @Override
+
     public Integer addUser(UserInfoVo userPhone) {
         return userMapper.addUser(userPhone);
     }
 
 
-    @Override
+
     public List<User> findUserByPhone(String phoneNum) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();

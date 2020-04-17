@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -28,5 +29,11 @@ public class HouseServiceController {
         }
         List<HouseServiceVo> houseServiceVoList = houseService.findHouseService(typeId);
         return new ResultVo("success", 0, "查询成功", houseServiceVoList);
+    }
+
+    @RequestMapping(value = "/customHouseService",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo customHouseService(HttpServletRequest request){
+        request.getParameterValues("");
+        return null;
     }
 }

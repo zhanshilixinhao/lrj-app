@@ -27,16 +27,17 @@ public class OrderController {
     /**
      * 生成订单
      */
-    @RequestMapping(value = "createOrder",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo createOrder(OrderVo orderVo,Integer userId){
+    @RequestMapping(value = "/createOrder",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo createOrder(OrderVo orderVo,Integer userId,Integer orderType){
         // 生成订单号
         String orderNum = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6);
         // 处理订单
         orderVo.setAppOrderId(Integer.parseInt(orderNum));
         orderVo.setUserId(userId);
+        orderVo.setOrderType(orderType);
         orderVo.setStatus(Constant.ORDER_STATUS_UNFINISHED);
         orderVo.setPayStatus(Constant.ORDER_PAYSTATUS_NOPAY);
-        orderVo.setIsLock(Constant.ORDER_ISLOCK_NO);
+       // orderVo.setIsLock(Constant.ORDER_ISLOCK_NO);
         orderVo.setCreateTime(DateUtils.getNowtime());
        Integer crateNum = orderService.createOrder(orderVo);
         return null;
