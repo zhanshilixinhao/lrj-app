@@ -13,6 +13,6 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class Order_monthCardVo {
 }

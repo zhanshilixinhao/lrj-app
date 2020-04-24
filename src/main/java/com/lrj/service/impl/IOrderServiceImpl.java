@@ -1,19 +1,15 @@
 package com.lrj.service.impl;
 
-import com.lrj.VO.ConsigneeVo;
+
 import com.lrj.VO.OrderVo;
 import com.lrj.VO.Order_houseServiceVo;
-import com.lrj.VO.UserInfoVo;
-import com.lrj.constant.Constant;
+import com.lrj.common.Constant;
 import com.lrj.mapper.IOrderMapper;
-import com.lrj.mapper.IUserMapper;
 import com.lrj.service.IOrderService;
-import com.lrj.service.IUserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 
 /**
  * @author : cwj
@@ -22,11 +18,12 @@ import java.util.List;
  */
 @Service
 @Transactional
-public class IOrderServiceImpl implements IOrderService{
+public class IOrderServiceImpl implements IOrderService {
 
     @Resource
     private IOrderMapper orderMapper;
 
+    @Override
     public Integer createOrder(OrderVo orderVo) {
         //不同订单走不同通道
         Integer orderType = orderVo.getOrderType();
@@ -45,6 +42,7 @@ public class IOrderServiceImpl implements IOrderService{
         return orderMapper.createOrder(orderVo);
     }
 
+    @Override
     public OrderVo findOrderByOrderId(String orderId) {
         Integer orderIdInteger = Integer.getInteger(orderId);
         return orderMapper.getOrderByOrderId(orderIdInteger);

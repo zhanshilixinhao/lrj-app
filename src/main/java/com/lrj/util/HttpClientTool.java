@@ -152,6 +152,50 @@ public class HttpClientTool {
         return null;
     }
 
+    public static String yunTuDoPost(String url, Map<String, String> params, String charset)
+            throws IOException {
+        if (StringUtils.isBlank(url)) {
+            return null;
+        }
+        List<NameValuePair> pairs = null;
+        if (params != null && !params.isEmpty()) {
+            pairs = new ArrayList<NameValuePair>(params.size());
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                String value = entry.getValue();
+                if (value != null) {
+                    pairs.add(new BasicNameValuePair(entry.getKey(), value));
+                }
+            }
+        }
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.addHeader("Content-Type","application/x-www-form-urlencoded");
+        if (pairs != null && pairs.size() > 0) {
+            httpPost.setEntity(new UrlEncodedFormEntity(pairs, CHARSET));
+        }
+        CloseableHttpResponse response = null;
+        try {
+            response = httpClient.execute(httpPost);
+            int statusCode = response.getStatusLine().getStatusCode();
+            if (statusCode != 200) {
+                httpPost.abort();
+                throw new RuntimeException("HttpClient,error status code :" + statusCode);
+            }
+            HttpEntity entity = response.getEntity();
+            String result = null;
+            if (entity != null) {
+                result = EntityUtils.toString(entity, "utf-8");
+            }
+            EntityUtils.consume(entity);
+            return result;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        } finally {
+            if (response != null) {
+                response.close();
+            }
+        }
+        return null;
+    }
     /**
      * HTTPS Get 获取内容
      * @param url 请求的url地址 ?之前的地址
@@ -206,6 +250,7 @@ public class HttpClientTool {
         try {
             SSLContext sslContext = new SSLContextBuilder().loadTrustMaterial(null, new TrustStrategy() {
                 // 信任所有
+                @Override
                 public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
                     return true;
                 }

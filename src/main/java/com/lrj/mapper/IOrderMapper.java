@@ -1,9 +1,12 @@
 package com.lrj.mapper;
 
-import com.lrj.VO.ConsigneeVo;
+
 import com.lrj.VO.OrderVo;
-import com.lrj.VO.UserInfoVo;
+
+import com.lrj.pojo.Order;
 import org.springframework.stereotype.Repository;
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
 import java.util.List;
 
@@ -12,8 +15,8 @@ import java.util.List;
  * @describe : 订单 有关接口
  * @date : 2020-4-2
  */
-@Repository
-public interface IOrderMapper {
+
+public interface IOrderMapper  {
     /**
      * 创建订单
      */
@@ -24,4 +27,7 @@ public interface IOrderMapper {
      * @return
      */
     OrderVo getOrderByOrderId(Integer appOrderId);
+
+
+
 }
