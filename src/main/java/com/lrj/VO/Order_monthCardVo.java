@@ -10,5 +10,9 @@ import lombok.experimental.Accessors;
  * @describe : 月卡订单
  * @date : 时间
  */
+@Data
+@Accessors(chain = true)
+@NoArgsConstructor
+//@AllArgsConstructor
 public class Order_monthCardVo {
 }
