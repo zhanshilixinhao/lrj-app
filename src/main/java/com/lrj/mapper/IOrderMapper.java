@@ -1,11 +1,7 @@
 package com.lrj.mapper;
 
-import com.lrj.VO.ConsigneeVo;
-import com.lrj.VO.OrderVo;
-import com.lrj.VO.UserInfoVo;
+import com.lrj.VO.*;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * @author : cwj
@@ -15,13 +11,33 @@ import java.util.List;
 @Repository
 public interface IOrderMapper {
     /**
-     * 创建订单
+     * 创建基础订单
      */
     Integer createOrder(OrderVo orderVo);
+    /**
+     * 创建 单项洗衣订单
+     * @param washingOrder
+     */
+    Integer createWashingOrder(Order_washingVo washingOrder);
+
+    /**
+     * 创建单项家政服务订单
+     */
+    Integer createHouseServiceOrder(Order_houseServiceVo houseServiceVo);
+    /**
+     * 创建 定制家政服务订单
+     */
+    Integer createCustomHouseServiceOrder(Order_custom_houseServiceVo customHouseServiceVo);
 
     /**
      * 通过订单Id查询订单数据
      * @return
      */
-    OrderVo getOrderByOrderId(Integer appOrderId);
+    OrderVo getOrderByOrderNumber(String appOrderId);
+
+    /**
+     * 更改基础订单 支付状态
+     * @param orderNumber
+     */
+    void updateOrderPayStatus(String orderNumber);
 }

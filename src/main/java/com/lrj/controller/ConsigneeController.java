@@ -1,6 +1,7 @@
 package com.lrj.controller;
 
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.ResultVo;
 import com.lrj.pojo.Consignee;
 import com.lrj.service.IConsigneeService;
 import com.lrj.util.CommonUtil;
@@ -32,6 +33,10 @@ public class ConsigneeController {
 //添加用户地址
     @RequestMapping("createConsignee")
     public FormerResult createConsignee( Consignee consignee){
+        /** 校验必须参数 **/
+        if (consignee == null) {
+            return new FormerResult("success", 1, "参数有误,请检查参数",null);
+        }
         return consigneeService.countUserAddress(consignee);
     }
 

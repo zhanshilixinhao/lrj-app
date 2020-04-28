@@ -4,13 +4,13 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
 <mapper namespace="com.lrj.mapper.IItemCategoryMapper">
-    <select id="getItemCategory" resultType="com.lrj.VO.ItemCategoryVo">
+    <select id="getItemCategory" resultType="com.lrj.VO.ItemCategoryVo" parameterType="Integer">
        SELECT app_item_category_id AS categoryId,
 			  category_name AS categoryName
 			FROM
 				app_item_category
 			WHERE
-				pid = #pid#
+				pid = #{pid}
 			AND
 				is_show = 1
     </select>

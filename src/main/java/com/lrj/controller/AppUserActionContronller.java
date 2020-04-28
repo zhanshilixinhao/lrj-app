@@ -1,9 +1,12 @@
 package com.lrj.controller;
 
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.ResultVo;
+import com.lrj.VO.UserLevelVo;
 import com.lrj.service.IBalanceService;
 import com.lrj.service.IMemberServiceUserRelationService;
 import com.lrj.service.IUserLevelVoService;
+import com.lrj.service.IUserService;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.RequestParameterUtil;
 import org.springframework.stereotype.Controller;
@@ -27,6 +30,8 @@ public class AppUserActionContronller {
     @Resource
     private IBalanceService iBalanceService;
     @Resource
+    private IUserService userService;
+    @Resource
     private IMemberServiceUserRelationService iMemberServiceUserRelationService;
 
     @Resource
@@ -46,24 +51,21 @@ public class AppUserActionContronller {
     }
     /**
      * @功能说明:获取用户当前等级相关信息
-     * @param result
-     * @param request
+     * @param userId
      * @return
      * @throws Exception
      * @返回类型:FormerResult
      * @作者:SAM QZL lxh
      * @版本:1.0
      */
-    @RequestMapping(value = "/getUserLevelInfo/v4", method = RequestMethod.POST)
-    public FormerResult getUserLevelInfo(FormerResult result, HttpServletRequest request) throws Exception {
-
-        /** 校验必要参数 **/
-        if (RequestParameterUtil.checkRequestParametersIsNull(request, new String[] { "userId" }, result)) {
-            return result;
+    @RequestMapping(value = "/getUserLevelInfo", method = RequestMethod.POST)
+    public FormerResult getUserLevelInfo(Integer userId) throws Exception {
+        /** 校验必须参数 **/
+        if (userId == null) {
+            return new FormerResult("success", 1, "参数有误,请检查参数",null);
         }
-        /** 获取参数 **/
-        Integer userId = Integer.valueOf(request.getParameter("userId"));
-        return iUserLevelVoService.findCurrentUserLevelInfo(userId,result);
+        UserLevelVo userLevelVo =userService.findUserLevelInfo(userId);
+        return new FormerResult("success",0,"查询成功",userLevelVo);
     }
 
     /**

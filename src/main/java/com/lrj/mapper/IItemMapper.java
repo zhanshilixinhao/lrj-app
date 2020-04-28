@@ -15,10 +15,10 @@ import java.util.Map;
 public interface IItemMapper {
     /**
      * 通过商品类别Id查询该类下的所有商品
-     * @param categoryId
+     * @param paramMap
      * @return
      */
-    List<AppItemVo> getItemListByCategoryId(Integer categoryId);
+    List<AppItemVo> getItemListByCategoryId(Map<String,Integer> paramMap);
 
     /**
      * 根据商品ID获取商品的顶层类别ID

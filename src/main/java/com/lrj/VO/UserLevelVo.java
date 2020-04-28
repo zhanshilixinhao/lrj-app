@@ -1,110 +1,22 @@
 package com.lrj.VO;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import java.math.BigDecimal;
+
+@Data
 @Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserLevelVo {
-
-	private Integer currentPoints;
-
-	private String currentLevelName;
-
-	private String nextLevelName;
-
-	private Integer nextLevelPoints;
-
-	/** 下一等级还差积分 **/
-	public Integer getNextLevelNeedPoints() {
-
-		/** 积分差 **/
-		int differ = nextLevelPoints - currentPoints;
-
-		if (differ <= 0) {
-			return 0;
-		} else {
-			return differ;
-		}
-
-	}
-
-	/**
-	 * currentPoints
-	 * 
-	 * @return the currentPoints
-	 * @since CodingExample Ver(编码范例查看) 1.0
-	 */
-	public Integer getCurrentPoints() {
-
-		return currentPoints;
-	}
-
-	/**
-	 * @param currentPoints
-	 *            the currentPoints to set
-	 */
-	public void setCurrentPoints(Integer currentPoints) {
-
-		this.currentPoints = currentPoints;
-	}
-
-	/**
-	 * currentLevelName
-	 * 
-	 * @return the currentLevelName
-	 * @since CodingExample Ver(编码范例查看) 1.0
-	 */
-	public String getCurrentLevelName() {
-
-		return currentLevelName;
-	}
-
-	/**
-	 * @param currentLevelName
-	 *            the currentLevelName to set
-	 */
-	public void setCurrentLevelName(String currentLevelName) {
-
-		this.currentLevelName = currentLevelName;
-	}
-
-	/**
-	 * nextLevelName
-	 * 
-	 * @return the nextLevelName
-	 * @since CodingExample Ver(编码范例查看) 1.0
-	 */
-	public String getNextLevelName() {
-
-		return nextLevelName;
-	}
-
-	/**
-	 * @param nextLevelName
-	 *            the nextLevelName to set
-	 */
-	public void setNextLevelName(String nextLevelName) {
-
-		this.nextLevelName = nextLevelName;
-	}
-
-	/**
-	 * nextLevelPoints
-	 * 
-	 * @return the nextLevelPoints
-	 * @since CodingExample Ver(编码范例查看) 1.0
-	 */
-	public Integer getNextLevelPoints() {
-
-		return nextLevelPoints;
-	}
-
-	/**
-	 * @param nextLevelPoints
-	 *            the nextLevelPoints to set
-	 */
-	public void setNextLevelPoints(Integer nextLevelPoints) {
-
-		this.nextLevelPoints = nextLevelPoints;
-	}
-
+	private Integer userId;
+	private Integer levelId; //用户等级Id
+	private String levelName; //等级名称
+	private String description; //等级说明
+	private BigDecimal discount; // 等级折扣
+	private BigDecimal distributionRatio;//分销比例
+	private String remark; //备注
 }

@@ -4,12 +4,39 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
 <mapper namespace="com.lrj.mapper.IOrderMapper">
-	<!--<insert id="createOrder" parameterType="com.lrj.VO.OrderVO" useGeneratedKeys="true" keyProperty="appOrderId">
-		INSERT INTO sys_order (app_order_id,user_id,total_price,status,pay_status,take_address,receive_address,is_lock,trace_status,take_time,create_time,order_type,monthCardId)
-		VALUES  (#{appOrderId},#{userId},#{totalPrice},#{status},#{payStatus},#{takeAddress},#{receiveAddress},#{isLock},#{traceStatus},#{takeTime},#{createTime},#{orderType},#{monthCardId})
+	<insert id="createOrder" parameterType="com.lrj.VO.OrderVo" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO `order` (order_number,user_id,total_price,status,pay_status,create_time,order_type,user_coupon_id)
+		VALUES  (#{orderNumber},#{userId},#{totalPrice},#{status},#{payStatus},#{createTime},#{orderType},#{userCouponId})
 	</insert>
-
-	<select id="getOrderByOrderId" parameterType="Integer" resultType="com.lrj.VO.OrderVo">
-		  SELECT * FROM sys_order WHERE app_order_id=#{appOrderId}
-	</select>-->
+    <!--通过订单号查询订单-->
+	<select id="getOrderByOrderNumber" parameterType="java.lang.String" resultType="com.lrj.VO.OrderVo">
+		  SELECT order_number AS orderNumber,
+		  		user_id AS userId,
+		  		total_price AS totalPrice,
+		  		status AS status,
+		  		pay_status AS payStatus,
+		  		create_time AS createTime,
+		  		order_type AS orderType,
+		  		user_coupon_id AS userCouponId
+		  FROM `order` WHERE order_number=#{orderNumber}
+	</select>
+    <!--保存单项洗衣订单-->
+    <insert id="createWashingOrder" parameterType="com.lrj.VO.Order_washingVo" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO order_washing (order_number,take_time,take_consignee_id,send_consignee_id,is_urgent,is_lock,shopping_JSON)
+        VALUES  (#{orderNumber},#{takeTime},#{takeConsigneeId},#{sendConsigneeId},#{isUrgent},#{isLock},#{shoppingJSON})
+    </insert>
+    <!--保存单项家政服务订单-->
+    <insert id="createHouseServiceOrder" parameterType="com.lrj.VO.Order_houseServiceVo">
+      	INSERT INTO order_house_service (order_number,status,item_id,is_lock)
+		VALUES  (#{orderNumber},#{status},#{itemId},#{isLock})
+    </insert>
+    <!--保存定制家政服务订单-->
+    <insert id="createCustomHouseServiceOrder" parameterType="com.lrj.VO.Order_custom_houseServiceVo">
+	INSERT INTO order_custom_house_service (order_number,open_time,end_time,base_service_count,base_service_price,individual_service_json,individual_service_price)
+		VALUES  (#{orderNumber},#{openTime},#{endTime},#{baseServiceCount},#{baseServicePrice},#{individualServiceJson},#{individualServicePrice})
+    </insert>
+	<!--修改基础订单支付状态-->
+	<update id="updateOrderPayStatus" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="id">
+	  UPDATE `order` SET pay_status=1 WHERE order_number=#{orderNumber}
+	</update>
 </mapper>

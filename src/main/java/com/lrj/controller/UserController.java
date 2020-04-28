@@ -1,7 +1,6 @@
 package com.lrj.controller;
 
-import com.lrj.VO.ConsigneeVo;
-import com.lrj.VO.UserInfoVo;
+import com.lrj.VO.*;
 import com.lrj.service.IUserService;
 
 import com.lrj.util.DateUtils;
@@ -11,15 +10,11 @@ import com.lrj.util.SmsApi;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.lrj.VO.ResultVo;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.lrj.util.jiGuangOauthLoginPost.doPostForJpush;
 
@@ -54,14 +49,14 @@ public class UserController {
     }*/
 
     /**
-     * 获取短信验证码(被邀请时)
+     * 获取短信验证码
      */
     @RequestMapping(value = "/getVerificationCode",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getAuthenticationCode(String userPhone){
+    public FormerResult getAuthenticationCode(String userPhone){
         /** 校验必须参数 **/
-        if (userPhone == null) {
+       /* if (userPhone == null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
-        }
+        }*/
         // 生成随机六位验证码
         String verificationCode = RandomUtil.generateOrder(6) + "";
         // 设置发送的内容(内容必须和模板匹配）
@@ -76,12 +71,15 @@ public class UserController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return new ResultVo("success",0,"验证码："+verificationCode,null);
+            return new FormerResult("success",0,"验证码："+verificationCode,null);
         } else {
-            return new ResultVo("success", 1, "手机号码已存在", null);
+           /* List<UserInfoVo> userInfoVoList = new ArrayList<UserInfoVo>();
+            userInfoVoList.add(userInfoVo);*/
+            return new FormerResult("success", 0, "登录成功", userInfoVo);
         }
 
     }
+
     /**
      * 被邀请人注册
      */
@@ -120,15 +118,41 @@ public class UserController {
     }
 
     /**
-     * 获取用户的地址
+     * 获取用户 红包
      */
-    /*@RequestMapping(value = "/getUserAddressList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getUserAddressList(Integer userId){
-        *//** 校验必须参数 **//*
+    @RequestMapping(value = "/getRedPacket",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getUserRedPacket(Integer userId){
+        /** 校验必须参数 **/
         if (userId == null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
-        List<ConsigneeVo> consigneeVoList= userService.findUserAddressByUserId(userId);
-        return new ResultVo("success",0,"查询成功",consigneeVoList);
-    }*/
+        List<UserCouponVo> userCouponVoList = userService.findUserRedPacket(userId);
+        return new ResultVo("success", 0, "查询成功",userCouponVoList);
+    }
+
+
+    /**
+     * 预约洗衣
+     */
+    @RequestMapping(value = "/AppointmentWashing",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo AppointmentWashing(Integer userId){
+        /** 校验必须参数 **/
+        if (userId == null) {
+            return new ResultVo("success", 1, "参数有误,请检查参数", null);
+        }
+        return null;
+    }
+
+    /**
+     * 预约家政
+     */
+    @RequestMapping(value = "/AppointmentCustomHouseService",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo AppointmentCustomHouseService(Integer userId){
+        /** 校验必须参数 **/
+        if (userId == null) {
+            return new ResultVo("success", 1, "参数有误,请检查参数",null);
+        }
+        //List<> userService.findAppointmentCustomHouseService(userId);
+        return null;
+    }
 }

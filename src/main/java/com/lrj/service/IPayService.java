@@ -32,4 +32,10 @@ public interface IPayService {
      * @throws IOException
      */
     String appWXPayNotify(String xml) throws Exception;
+
+    /**
+     *  微信支付  流水记录
+     * @param flowRecordMap
+     */
+    void WXPayFlowRecord(Map<String, Object> flowRecordMap);
 }

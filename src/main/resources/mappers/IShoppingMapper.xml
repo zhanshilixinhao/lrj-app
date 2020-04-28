@@ -4,7 +4,7 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
 <mapper namespace="com.lrj.mapper.IShoppingMapper">
-    <select id="getShoppingDetails" resultType="com.lrj.VO.ShoppingPriceVo" parameterType="String">
+    <select id="getShoppingDetails" resultType="com.lrj.VO.ShoppingVo" parameterType="Integer">
        SELECT
 				i.app_item_id AS itemId,
 				i.item_name AS itemName,
@@ -26,4 +26,74 @@
 			 s.user_id = #{userId}
     </select>
 
+	<!-- 查询用户购物车明细 -->
+	<select id="getUserShopping" parameterType="java.util.HashMap" resultType="com.lrj.VO.ShoppingVo">
+			SELECT
+				*
+			FROM
+				app_shopping
+			WHERE
+				user_id = #{userId}
+			AND
+				item_id = #{itemId}
+	</select>
+
+	<!--增加购物车商品数量 -->
+	<update id="updateUserShopping" parameterType="java.util.HashMap">
+			UPDATE app_shopping
+			SET quantity = quantity + 1
+			WHERE
+				user_id = #{userId}
+			AND item_id = #{itemId}
+	</update>
+
+	<!-- 更新购物车商品数量 -->
+	<update id="updateUserShoppingQuantity" parameterType="java.util.HashMap">
+		UPDATE
+		app_shopping
+		SET quantity = #{quantity}
+		WHERE
+		user_id = #{userId}
+		AND
+		item_id = #{itemId}
+	</update>
+
+	<!-- 加入购物车 -->
+	<insert id="insertAppShopping" parameterType="com.lrj.VO.ShoppingVo">
+			INSERT INTO app_shopping
+			(
+			  user_id,
+			  item_id,
+			  quantity,
+			  support_value,
+			  is_pouch,
+			  first
+			)
+			VALUES
+			(
+			   #{userId},
+			   #{itemId},
+			   #{quantity},
+			   #{supportValue},
+			   #{isPouch},
+			   #{first}
+			)
+	</insert>
+
+	<!-- 滑动删除商品（批量删除） -->
+	<delete id="deleteShoppingId" parameterType="java.lang.Integer">
+		DELETE
+		FROM
+		app_shopping
+		WHERE
+		app_shopping_id = #{shoppingId}
+	</delete>
+	<!--清空购物车 -->
+	<delete id="emptyShopCart" parameterType="java.lang.Integer">
+		DELETE
+		FROM
+		app_shopping
+		WHERE
+		app_shopping.user_id = #{userId}
+	</delete>
 </mapper>

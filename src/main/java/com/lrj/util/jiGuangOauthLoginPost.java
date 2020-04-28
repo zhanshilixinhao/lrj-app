@@ -48,7 +48,7 @@ public class jiGuangOauthLoginPost {
             httpClient = HttpClients.createDefault();
             HttpPost httpPost = new HttpPost("https://api.verification.jpush.cn/v1/web/loginTokenVerify");
             httpPost.addHeader("Content-Type", "application/json");
-            httpPost.addHeader("Authorization", "Basic ZWFmZmZkNjhkNWEzMGI3NmVhOGEyZWJmOjI2ODUyOTZlYjc2NDM0ZDUwMjgzYzQ3Ng==");
+            httpPost.addHeader("Authorization", "Basic MGNhNWZlYWE5YzU4Y2IyZGI4Yzk4YjhkOjhjNWY3Zjc2NmNlYWQzNmUzODk0ZGE5NQ==");
             JSONObject json = new JSONObject();
             json.put("loginToken", JSONBody);
             httpPost.setEntity(new StringEntity(String.valueOf(json)));

@@ -26,7 +26,7 @@ public class ItemController {
     private IItemService itemService;
 
     @RequestMapping(value = "/getItemList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getItemList(Integer categoryId,Integer page,Integer rows, HttpServletRequest request){
+    public ResultVo getItemList(Integer categoryId,Integer page,Integer rows,Integer userId, HttpServletRequest request){
         /** 校验必须参数 **/
         if (categoryId == null || page == null || rows == null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
@@ -38,13 +38,15 @@ public class ItemController {
         paramMap.put("start", start); // 开始条数
         paramMap.put("rows", rows); // 每页要显示多少条
         paramMap.put("categoryId", categoryId); // 商品类表id
+        /** 用户id **/
+        paramMap.put("userId", userId);
         /** 查询商品列表 **/
-        List<AppItemVo> appItemVoList = itemService.getItemListByCategoryId(categoryId);
-        /** 获取请求地址 **/
-        StringBuffer url = request.getRequestURL();
+        List<AppItemVo> appItemVoList = itemService.getItemListByCategoryId(paramMap);
+        /** 获取请求地址 **/ //request.getRequestURL();
+        StringBuffer url = new StringBuffer();
+        url.append("http://www.51lrj.com/getItemList");
         /** 拼接 **/
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString()
-                + "/";
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
         /** 获取虚拟目录 **/
         String directory = MessagesUtil.getString("virtual_directory") + "/";
         /** 拼接可访问图片地址 **/

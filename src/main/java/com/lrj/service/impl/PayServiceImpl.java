@@ -1,6 +1,7 @@
 package com.lrj.service.impl;
 
 import com.lrj.VO.AliPayVo;
+import com.lrj.mapper.IPayMapper;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IPayService;
 
@@ -15,6 +16,9 @@ import java.util.Map;
 @Service
 @Transactional
 public class PayServiceImpl implements IPayService {
+
+    @Resource
+    private IPayMapper payMapper;
     /**
      * 支付宝提供给商户的服务接入网关URL(新)
      */
@@ -34,6 +38,10 @@ public class PayServiceImpl implements IPayService {
 
     public String appWXPayNotify(String xml) throws Exception {
         return null;
+    }
+
+    public void WXPayFlowRecord(Map<String, Object> flowRecordMap) {
+        payMapper.WXPayFlowRecord(flowRecordMap);
     }
 
     /**

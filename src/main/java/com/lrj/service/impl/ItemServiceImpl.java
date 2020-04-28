@@ -25,8 +25,8 @@ public class ItemServiceImpl implements IItemService{
     @Resource
     private IItemMapper itemMapper;
 
-    public List<AppItemVo> getItemListByCategoryId(Integer categoryId) {
-        return itemMapper.getItemListByCategoryId(categoryId);
+    public List<AppItemVo> getItemListByCategoryId(Map<String,Integer> paramMap) {
+        return itemMapper.getItemListByCategoryId(paramMap);
     }
 
     /**

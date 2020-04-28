@@ -27,6 +27,16 @@
 			WHERE
 				user_phone = #{userPhone}
 	</select>
+
+	<select id="getUserInfoByUserId" parameterType="String" resultType="com.lrj.VO.UserInfoVo">
+		SELECT
+		*
+		FROM
+		app_user
+		WHERE
+		app_user_id = #{userId}
+	</select>
+
 	<select id="getUserByInviteCode"  parameterType="String" resultType="com.lrj.VO.UserInfoVo">
 		SELECT
 				*
@@ -39,6 +49,52 @@
 	<insert id="addUser" parameterType="com.lrj.VO.UserInfoVo" useGeneratedKeys="true" keyProperty="appUserId">
 		INSERT INTO sys_user (user_phone,user_password,nickname,head_photo,device_token,active,create_time,ischeck,invitedCode)
 		VALUES  (#{userPhone},#{userPassword},#{nickname},#{headPhoto},#{deviceToken},#{active},#{createTime},#{ischeck},#{invitedCode})
+	</insert>
+
+	<!--查询用户红包-->
+	<select id="getUserRedPacket" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserCouponVo">
+	  SELECT
+			a.coupon_id AS couponId,
+			a.user_id AS userId,
+			a.create_time AS createTime,
+			a.limit_time AS limitTime,
+			a.sys_coupon_id AS sysCouponId,
+			b.denomination AS denomination,
+			b.type AS couponType,
+			b.instructions AS useInstructions
+			FROM
+			  	user_coupon a LEFT JOIN sys_coupon b ON a.sys_coupon_id = b.sys_coupon_id
+			WHERE
+				a.user_id = #{userId}
+			AND
+				a.active = 1
+			AND
+				a.is_used = 0
+	</select>
+
+	<update id="updateCoupon" parameterType="java.lang.Integer">
+		UPDATE user_coupon SET is_used = 1 WHERE coupon_id = #{couponId}
+	</update>
+
+	<!--查询用户等级信息-->
+	<select id="getUserLevelInfo" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserLevelVo">
+		 SELECT
+			a.user_id AS userId,
+			b.digimarc AS digimarc,
+			b.level_name AS levelName,
+			b.description AS description,
+			b.discount AS discount,
+			b.distributionRatio AS distributionRatio,
+			b.remark AS remark
+			FROM
+			  	user_level a LEFT JOIN level b ON a.level_id = b.level_id
+			WHERE
+				a.user_id = #{userId}
+	</select>
+
+	<insert id="giveFeeBack" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="app_feedback_id">
+		INSERT INTO app_feeback (user_id,invited_id,back_money,create_time,status)
+		VALUES  (#{userId},#{invitedId},#{backMoney},#{createTime},#{status})
 	</insert>
 
 	<!--留着以后用  -->

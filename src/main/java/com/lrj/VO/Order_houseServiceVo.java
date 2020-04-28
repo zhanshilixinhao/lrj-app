@@ -18,8 +18,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order_houseServiceVo  extends OrderVo{
-
+    private String orderNumber;//  订单号
     private Integer status;  //状态
-    private Integer itemId;  //服务项目
+    private Integer itemId;  //服务id
     private Integer isLock;  //是否抢单 0：未抢   1：已抢
 }

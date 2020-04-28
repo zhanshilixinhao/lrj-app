@@ -1,7 +1,6 @@
 package com.lrj.service;
 
-import com.lrj.VO.AppItemVo;
-import com.lrj.VO.AppShoppingVo;
+import com.lrj.VO.ShoppingVo;
 
 import java.util.List;
 import java.util.Map;
@@ -14,9 +13,46 @@ import java.util.Map;
 public interface IShoppingService {
 
     /**
-     * 通过userId 查询该用户购物车
+     * 通过userId 查询该用户购物车具体
      * @param userId
      * @return
      */
-    List<AppShoppingVo> getShoppingDetails(Integer userId);
+    List<ShoppingVo> getShoppingDetails(Integer userId);
+
+    /**
+     * 通过userId,ItemId购物车 明细
+     * @param paramMap
+     * @return
+     */
+    List<ShoppingVo> findUserShopping(Map<String, Integer> paramMap);
+
+    /**
+     * 更新购物车数量
+     * @param paramMap
+     */
+    void updateUserShopping(Map<String, Integer> paramMap);
+
+    /**
+     * 添加商品 到购物车
+     * @param shoppingVo
+     */
+    void insertAppShopping(ShoppingVo shoppingVo);
+
+    /**
+     * 购物车商品数量保存
+     * @param paramMap
+     */
+    void updateUserShoppingQuantity(Map<String, Integer> paramMap);
+
+    /**
+     * 清空购物车
+     * @param userId
+     */
+    void emptyShopCart(Integer userId);
+
+    /**
+     * 滑动删除购物车里的商品
+     * @param shoppingId
+     */
+    void deleteShoppingId(Integer shoppingId);
 }

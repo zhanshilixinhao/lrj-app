@@ -32,9 +32,9 @@ public class WXPayUtil {
     private static final Random RANDOM = new SecureRandom();
 
 
-    public static String getSign(Map<String, Object> map, String key) {
+    public static String getSign(HashMap<String, String> map, String key) {
         ArrayList<String> list = new ArrayList<String>();
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             if (entry.getValue() != "") {
                 list.add(entry.getKey() + "=" + entry.getValue() + "&");
             }
@@ -90,7 +90,7 @@ public class WXPayUtil {
     }
 
     /**
-     * 将Map转换为XML格式的字符串
+     * 将Map转换为XML格式的字符串 （有根节点）
      *
      * @param data Map类型数据
      * @return XML格式的字符串
@@ -105,6 +105,7 @@ public class WXPayUtil {
             if (value == null) {
                 value = "";
             }
+            value = "![CDATA["+value+"]";
             value = value.trim();
             org.w3c.dom.Element filed = document.createElement(key);
             filed.appendChild(document.createTextNode(value));
@@ -125,6 +126,25 @@ public class WXPayUtil {
         catch (Exception ex) {
         }
         return output;
+    }
+
+    /**
+     *  将Map转换为XML格式的字符串 （没有根节点）
+     * @param params
+     * @return
+     */
+    public static String mapToXml1(Map<String, String> params){
+        StringBuilder buf = new StringBuilder();
+        List<String> keys = new ArrayList<String>(params.keySet());
+        Collections.sort(keys);
+        buf.append("<xml>");
+        for(String key : keys){
+            buf.append("<").append(key).append(">");
+            buf.append("<![CDATA[").append(params.get(key)).append("]]>");
+            buf.append("</").append(key).append(">");
+        }
+        buf.append("</xml>");
+        return buf.toString();
     }
 
 /*

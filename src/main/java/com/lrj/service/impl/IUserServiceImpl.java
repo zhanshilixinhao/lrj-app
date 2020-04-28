@@ -1,8 +1,6 @@
 package com.lrj.service.impl;
 
-import com.lrj.VO.AppItemVo;
-import com.lrj.VO.ConsigneeVo;
-import com.lrj.VO.UserInfoVo;
+import com.lrj.VO.*;
 import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IUserMapper;
 import com.lrj.mapper.UserMapper;
@@ -13,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,6 +32,26 @@ public class IUserServiceImpl implements IUserService{
 
     public List<ConsigneeVo> findUserAddressByUserId(Integer userId) {
         return userMapper.findUserAddressByUserId(userId);
+    }
+
+    public List<UserCouponVo> findUserRedPacket(Integer userId) {
+        return userMapper.getUserRedPacket(userId);
+    }
+
+    public UserLevelVo findUserLevelInfo(Integer userId) {
+        return userMapper.getUserLevelInfo(userId);
+    }
+
+    public void updateCoupon(Integer couponId) {
+        userMapper.updateCoupon(couponId);
+    }
+
+    public UserInfoVo findUserInfoByUserId(Integer userId) {
+        return userMapper.getUserInfoByUserId(userId);
+    }
+
+    public Integer giveFeeBack(Map<String, Object> params) {
+       return userMapper.giveFeeBack(params);
     }
 
     public UserInfoVo findUserInfoByUserPhone(String userPhone) {

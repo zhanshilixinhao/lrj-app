@@ -19,7 +19,7 @@
         ) AS star,
         a.commentImage,
         b.head_photo AS headPhoto,
-        IFNULL(b.nickname,
+        IFNULL(b.nick_name,
         '匿名用户') AS nickname,
         b.user_phone as userPhone
         FROM
@@ -27,7 +27,7 @@
         LEFT JOIN app_user
         b ON a.user_id = b.app_user_id
         WHERE
-        a.isVisible =1 <!--可显示的 -->
+        a.isVisible =1
         ORDER BY
         a.create_time DESC
         LIMIT 0,20

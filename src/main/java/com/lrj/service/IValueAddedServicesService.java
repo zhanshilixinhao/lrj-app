@@ -1,6 +1,5 @@
 package com.lrj.service;
 
-import com.lrj.VO.AppShoppingVo;
 import com.lrj.VO.ValueAddedServicesVo;
 
 import java.util.List;

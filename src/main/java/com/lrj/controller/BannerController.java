@@ -3,11 +3,13 @@ package com.lrj.controller;
 import com.lrj.VO.BannerVo;
 import com.lrj.VO.ResultVo;
 import com.lrj.service.IBannerService;
+import com.lrj.util.MessagesUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -22,8 +24,18 @@ public class BannerController {
     private IBannerService bannerService;
 
     @RequestMapping(value = "/getBannerList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getBannerList(){
+    public ResultVo getBannerList(HttpServletRequest request){
         List<BannerVo> bannerVoList = bannerService.getBannerList();
+        /** 获取请求URL **/
+        StringBuffer url = new StringBuffer();
+        url.append("http://www.51lrj.com/getBannerList");
+        /** 拼接 **/
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/" + MessagesUtil.getString("virtual_directory") + "/";
+        /** 拼接可访问图片地址 **/
+        for (BannerVo bannerVo : bannerVoList) {
+            /** 图片地址 **/
+            bannerVo.setBannerImg(tempContextUrl + bannerVo.getBannerImg());
+        }
         return new ResultVo("success",0,"查询成功",bannerVoList);
     }
 }

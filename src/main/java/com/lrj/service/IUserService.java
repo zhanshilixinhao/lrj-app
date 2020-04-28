@@ -1,10 +1,11 @@
 package com.lrj.service;
 
-import com.lrj.VO.ConsigneeVo;
-import com.lrj.VO.UserInfoVo;
+import com.lrj.VO.*;
 import com.lrj.pojo.User;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lxh
@@ -20,4 +21,14 @@ public interface IUserService {
     Integer addUser(UserInfoVo setCreateTime);
 
     List<ConsigneeVo> findUserAddressByUserId(Integer userId);
+
+    List<UserCouponVo> findUserRedPacket(Integer userId);
+
+    UserLevelVo findUserLevelInfo(Integer userId);
+
+    void updateCoupon(Integer couponId);
+
+    UserInfoVo findUserInfoByUserId(Integer userId);
+
+    Integer giveFeeBack(Map<String, Object> params);
 }
