@@ -1,43 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="85015892-cd19-4834-ac5e-b0790c0f47b1" name="Default Changelist" comment="app">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/Information.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/WxUserInfo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/TeamLaundryMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/mapper/UserLevelMapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/TeamLaundry.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/UserLevel.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/TeamLaundryService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/TeamLaundryServiceImpl.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/lrj/util/JavaSmsApi.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/TeamLaundryMapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/resources/mappers/UserLevelMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+    <list default="true" id="85015892-cd19-4834-ac5e-b0790c0f47b1" name="Default Changelist" comment="lxh">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/VO/UserMonthCardVo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/VO/UserMonthCardVo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/AppUserActionContronller.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/MonthCardController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/MonthCardController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/OneClickLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/OneClickLogin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/PayController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/PayController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/controller/WeChatLogin.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/controller/WeChatLogin.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/pojo/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IBalanceService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/IWeChatLoginService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/IWeChatLoginService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/BalanceServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/IOrderServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/IOrderServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/IUserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/IUserServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/ItemServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/ItemServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/LaundryAppointmentServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/LaundryAppointmentServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/WeChatLoginServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/service/impl/WeChatLoginServiceImpl.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/lrj/util/HttpClientTool.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/lrj/util/HttpClientTool.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/mappers/IItemMapper.xml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/mappers/IItemMapper.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/properties/messages.properties" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/properties/messages.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/com/lrj/LrjAppApplicationTests.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/lrj/LrjAppApplicationTests.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/test-classes/com/lrj/LrjAppApplicationTests.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/test-classes/com/lrj/LrjAppApplicationTests.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -261,7 +226,7 @@
       <workItem from="1587950991446" duration="32959000" />
       <workItem from="1588143085658" duration="1752000" />
       <workItem from="1588144870214" duration="11546000" />
-      <workItem from="1588209313050" duration="24319000" />
+      <workItem from="1588209313050" duration="24667000" />
     </task>
     <task id="LOCAL-00001" summary="app">
       <created>1585542745631</created>
@@ -354,7 +319,21 @@
       <option name="project" value="LOCAL" />
       <updated>1587721848443</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="app">
+      <created>1588239446480</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1588239446480</updated>
+    </task>
+    <task id="LOCAL-00015" summary="lxh">
+      <created>1588239594580</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1588239594580</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -366,7 +345,8 @@
     <MESSAGE value="app  11" />
     <MESSAGE value="app -2" />
     <MESSAGE value="app" />
-    <option name="LAST_COMMIT_MESSAGE" value="app" />
+    <MESSAGE value="lxh" />
+    <option name="LAST_COMMIT_MESSAGE" value="lxh" />
   </component>
   <component name="WindowStateProjectService">
     <state x="361" y="71" key="#SQL_Dialects" timestamp="1587715350647">
@@ -393,10 +373,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="499" y="159" key="#com.intellij.refactoring.safeDelete.UnsafeUsagesDialog/0.0.1536.824@0.0.1536.824" timestamp="1587096324268" />
-    <state x="370" y="0" key="CommitChangelistDialog2" timestamp="1588239480118">
+    <state x="370" y="0" key="CommitChangelistDialog2" timestamp="1588239781756">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="370" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1588239480118" />
+    <state x="370" y="0" key="CommitChangelistDialog2/0.0.1536.824@0.0.1536.824" timestamp="1588239781756" />
     <state width="856" height="618" key="DebuggerActiveHint" timestamp="1586339674522">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
@@ -473,10 +453,10 @@
       <screen x="0" y="0" width="1536" height="824" />
     </state>
     <state x="490" y="154" width="558" height="540" key="StructurePopup/0.0.1536.824@0.0.1536.824" timestamp="1587623144445" />
-    <state x="361" y="127" key="Vcs.Push.Dialog.v2" timestamp="1588239453022">
+    <state x="361" y="127" key="Vcs.Push.Dialog.v2" timestamp="1588239599545">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
-    <state x="361" y="127" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1588239453022" />
+    <state x="361" y="127" key="Vcs.Push.Dialog.v2/0.0.1536.824@0.0.1536.824" timestamp="1588239599545" />
     <state width="775" height="419" key="XDebugger.FullValuePopup" timestamp="1586335248518">
       <screen x="0" y="0" width="1536" height="824" />
     </state>
