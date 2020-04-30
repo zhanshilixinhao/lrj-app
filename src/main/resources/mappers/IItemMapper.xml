@@ -15,7 +15,7 @@
 				a.picture,
 				a.duration,
 				IFNULL(
-		(
+		 (
 			SELECT
 				b.quantity
 			FROM

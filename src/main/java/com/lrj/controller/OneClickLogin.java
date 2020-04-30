@@ -10,6 +10,7 @@ import com.lrj.pojo.User;
 import com.lrj.service.IUserService;
 import com.lrj.util.CommonUtil;
 
+import com.lrj.util.DateUtils;
 import com.lrj.util.JiGuangOauthLogin;
 import com.lrj.util.jiGuangOauthLoginPost;
 import org.springframework.beans.factory.annotation.Value;
@@ -53,7 +54,7 @@ public class OneClickLogin {
             List<User> userList = userService.findUserByPhone(phoneNum);
             //如果没有注册过
             if (userList.size()==0||userList==null) {
-                User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(new Date());
+                User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(DateUtils.formatDate(new Date()));
                 int insert = userMapper.insert(user);
                 if (insert==0) {
                     return CommonUtil.FAIL(formerResult,"用户添加失败!",null);

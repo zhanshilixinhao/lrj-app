@@ -5,9 +5,7 @@ package com.lrj;
 import com.lrj.VO.UserMonthCardVo;
 import com.lrj.mapper.*;
 
-import com.lrj.pojo.Consignee;
-import com.lrj.pojo.Order;
-import com.lrj.pojo.Reservation;
+import com.lrj.pojo.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,10 +34,18 @@ public class LrjAppApplicationTests {
     private ConsigneeMapper consigneeMapper;
     @Resource
     private ReservationMapper reservationMapper;
+    @Resource
+    private TeamLaundryMapper teamLaundryMapper;
+    @Resource
+    private BalanceMapper balanceMapper;
+    @Resource
+    private UserCouponMapper userCouponMapper;
     @Test
     public void contextLoads() {
-        UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(36891);
-        System.out.println(userMonthCardVo.getIsAuto());
+        Integer integer = userCouponMapper.selectQuantityByUserId(7);
+        System.out.println(integer);
+        /*UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(36891);
+        System.out.println(userMonthCardVo.getIsAuto());*/
        /* Order order = cardOrderMapper.selectByPrimaryKey(14);
         Example example = new Example(Consignee.class);
         Example.Criteria criteria = example.createCriteria();

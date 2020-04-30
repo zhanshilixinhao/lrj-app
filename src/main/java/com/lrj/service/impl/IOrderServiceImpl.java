@@ -36,6 +36,7 @@ public class IOrderServiceImpl implements IOrderService{
     @Resource
     private IShoppingService shoppingService;
 
+    @Override
     public Integer createOrder(OrderVo orderVo, HttpServletRequest request) {
         //不同订单走不同通道
         Integer orderType = orderVo.getOrderType();
@@ -109,6 +110,7 @@ public class IOrderServiceImpl implements IOrderService{
         return insertNum;
     }
 
+    @Override
     public OrderVo findOrderByOrderNumber(String orderNumber) {
         return orderMapper.getOrderByOrderNumber(orderNumber);
     }

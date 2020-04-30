@@ -25,7 +25,7 @@ public class MonthCardController {
     /**
      * 获取微信月卡列表
      *
-     * @return
+     * @return FormerResult
      */
     @RequestMapping("/typeList")
     public FormerResult getCardCatTypeList(Integer type){
@@ -37,20 +37,18 @@ public class MonthCardController {
     /**
      * 获取微信月卡列表
      *
-     * @return
+     * @return FormerResult
      */
     @RequestMapping("/allList")
-    @ResponseBody
     public FormerResult getAllCardCatList(){
         return monthCardService.getAllCardCatList();
     }
     /**
      * 获取用户的月卡
      *
-     * @return
+     * @return FormerResult
      */
     @RequestMapping("/userMonthCard")
-    @ResponseBody
     public FormerResult getUserMonthCard(Integer userId) {
         return monthCardService.selectUserMonthCard(userId);
     }
@@ -58,10 +56,9 @@ public class MonthCardController {
     /**
      * 购买月卡
      *
-     * @return
+     * @return FormerResult
      */
     @RequestMapping("/buyCard")
-    @ResponseBody
     public FormerResult buyCard(BuyCardOptionVo option){
         return monthCardService.buyCard(option);
     }

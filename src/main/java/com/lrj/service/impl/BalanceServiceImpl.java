@@ -36,7 +36,8 @@ public class BalanceServiceImpl implements IBalanceService {
     private UserCouponMapper userCouponMapper;
 
 
-    public FormerResult findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
+    @Override
+    public UserMoneyInfo findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
 
         Balance balance = balanceMapper.selectByPrimaryKey(userId);
         BigDecimal reBalance = balance.getBalance();
@@ -87,6 +88,6 @@ public class BalanceServiceImpl implements IBalanceService {
         }
         /** 去实体对象中的null值 **/
         CommonUtil.beanToRemoveNull(umf);
-        return CommonUtil.SUCCESS(result, "获取信息成功", umf);
+        return umf;
     }
 }

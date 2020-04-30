@@ -266,5 +266,4 @@ public class HttpClientTool {
         }
         return HttpClients.createDefault();
     }
-
 }

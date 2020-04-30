@@ -28,7 +28,7 @@ public class User {
     private String headPhoto;
     private String deviceToken;
     private Integer active;
-    private Date createTime;
+    private String createTime;
     private Integer isCheck;
     private Date checkTime;
     private String invitationCode;
@@ -39,4 +39,6 @@ public class User {
     private Date yearsServiceEndTime;
     @JSONField(name = "openid")
     private String openId;
+    private String unionId;
+    private String verificationCode;
 }

@@ -27,8 +27,7 @@ import java.util.Map;
  */
 @RestController
 public class AppUserActionContronller {
-    @Resource
-    private IBalanceService iBalanceService;
+
     @Resource
     private IUserService userService;
     @Resource
@@ -36,19 +35,7 @@ public class AppUserActionContronller {
 
     @Resource
     private IUserLevelVoService iUserLevelVoService;
-    @RequestMapping(value = "/getUserMoneyInfo", method = RequestMethod.POST)
-    public FormerResult getUserMoneyInfo(FormerResult result, HttpServletRequest request){
-        try {
-            if (RequestParameterUtil.checkRequestParametersIsNull(request,new String[]{"userId"},result)) {
-                return result;
-            }
-            /** 获取参数 **/
-            Integer userId = Integer.valueOf(request.getParameter("userId"));
-            return iBalanceService.findBalanceByUserId(userId,result,request);
-        } catch (Exception e) {
-            return CommonUtil.FAIL(result,null,e.getMessage());
-        }
-    }
+
     /**
      * @功能说明:获取用户当前等级相关信息
      * @param userId

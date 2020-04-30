@@ -2,13 +2,10 @@ package com.lrj.controller;
 
 import com.lrj.VO.*;
 import com.lrj.config.PayConfig;
-import com.lrj.service.IOrderService;
-import com.lrj.service.IPayService;
+import com.lrj.pojo.TeamLaundry;
+import com.lrj.service.*;
 
-import com.lrj.service.IUserService;
-import com.lrj.util.BigDecimalUtil;
-import com.lrj.util.DateUtils;
-import com.lrj.util.WXPayUtil;
+import com.lrj.util.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -45,13 +42,63 @@ public class PayController {
     private IOrderService orderService;
     @Resource
     private IUserService userService;
+    @Resource
+    private TeamLaundryService teamLaundryService;
+    @Resource
+    private IBalanceService iBalanceService;
+    @Resource
+    private IMemberServiceUserRelationService iMemberServiceUserRelationService;
 
-
+    /*
+    * 获取用户支付信息
+    * */
+    @RequestMapping("/getUserPayInfo")
+    public FormerResult getUserPayInfo(HttpServletRequest request) {
+        HashMap<String, Object> map = new HashMap<>();
+        FormerResult result = new FormerResult();
+        try {
+           /* *//** 校验必须字段 母账号账号用户id**//*
+            if (RequestParameterUtil.checkRequestParametersIsNull(request, new String[]{"userId"}, result)) {
+                return result;
+            }
+            Integer userId = (Integer.parseInt(request.getParameter("userId")));*/
+            Integer userId = 7;
+            //获得app用户可用额度
+            TeamLaundry teamLaundry = teamLaundryService.findTeamLundryByUserId(userId);
+            if (teamLaundry==null) {
+                map.put("isPass", 2);
+                map.put("remainLimit", 0);
+            } else {
+                map.put("isPass", 1);
+                map.put("remainLimit", teamLaundry.getCountLimit().subtract(teamLaundry.getUseLimit()));
+            }
+            UserMoneyInfo userMoneyInfo = iBalanceService.findBalanceByUserId(userId, result, request);
+            map.put("userMoneyInfo",userMoneyInfo);
+            //获取用户当月剩余额度用于支付
+            /** 查询用户当月额度 **/
+            BigDecimal residueLimit = iMemberServiceUserRelationService.findResidueLimitByUserId(userId);
+            /** 判断是否已经是会员 **/
+            if (!iMemberServiceUserRelationService.judgeTheUserIsMemberService(userId)) {
+                /** 额度0 **/
+                map.put("residueLimit", 0);
+            }else {
+                map.put("residueLimit",residueLimit);
+            }
+            //判断用户是否是会员接口
+            /** 调用判断会员业务方法 **/
+            Integer isMemberService = iMemberServiceUserRelationService.judgeTheUserIsMemberService(userId)==true ? 1 : 0;
+            map.put("isMemberService",isMemberService);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return CommonUtil.FAIL(result,"",e.getMessage());
+        }
+        return CommonUtil.SUCCESS(result,"查询成功!",map);
+    }
     /**
      * 微信支付 统一下单 生成预支付交易单
      */
     @RequestMapping(value = "/weixinPay", method = {RequestMethod.GET, RequestMethod.POST})
-    public FormerResult appWXPayNotify(HttpServletRequest request) throws Exception {
+    public FormerResult appWXPay(HttpServletRequest request) throws Exception {
 
         /**接收前端传回参数**/
         String orderNumber = request.getParameter("orderNumber");

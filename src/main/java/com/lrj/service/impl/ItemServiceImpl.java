@@ -25,6 +25,7 @@ public class ItemServiceImpl implements IItemService{
     @Resource
     private IItemMapper itemMapper;
 
+    @Override
     public List<AppItemVo> getItemListByCategoryId(Map<String,Integer> paramMap) {
         return itemMapper.getItemListByCategoryId(paramMap);
     }
@@ -34,6 +35,7 @@ public class ItemServiceImpl implements IItemService{
      * @param itemId
      * @return
      */
+    @Override
     public Integer getItemCategoryByItemId(Integer itemId) {
         return itemMapper.getItemCategoryByItemId(itemId);
     }
