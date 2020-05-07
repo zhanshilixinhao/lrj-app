@@ -9,16 +9,12 @@ import com.lrj.pojo.*;
 import com.lrj.service.LaundryAppointmentService;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.DateUtils;
-
 import com.lrj.util.RandomUtil;
-
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
-
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.Date;
-
 import java.util.List;
 
 /**
@@ -111,11 +107,11 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService 
         List<Order> orders = cardOrderMapper.selectByExample(example);
         // 保存预约订单
         CardCat cardCat = cardCatMapper.selectByPrimaryKey(userMonthCard.getWxMonthCardId());
-        updateAMap(cardCat,orders);
+        updateMap(cardCat,orders);
 
     }
 
-    private void updateAMap(CardCat cardCat, List<Order> orders) {
+    private void updateMap(CardCat cardCat, List<Order> orders) {
         Long id = null;
         for (Order order : orders) {
             id = order.getId();

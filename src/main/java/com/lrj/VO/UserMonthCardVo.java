@@ -1,6 +1,6 @@
 package com.lrj.VO;
 
-import com.lrj.pojo.CardCat;
+
 import com.lrj.pojo.UserMonthCard;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +18,5 @@ import lombok.experimental.Accessors;
 public class UserMonthCardVo extends UserMonthCard {
     private static final long serialVersionUID = -8840112769263719469L;
     private Byte cardTimeType;
-
     private Integer remainCount;
 }

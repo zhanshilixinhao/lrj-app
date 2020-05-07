@@ -30,46 +30,56 @@ public class IUserServiceImpl implements IUserService{
     private UserMapper userMapper;
 
 
+    @Override
     public List<ConsigneeVo> findUserAddressByUserId(Integer userId) {
         return userMapper.findUserAddressByUserId(userId);
     }
 
+    @Override
     public List<UserCouponVo> findUserRedPacket(Integer userId) {
         return userMapper.getUserRedPacket(userId);
     }
 
+    @Override
     public UserLevelVo findUserLevelInfo(Integer userId) {
         return userMapper.getUserLevelInfo(userId);
     }
 
+    @Override
     public void updateCoupon(Integer couponId) {
         userMapper.updateCoupon(couponId);
     }
 
+    @Override
     public UserInfoVo findUserInfoByUserId(Integer userId) {
         return userMapper.getUserInfoByUserId(userId);
     }
 
+    @Override
     public Integer giveFeeBack(Map<String, Object> params) {
        return userMapper.giveFeeBack(params);
     }
 
+    @Override
     public UserInfoVo findUserInfoByUserPhone(String userPhone) {
         return userMapper.getUserInfoByUserPhone(userPhone);
     }
 
 
+    @Override
     public UserInfoVo findUserByInviteCode(String inviteCode) {
         return userMapper.getUserByInviteCode(inviteCode);
     }
 
 
+    @Override
     public Integer addUser(UserInfoVo userPhone) {
         return userMapper.addUser(userPhone);
     }
 
 
 
+    @Override
     public List<User> findUserByPhone(String phoneNum) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
