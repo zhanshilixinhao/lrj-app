@@ -70,6 +70,15 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         int i = userMapper.insertSelective(user);
         System.out.println("添加"+i);
         map.put("verificationCode",verificationCode);
+        /*Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("verificationCode", verificationCode);
+        List<User> users = userMapper.selectByExample(example);
+        for (User user1 : users) {
+            if (user1!=null) {
+                userMapper.updateByPrimaryKeySelective(user);
+            }
+        }*/
         // 设置发送的内容(内容必须和模板匹配）
         String text = "【懒人家】您的验证码是" + verificationCode + "。如非本人操作，请忽略本短信";
         try {
@@ -91,7 +100,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
             return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
         }
         for (User user : users) {
-            user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date()));
+            user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId());
             int i = userMapper.updateByPrimaryKeySelective(user);
             System.out.println("更新"+i);
             UserLevel userLevel = new UserLevel(user.getAppUserId(), 1);

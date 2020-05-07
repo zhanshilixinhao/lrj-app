@@ -18,6 +18,7 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-sdk-java -->
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>

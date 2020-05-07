@@ -3,6 +3,7 @@ package com.lrj;
 
 
 import com.lrj.VO.UserMonthCardVo;
+import com.lrj.VO.WxUserInfo;
 import com.lrj.mapper.*;
 
 import com.lrj.pojo.*;
@@ -40,10 +41,14 @@ public class LrjAppApplicationTests {
     private BalanceMapper balanceMapper;
     @Resource
     private UserCouponMapper userCouponMapper;
+    @Resource
+    private WxUserInfoMapper wxUserInfoMapper;
     @Test
     public void contextLoads() {
-        Integer integer = userCouponMapper.selectQuantityByUserId(7);
-        System.out.println(integer);
+        WxUserInfo wxUserInfo = new WxUserInfo();
+        wxUserInfo.setCity("螺蛳湾").setSex(2);
+        int i = wxUserInfoMapper.insertSelective(wxUserInfo);
+        System.out.println(i);
         /*UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(36891);
         System.out.println(userMonthCardVo.getIsAuto());*/
        /* Order order = cardOrderMapper.selectByPrimaryKey(14);
