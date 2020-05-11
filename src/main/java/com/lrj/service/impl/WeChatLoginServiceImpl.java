@@ -63,7 +63,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     @Override
     public FormerResult getCaptcha(String userPhone) {
         User user = new User();
-        HashMap<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<String,Object>();
         // 生成随机六位验证码
         String verificationCode = RandomUtil.generateOrder(6) + "";
         user.setVerificationCode(verificationCode);

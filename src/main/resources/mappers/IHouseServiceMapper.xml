@@ -3,22 +3,23 @@
                 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
-<mapper namespace="com.lrj.mapper.IUserMapper">
+<mapper namespace="com.lrj.mapper.IHouseServiceMapper">
     <select id="getHouseService" parameterType="Integer" resultType="com.lrj.VO.HouseServiceVo">
 	SELECT
 	id AS id,
-	type_id AS typeId,
-	name AS name,
-	include,
-	service_time AS serviceTime,
-	price AS price,
-	service_explain AS serviceExplain,
-	img AS img,
+	pid AS pid,
+	service_type AS type,
+	service_name AS houseName,
+	service_include AS include,
+	accept_norm AS acceptNnorm,
+	service_price AS price,
+	service_note AS serviceNote,
+	image_url AS img
 	FROM
-	houseservice_item
+	houseservice_type
 	WHERE
-				type_id = #{typeId}
-			AND
-				active = 1
+	pid = #{pid}
+	AND
+	active = 1
     </select>
 </mapper>

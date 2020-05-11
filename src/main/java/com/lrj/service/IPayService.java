@@ -15,16 +15,6 @@ public interface IPayService {
      */
     String wxminiPayNotify(String xml) throws Exception;
 
-
-    /**
-     * app月卡购买支付宝回调
-     * @param aliPayVo
-     * @param parameterMap
-     * @return
-     */
-    String appAliPayNotify(AliPayVo aliPayVo, Map parameterMap) throws Exception;
-
-
     /**
      * app月卡购买微信支付回调
      * @param xml
@@ -34,8 +24,8 @@ public interface IPayService {
     String appWXPayNotify(String xml) throws Exception;
 
     /**
-     *  微信支付  流水记录
+     *   流水记录
      * @param flowRecordMap
      */
-    void WXPayFlowRecord(Map<String, Object> flowRecordMap);
+    void payFlowRecord(Map<String, Object> flowRecordMap);
 }

@@ -5,6 +5,8 @@ import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.common.MySqlMapper;
 
+import java.util.Map;
+
 
 /**
  * @author Lxh
@@ -12,4 +14,5 @@ import tk.mybatis.mapper.common.MySqlMapper;
  */
 @Repository
 public interface BalanceMapper extends Mapper<Balance>, MySqlMapper<Balance> {
+    void updateUserBalance(Map<String,Object> params);
 }

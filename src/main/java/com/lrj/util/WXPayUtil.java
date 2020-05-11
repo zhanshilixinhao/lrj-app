@@ -8,15 +8,15 @@ import org.w3c.dom.NodeList;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.util.*;
@@ -145,6 +145,30 @@ public class WXPayUtil {
         }
         buf.append("</xml>");
         return buf.toString();
+    }
+
+    public static String parseRequst(HttpServletRequest request){
+        String body = "";
+        try {
+            ServletInputStream inputStream = request.getInputStream();
+            BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+            while(true){
+                String info = br.readLine();
+                if(info == null){
+                    break;
+                }
+                if(body == null || "".equals(body)){
+                    body = info;
+                }else{
+                    body += info;
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return body;
     }
 
 /*

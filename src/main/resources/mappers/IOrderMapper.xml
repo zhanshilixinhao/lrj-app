@@ -39,4 +39,32 @@
 	<update id="updateOrderPayStatus" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="id">
 	  UPDATE `order` SET pay_status=1 WHERE order_number=#{orderNumber}
 	</update>
+	<!--查询用户的订单-->
+	<select id="getOrderListByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.OrderVo">
+		SELECT order_number AS orderNumber,
+		  		user_id AS userId,
+		  		total_price AS totalPrice,
+		  		status AS status,
+		  		pay_status AS payStatus,
+		  		create_time AS createTime,
+		  		order_type AS orderType,
+		  		user_coupon_id AS userCouponId
+		  FROM `order` WHERE user_id=#{userId}
+	</select>
+
+	<!--查询单项洗衣订单-->
+	<select id="getWashingOrderByOrderNumber" resultType="com.lrj.VO.Order_washingVo" parameterType="java.lang.String">
+		SELECT take_consignee_id AS takeConsigneeId,
+				send_consignee_id AS sendConsigneeId
+				take_time AS takeTime,
+				is_urgent AS isUrgent,
+				is_lock AS isLock,
+				shopping_JSON AS shoppingJSON
+				FROM order_washing
+		WHERE order_number=#{orderNumber}
+	</select>
+	<!--锁定单项洗衣订单-->
+	<update id="lockWashingOrder" parameterType="java.lang.String">
+		UPDATE order_washing SET is_lock =1 WHERE order_number=#{orderNumber} AND is_lock=0
+	</update>
 </mapper>

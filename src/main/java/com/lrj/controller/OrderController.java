@@ -1,10 +1,8 @@
 package com.lrj.controller;
 
-import com.lrj.VO.FormerResult;
-import com.lrj.VO.OrderVo;
-import com.lrj.VO.ResultVo;
-import com.lrj.VO.ShoppingVo;
+import com.lrj.VO.*;
 import com.lrj.constant.Constant;
+import com.lrj.mapper.IOrderMapper;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -36,6 +35,8 @@ public class OrderController {
     private IUserService userService;
     @Resource
     private IShoppingService shoppingService;
+    @Resource
+    private IOrderMapper orderMapper;
     /**
      * 生成订单
      */
@@ -68,5 +69,27 @@ public class OrderController {
         }
         OrderVo orderVo1 = orderService.findOrderByOrderNumber(orderVo.getOrderNumber());
         return new FormerResult("success", 0, "下单成功", orderVo1);
+    }
+
+    /**
+     * 查询订单
+     */
+    @RequestMapping(value = "/findUserOrder",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo findUserOrder(Integer userId){
+        /** 校验必须参数 **/
+        if (userId == null || userId == 0) {
+            return new ResultVo("success", 1, "参数有误,请检查参数", null);
+        }
+        List<OrderVo> orderVoList = orderService.findOrderListByUserId(userId);
+        //订单分类
+        List<Object> userOrderList = new ArrayList<Object>();
+        for (OrderVo orderVo : orderVoList){
+            switch (orderVo.getOrderType()){
+                case 1:
+                    Order_washingVo washingOrder = orderMapper.getWashingOrderByOrderNumber(orderVo.getOrderNumber());
+                    userOrderList.add(washingOrder);
+            }
+        }
+        return new ResultVo("SUCCESS", 0, "查询成功", null);
     }
 }

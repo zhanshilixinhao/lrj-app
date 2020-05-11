@@ -56,7 +56,7 @@ public class MonthCardServiceImpl implements IMonthCardService {
 
     @Override
     public FormerResult getAllCardCatList() {
-        ArrayList<CardCat> list = new ArrayList<>();
+        ArrayList<CardCat> list = new ArrayList<CardCat>();
         List<CardCat> cardCats = cardCatMapper.selectAll();
         for (CardCat cardCat : cardCats) {
             if (cardCat.getStatus()==1){

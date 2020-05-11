@@ -54,9 +54,9 @@ public class Constant {
     public static final int ORDER_TYPE_PUBLIC = 1; //普通订单
     public static final int ORDER_TYPE_MONTH = 2; //月卡订单
     /**订单追踪状态**/
-    public static final int ORDER_TRANSSTATUS_TAKEING =1; //小哥上门收件中
-    public static final int ORDER_TRANSSTATUS_TAKED = 2;// //已取衣
-    public static final int ORDER_TRANSSTATUS_BINDING = 3;//订单绑定成功
+    public static final int ORDER_TRANSSTATUS_BINDING = 1;//订单绑定成功
+    public static final int ORDER_TRANSSTATUS_TAKEING =2; //小哥上门收件中
+    public static final int ORDER_TRANSSTATUS_TAKED = 3;// //已取衣
     public static final int ORDER_TRANSSTATUS_GO = 4;//衣物飞奔入场
     public static final int ORDER_TRANSSTATUS_SORTING = 5;//衣物分拣中
     public static final int ORDER_TRANSSTATUS_WASHING = 6;//衣服洗涤中

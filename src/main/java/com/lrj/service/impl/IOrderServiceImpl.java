@@ -5,6 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
 import com.lrj.mapper.IOrderMapper;
+import com.lrj.mapper.ReservationMapper;
+import com.lrj.pojo.Order;
+import com.lrj.pojo.Reservation;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
@@ -35,8 +38,9 @@ public class IOrderServiceImpl implements IOrderService{
     private IOrderMapper orderMapper;
     @Resource
     private IShoppingService shoppingService;
+    @Resource
+    private ReservationMapper reservationMapper;
 
-    @Override
     public Integer createOrder(OrderVo orderVo, HttpServletRequest request) {
         //不同订单走不同通道
         Integer orderType = orderVo.getOrderType();
@@ -110,12 +114,44 @@ public class IOrderServiceImpl implements IOrderService{
         return insertNum;
     }
 
-    @Override
     public OrderVo findOrderByOrderNumber(String orderNumber) {
         return orderMapper.getOrderByOrderNumber(orderNumber);
     }
 
     public void updateOrderPayStatus(String orderNumber) {
         orderMapper.updateOrderPayStatus(orderNumber);
+    }
+
+    public List<OrderVo> findOrderListByUserId(Integer userId) {
+        return orderMapper.getOrderListByUserId(userId);
+    }
+
+    public Boolean lockOrderDetailIsLock(String orderNumber,Integer staffId) {
+        //查找基础订单
+        OrderVo orderVo = orderMapper.getOrderByOrderNumber(orderNumber);
+        switch (orderVo.getOrderType()) {
+            case 1:
+                Order_washingVo washingOrder = orderMapper.getWashingOrderByOrderNumber(orderNumber);
+                if (washingOrder.getIsLock() != 0) {
+                    return false;
+                } else {
+                    //锁定洗衣订单 并绑定锁单人（供给后台管理系统查询使用,只有单项洗衣和家政有）
+                    orderMapper.lockWashingOrder(orderNumber);
+                    //锁定预约 并绑定锁单人
+                    Integer lockNumber = reservationMapper.lockReservation(orderNumber, staffId);
+                    if (lockNumber == 1) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
+        return null;
     }
 }

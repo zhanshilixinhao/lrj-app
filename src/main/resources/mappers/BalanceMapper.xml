@@ -4,4 +4,8 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lrj.mapper.BalanceMapper">
 	<!--留着以后用  -->
+	<!--修改用户余额-->
+	<update id="updateUserBalance" parameterType="java.util.HashMap">
+		UPDATE balance SET balance=#{balanceMoney} WHERE user_id=#{userId}
+	</update>
 </mapper>

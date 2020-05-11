@@ -16,9 +16,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Lxh
@@ -28,15 +26,11 @@ import java.util.List;
 public class BalanceServiceImpl implements IBalanceService {
     @Resource
     private BalanceMapper balanceMapper;
-
-
     @Resource
     private GivenBalanceMapper givenBalanceMapper;
     @Resource
     private UserCouponMapper userCouponMapper;
 
-
-    @Override
     public UserMoneyInfo findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
 
         Balance balance = balanceMapper.selectByPrimaryKey(userId);
@@ -89,5 +83,12 @@ public class BalanceServiceImpl implements IBalanceService {
         /** 去实体对象中的null值 **/
         CommonUtil.beanToRemoveNull(umf);
         return umf;
+    }
+
+    public void updateUserBalance(double balanceMoney,Integer userId) {
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("balanceMoney", balanceMoney);
+        params.put("userId", userId);
+        balanceMapper.updateUserBalance(params);
     }
 }

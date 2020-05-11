@@ -55,8 +55,7 @@ public class ValueAddedServicesController extends BaseController {
      * @作者:SAM QZL
      * @版本:1.0
      */
-    @SuppressWarnings("unchecked")
-    @RequestMapping("/listValueAddedServices/v4")
+    @RequestMapping("/listValueAddedServices")
     @ResponseBody
     public ResultVo listValueAddedServices(ResultVo result, Integer itemId) {
 
@@ -90,6 +89,6 @@ public class ValueAddedServicesController extends BaseController {
             }
         }
         /** 返回结果 **/
-        return SUCCESS2(result, "查询成功！", listValueAddedServices2);
+        return new ResultVo("SUCCESS",0, "查询成功！", listValueAddedServices2);
     }
 }

@@ -40,6 +40,10 @@ public class PayServiceImpl implements IPayService {
         return null;
     }
 
+    public void payFlowRecord(Map<String, Object> flowRecordMap) {
+        payMapper.payFlowRecord(flowRecordMap);
+    }
+
     public void WXPayFlowRecord(Map<String, Object> flowRecordMap) {
         payMapper.WXPayFlowRecord(flowRecordMap);
     }

@@ -1,5 +1,9 @@
 package com.lrj.config;
 
+import com.lrj.VO.AliPayVo;
+
+import java.util.Map;
+
 /**
  * @author : cwj
  * @describe : 商户在微信支付平台的参数
@@ -73,6 +77,23 @@ public class PayConfig {
     public static String REPORT_API = "https://api.mch.weixin.qq.com/payitil/report";
     // 8) JS-SDK签名ticket_API
     public static String TICKET_API = "https://api.weixin.qq.com/cgi-bin/ticket/getticket";
+
+
+    /******************支付宝 ：支付参数*******************************************/
+    /**
+     * 支付宝提供给商户的服务接入网关URL(新)
+     */
+    private static final String ALIPAY_URL= "https://openapi.alipay.com/gateway.do";
+    private static final String ALIPAY_APP_ID = "2015120100898212";
+    private static final String ALIPAY_PID = "2088121460107602"; //商户Id
+    //商户私钥
+    private static final String ALIPAY_APP_PRIVATE_KEY = "MIICeAIBADANBgkqhkiG9w0BAQEFAASCAmIwggJeAgEAAoGBAOpqyuARIBNY/5scm7NIZAyQdSJXPBxQ/bIenGSkxSmMX4YRYDgOQKASBt0Ybotl1LNmzwozXw8S47OA/KG9LvwvcZppM5iPXjEC24gIHUdPPrPq1GBgaXe/bf0Jrk9UkwPW3VmXDWTsjJzhXmwncuyXm9TbSL/4RMix2wzUheH/AgMBAAECgYEAwHI56afFiHy5I3NiE9ZrZLE3qKCrVafcDt34kNuAjbKTPXKIZpy0y3ThM6P6JPDNpRbTBFHWSX69dsF/JZ01svszYAz/OZMqIYDNqOZYtLOAjuNIg3k0SGPCrbJYxcQPQjdmEdldQKo3iVtukjceSnBAGbg4WnY0T2GYT3joTGkCQQD7x14VLeoxSv6lbz0DCVUYZJR9YxvEwNFfr7j3BEGKhGmPNxgxCkVqhk87QtqUcg8mjGjhS/3VG2XvnEyblYnNAkEA7ljotl20BxucUsdDucOLJyFK5LxQW2z066UxfNbJ+ke/ASgmf7cICyIPMH9RsYdoOSoOyaFj3MuTusWIgQje+wJAAWjxZu7148bGvEhuMAkqV9OgXT9j1Ws7AO0r/P4iG9N3/9xQH14uW1VbNjq+nJwy54VbxP828a2QmZHnf+uLdQJBANkIJH9Ku89tGN9XixfwMxmieyvlPdbCVBLvDSz7+FbqVcab5NKOu8hHb0Vd6emZvxGudmCrkN9QkGiVzkKQ7VkCQQDRMJ6lWmrFUBAinGBMG87s1JF/CAk+j+XEUwMDNmjRRm/lg34SDHLVl778CupCVrmPT1xWRRlguM5z68ZwOkuu";
+    //支付宝公钥
+    private static final String ALIPAY_PUBLIC_KEY = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDDI6d306Q8fIfCOaTXyiUeJHkrIvYISRcc73s3vF1ZT7XN8RNPwJxo8pWaJMmvyTn9N4HQ632qJBVHf8sxHi/fEsraprwCtzvzQETrNRwVxLO5jVmRGi60j8Ue1efIlzPXV9je9mkjzOmdssymZkh2QhUrCmZYI/FCEa3/cNMW0QIDAQAB";
+
+    private static final String ALIPAY_FORMAT = "json";
+    private static final String ALIPAY_CHARSET = "UTF-8";
+    private static final String ALIPAY_SIGN_TYPE = "RSA2";
 
     public static String getMin_key() {
         return min_key;
@@ -224,5 +245,37 @@ public class PayConfig {
 
     public static void setApp_ip(String app_ip) {
         PayConfig.app_ip = app_ip;
+    }
+
+    public static String getAlipayUrl() {
+        return ALIPAY_URL;
+    }
+
+    public static String getAlipayAppId() {
+        return ALIPAY_APP_ID;
+    }
+
+    public static String getAlipayPid() {
+        return ALIPAY_PID;
+    }
+
+    public static String getAlipayAppPrivateKey() {
+        return ALIPAY_APP_PRIVATE_KEY;
+    }
+
+    public static String getAlipayPublicKey() {
+        return ALIPAY_PUBLIC_KEY;
+    }
+
+    public static String getAlipayFormat() {
+        return ALIPAY_FORMAT;
+    }
+
+    public static String getAlipayCharset() {
+        return ALIPAY_CHARSET;
+    }
+
+    public static String getAlipaySignType() {
+        return ALIPAY_SIGN_TYPE;
     }
 }

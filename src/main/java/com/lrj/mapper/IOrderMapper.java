@@ -3,6 +3,8 @@ package com.lrj.mapper;
 import com.lrj.VO.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author : cwj
  * @describe : 订单 有关接口
@@ -40,4 +42,22 @@ public interface IOrderMapper {
      * @param orderNumber
      */
     void updateOrderPayStatus(String orderNumber);
+
+    /**
+     * 查询用户的所有订单
+     * @param userId
+     * @return
+     */
+    List<OrderVo> getOrderListByUserId(Integer userId);
+
+    /**
+     * 查询单项洗衣订单
+     */
+    Order_washingVo getWashingOrderByOrderNumber(String orderNumber);
+
+    /**
+     * 锁定单项洗衣订单
+     * @param orderNumber
+     */
+    Integer lockWashingOrder(String orderNumber);
 }

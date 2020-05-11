@@ -15,7 +15,6 @@ import java.util.List;
 @Repository
 public interface IHouseServiceMapper {
     /**
-     *   /**
      * 通过家政类型查询家政服务项目
      */
     List<HouseServiceVo> getHouseService(Integer typeId);

@@ -21,7 +21,7 @@ public interface IOrderService {
     Integer createOrder(OrderVo orderVo, HttpServletRequest request);
 
     /**
-     * 通过订单号和用户Id查询 唯一订单
+     * 通过订单号 唯一订单
      * @param orderNumber
      * @return
      */
@@ -33,4 +33,18 @@ public interface IOrderService {
      * @param orderNumber
      */
     void updateOrderPayStatus(String orderNumber);
+
+    /**
+     *通过userId 查询用户的订单
+     * @param userId
+     * @return
+     */
+    List<OrderVo> findOrderListByUserId(Integer userId);
+
+    /**
+     * 通过订单号 判断是哪种订单的状态（抢单）
+     * @param orderNumber
+     * @return
+     */
+    Boolean lockOrderDetailIsLock(String orderNumber,Integer staffId);
 }

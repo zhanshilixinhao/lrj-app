@@ -4,4 +4,18 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lrj.mapper.ReservationMapper">
 	<!--留着以后用  -->
+	<select id="getWashingOrderList" resultType="com.lrj.pojo.Reservation">
+		SELECT * FROM reservation WHERE status=0 AND order_type IN (1,2)
+	</select>
+	<select id="getHouseServiceOrderList" resultType="com.lrj.pojo.Reservation">
+		SELECT * FROM reservation WHERE status=0 AND order_type IN (3,4)
+	</select>
+	<!--锁定预约订单,并绑定锁单人-->
+	<update id="lockReservation" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="reservation_id">
+		UPDATE reservation SET status=1,grab_order_id=#{staffId} WHERE order_number=#{orderNumber} AND status=0
+	</update>
+	<!--更新预约订单的追踪状态-->
+	<update id="updateReservationStatus" parameterType="java.util.HashMap">
+		UPDATE reservation SET status=#{traceStatus} WHERE order_number=#{order_number} AND grab_order_id=#{staffId}
+	</update>
 </mapper>

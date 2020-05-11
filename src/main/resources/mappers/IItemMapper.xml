@@ -41,20 +41,10 @@
     <!--根据商品ID获取商品的顶层类别ID -->
     <select id="getItemCategoryByItemId" parameterType="Integer"
             resultType="Integer">
-        SELECT
-        IFNULL(
-        c.app_item_category_id,
-        b.app_item_category_id
-        )
-        FROM
-        app_item a
-        LEFT JOIN app_item_category b ON
-        a.item_category_id =
-        b.app_item_category_id
-        LEFT JOIN app_item_category
-        c ON b.pid = c.app_item_category_id
+        SELECT item_category_id AS itemCategoryId
+        FROM app_item
         WHERE
-        a.app_item_id = #{itemId}
+        app_item_id = #{itemId}
     </select>
 
 </mapper>

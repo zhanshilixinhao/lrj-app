@@ -21,4 +21,10 @@ public interface IPayMapper {
      * @param flowRecordMap
      */
     void WXPayFlowRecord(Map<String, Object> flowRecordMap);
+
+    /**
+     * 支付流水
+     * @param flowRecordMap
+     */
+    void payFlowRecord(Map<String, Object> flowRecordMap);
 }

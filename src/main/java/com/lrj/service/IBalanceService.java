@@ -11,4 +11,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface IBalanceService {
     UserMoneyInfo findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request);
+
+    /**
+     * 修改用户余额
+     * @param balanceMoney
+     */
+    void updateUserBalance(double balanceMoney,Integer userId);
 }

@@ -5,8 +5,8 @@
                 >
 <mapper namespace="com.lrj.mapper.IPayMapper">
     <!--增加支付交易流水-->
-    <insert id="WXPayFlowRecord" parameterType="java.util.HashMap">
-	INSERT INTO pay_operatin (trade_source,trade_type,bank_type,total_fee,cash_fee,transaction_id,out_trade_no,time_end,user_id)
-		VALUES  (#{trade_source},#{trade_type},#{bank_type},#{total_fee},#{cash_fee},#{transaction_id},#{out_trade_no},#{time_end},#{user_id})
+    <insert id="payFlowRecord" parameterType="java.util.HashMap">
+	INSERT INTO pay_operatin (trade_source,trade_type,bank_type,total_fee,transaction_id,out_trade_no,time_end,user_id)
+		VALUES  (#{trade_source},#{trade_type},#{bank_type},#{total_fee},#{transaction_id},#{out_trade_no},#{time_end},#{user_id})
     </insert>
 </mapper>

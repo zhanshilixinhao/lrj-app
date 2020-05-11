@@ -16,5 +16,5 @@ public interface IHouseService {
     /**
      * 通过家政类型查询家政服务项目
      */
-    List<HouseServiceVo> findHouseService(Integer typeId);
+    List<HouseServiceVo> findHouseService(Integer pid);
 }
