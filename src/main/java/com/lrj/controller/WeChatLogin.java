@@ -1,26 +1,21 @@
 package com.lrj.controller;
 import	java.util.HashMap;
-
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.parser.ParserConfig;
-
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.ReturnResult;
 import com.lrj.VO.WxUserInfo;
+import com.lrj.mapper.WxUserInfoMapper;
 import com.lrj.pojo.User;
 import com.lrj.service.IWeChatLoginService;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.HttpClientTool;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 /**
  * @author Lxh
  * 微信第三方登录功能
@@ -34,6 +29,8 @@ public class WeChatLogin {
     private String secret;
     @Resource
     private IWeChatLoginService weChatLoginService;
+    @Resource
+    private WxUserInfoMapper wxUserInfoMapper;
     @RequestMapping("/toGetAccessToken")
     public FormerResult getAccessToken(HttpServletRequest request){
         FormerResult formerResult = new FormerResult();
@@ -47,6 +44,7 @@ public class WeChatLogin {
         parameter.put("code",code);
         parameter.put("grant_type","authorization_code");
         String result = HttpClientTool.doGet("https://api.weixin.qq.com/sns/oauth2/access_token", parameter);
+        System.out.println(result);
         //设置反序列化下划线转驼峰命名法
         ParserConfig.getGlobalInstance().propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
         ReturnResult returnResult = JSON.parseObject(result, ReturnResult.class);
@@ -57,20 +55,24 @@ public class WeChatLogin {
         String errMsg = inspectionAuthorization(returnResult.getAccessToken(),returnResult.getOpenId());
         if (!"ok".equals(errMsg)) {
             //刷新或续期 access_token 使用
-            ReturnResult  newReturnResult = refreshAccessToken("wxcbdfe89e9cef31d9",returnResult.getRefreshToken());
+            ReturnResult  newReturnResult = refreshAccessToken(appid,returnResult.getRefreshToken());
             returnResult.setAccessToken(newReturnResult.getAccessToken()).setRefreshToken(newReturnResult.getRefreshToken()).setScope(newReturnResult.getScope()).setOpenId(newReturnResult.getOpenId()).setExpiresIn(newReturnResult.getExpiresIn());
         }
 
         String userInfo = getUserInfo(returnResult.getAccessToken(),returnResult.getOpenId());
         System.out.println(userInfo);
+        ParserConfig.getGlobalInstance().propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
         WxUserInfo wxUserInfo = JSON.parseObject(userInfo, WxUserInfo.class);
+        wxUserInfoMapper.insertSelective(wxUserInfo);
+        System.out.println(wxUserInfo.toString());
         User user = weChatLoginService.findUserByUnionId(wxUserInfo.getUnionId());
         if (user==null) {
-            return CommonUtil.FAIL(formerResult,"用户登录成功!",wxUserInfo);
+            //return CommonUtil.FAIL(formerResult,"用户登录成功!",wxUserInfo);
+            return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(userInfo);
         }
         return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user.getAppUserId());
     }
-    //微信登录获取验证码
+    /*微信登录获取验证码*/
     @RequestMapping("/toGetCaptcha")
     public FormerResult getCaptcha(String userPhone){
         if (userPhone==null) {
@@ -81,6 +83,7 @@ public class WeChatLogin {
     //绑定用户电话号码
     @RequestMapping("/toBindPhoneNumber")
     public FormerResult bindPhoneNumber(String jsonWxUserInfo,String userPhone,String verificationCode){
+        ParserConfig.getGlobalInstance().propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
         WxUserInfo wxUserInfo = JSON.parseObject(jsonWxUserInfo, WxUserInfo.class);
         if (wxUserInfo.getUnionId()==null||userPhone==null) {
             return CommonUtil.FAIL(new FormerResult(),"参数异常",null);
