@@ -2,6 +2,7 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.*;
 import com.lrj.mapper.IStaffMapper;
+import com.lrj.service.IStaffService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,7 +15,7 @@ import javax.annotation.Resource;
  */
 @Service
 @Transactional
-public class IStaffServiceImpl implements IStaffService{
+public class IStaffServiceImpl implements IStaffService {
 
     @Resource
     private IStaffMapper staffMapper;
