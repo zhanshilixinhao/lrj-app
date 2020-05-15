@@ -21,7 +21,6 @@ public class ConsigneeServiceImpl implements IConsigneeService {
     @Resource
     private ConsigneeMapper consigneeMapper;
 
-    @Override
     public FormerResult countUserAddress(Consignee consignee) {
         FormerResult formerResult = new FormerResult();
         Example example = new Example(Consignee.class);
@@ -43,12 +42,15 @@ public class ConsigneeServiceImpl implements IConsigneeService {
         return CommonUtil.FAIL(formerResult,"地址添加失败!",null);
     }
 
-    @Override
     public FormerResult getUserAddressList(Integer userId) {
         Example example = new Example(Consignee.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userId",userId).andEqualTo("active",1);
         List<Consignee> consignees = consigneeMapper.selectByExample(example);
         return CommonUtil.SUCCESS(new FormerResult(),"用户地址查询成功",consignees);
+    }
+
+    public Consignee getConsigneeByConsigneeId(Integer consigneeId) {
+        return consigneeMapper.getConsigneeByConsigneeId(consigneeId);
     }
 }

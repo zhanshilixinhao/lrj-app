@@ -11,4 +11,6 @@ public interface IConsigneeService {
     FormerResult countUserAddress(Consignee consignee);
 
     FormerResult getUserAddressList(Integer userId);
+
+    Consignee getConsigneeByConsigneeId(Integer consigneeId);
 }

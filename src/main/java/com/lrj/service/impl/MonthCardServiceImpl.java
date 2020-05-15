@@ -5,7 +5,7 @@ import com.lrj.VO.FormerResult;
 import com.lrj.VO.UserMonthCardVo;
 import com.lrj.mapper.*;
 
-import com.lrj.pojo.CardCat;
+import com.lrj.pojo.MonthCard;
 
 import com.lrj.pojo.Order;
 import com.lrj.pojo.User;
@@ -23,7 +23,6 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -35,40 +34,17 @@ import java.util.List;
 @Service
 public class MonthCardServiceImpl implements IMonthCardService {
     @Resource
-    private CardCatMapper cardCatMapper;
-    @Resource
-    private UserMonthCardMapper userMonthCardMapper;
+    private IMonthCardMapper IMonthCardMapper;
     @Resource
     private UserMapper userMapper;
-    @Resource
-    private UserMonthCardOrderMapper userMonthCardOrderMapper;
-    @Resource
-    private CardOrderMapper cardOrderMapper;
 
-    @Override
-    public FormerResult getCardCatTypeList(Integer type) {
-        Example example = new Example(CardCat.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("cardType",type);
-        List<CardCat> cardCats = cardCatMapper.selectByExample(example);
-        return CommonUtil.SUCCESS(new FormerResult(),"查询成功",cardCats);
+
+    public List<MonthCard> getMonthCardList() {
+        return IMonthCardMapper.getMonthCardList();
     }
 
-    @Override
-    public FormerResult getAllCardCatList() {
-        ArrayList<CardCat> list = new ArrayList<CardCat>();
-        List<CardCat> cardCats = cardCatMapper.selectAll();
-        for (CardCat cardCat : cardCats) {
-            if (cardCat.getStatus()==1){
-                list.add(cardCat);
-            }
-        }
-        return CommonUtil.SUCCESS(new FormerResult(),"数据查询成功",list);
-    }
-
-    @Override
-    public FormerResult selectUserMonthCard(Integer userId) {
-        UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(userId);
+    /*public FormerResult selectUserMonthCard(Integer userId) {
+        UserMonthCardVo userMonthCardVo = IUserMonthCardMapper.selectUserMonthCard(userId);
         if (userMonthCardVo == null) {
             userMonthCardVo = new UserMonthCardVo();
             userMonthCardVo.setStatus((byte) -1);
@@ -96,12 +72,12 @@ public class MonthCardServiceImpl implements IMonthCardService {
             return CommonUtil.FAIL(result,"该账户不存在",null);
         }
         // 取出用户当前的月卡
-        UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(user.getAppUserId());
+        UserMonthCardVo userMonthCardVo = IUserMonthCardMapper.selectUserMonthCard(user.getAppUserId());
         if (option.getWxMonthCardId()==null) {
             return CommonUtil.FAIL(result,"请选择月卡种类",null);
         }
         // 取出用户要购买的月卡
-        CardCat cardCat = cardCatMapper.selectByPrimaryKey(option.getWxMonthCardId());
+        MonthCard monthCard = IMonthCardMapper.selectByPrimaryKey(option.getWxMonthCardId());
         // 如果用户存在月卡
         if (userMonthCardVo!=null) {
             // 判断月卡是否已过期,
@@ -119,7 +95,7 @@ public class MonthCardServiceImpl implements IMonthCardService {
         Order order = setUpOrder(new Order());
         order.setUserId(option.getUserId()).setStatus(1);
         // 如果需要选择时间
-        if (cardCat.getTimeType() == 2) {
+        if (monthCard.getTimeType() == 2) {
             // 必须选择上门时间和收货地址
             if (StringUtils.isBlank(option.getOptionTime()) ||
                     option.getAddressId() == null) {
@@ -135,9 +111,9 @@ public class MonthCardServiceImpl implements IMonthCardService {
         }
         // 用户id
         // 判断是否分享了
-        BigDecimal price = cardCat.getPrice();
+        BigDecimal price = monthCard.getPrice();
         if (option.getIsShare() != null && option.getIsShare() == 1) {
-            price = price.multiply(new BigDecimal(String.valueOf(cardCat.getShareDicount())))
+            price = price.multiply(new BigDecimal(String.valueOf(monthCard.getShareDicount())))
                     .setScale(2, BigDecimal.ROUND_HALF_UP);
         }
         //保存订单id
@@ -145,7 +121,7 @@ public class MonthCardServiceImpl implements IMonthCardService {
         // 月卡价格
         order.setTotalPrice(price);
         // 月卡id
-        record.setWxMonthCardId(cardCat.getId());
+        record.setWxMonthCardId(monthCard.getId());
         // 保存购买记录
         System.out.println(record.toString());
         System.out.println(order.toString());
@@ -183,9 +159,5 @@ public class MonthCardServiceImpl implements IMonthCardService {
         String dateStr = com.lrj.util.DateUtils.formatDate(date, "yyyy-MM-dd");
         date = com.lrj.util.DateUtils.formatStringToDate(String.format("%s 08:00:00", dateStr));
         return com.lrj.util.DateUtils.formatDate(date);
-    }
-
-    public static void main(String[] args) {
-        System.out.println(getWeekTime("7@00:00"));
-    }
+    }*/
 }

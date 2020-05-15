@@ -54,7 +54,7 @@
 	<!--查询用户红包-->
 	<select id="getUserRedPacket" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserCouponVo">
 	  SELECT
-			a.coupon_id AS couponId,
+			a.id AS couponId,
 			a.user_id AS userId,
 			a.create_time AS createTime,
 			a.limit_time AS limitTime,
@@ -68,12 +68,10 @@
 				a.user_id = #{userId}
 			AND
 				a.active = 1
-			AND
-				a.is_used = 0
 	</select>
 
 	<update id="updateCoupon" parameterType="java.lang.Integer">
-		UPDATE user_coupon SET is_used = 1 WHERE coupon_id = #{couponId}
+		UPDATE user_coupon SET active = 1 WHERE id = #{couponId}
 	</update>
 
 	<!--查询用户等级信息-->

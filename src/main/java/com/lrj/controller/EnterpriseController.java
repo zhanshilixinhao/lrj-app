@@ -4,6 +4,7 @@ import com.lrj.VO.*;
 import com.lrj.mapper.ReservationMapper;
 import com.lrj.pojo.Reservation;
 import com.lrj.service.IOrderService;
+import com.lrj.service.IStaffService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,8 +27,8 @@ public class EnterpriseController {
     private ReservationMapper reservationMapper;
     @Resource
     private IOrderService orderService;
-    @Resource
-    private IStaffService staffService;
+   @Resource
+   private IStaffService staffService;
 
     /**
      * 查询员工可以抢的单

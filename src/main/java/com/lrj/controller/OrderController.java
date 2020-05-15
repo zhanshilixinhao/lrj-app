@@ -2,7 +2,10 @@ package com.lrj.controller;
 
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
+import com.lrj.mapper.IHouseServiceMapper;
+import com.lrj.mapper.IMonthCardMapper;
 import com.lrj.mapper.IOrderMapper;
+import com.lrj.pojo.MonthCard;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
@@ -37,8 +40,14 @@ public class OrderController {
     private IShoppingService shoppingService;
     @Resource
     private IOrderMapper orderMapper;
+    @Resource
+    private IMonthCardMapper monthCardMapper;
+    @Resource
+    private IHouseServiceMapper houseServiceMapper;
+
     /**
-     * 生成订单
+     * @param request
+     * @return
      */
     @RequestMapping(value = "/createOrder",method = {RequestMethod.GET,RequestMethod.POST})
     public FormerResult createOrder(HttpServletRequest request){
@@ -88,6 +97,27 @@ public class OrderController {
                 case 1:
                     Order_washingVo washingOrder = orderMapper.getWashingOrderByOrderNumber(orderVo.getOrderNumber());
                     userOrderList.add(washingOrder);
+                    break;
+                case 2:
+                    Order_monthCardVo monthCardOrder = orderMapper.getMonthCatdOrder(orderVo.getOrderNumber());
+                    //拼接用户信息
+                    UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+                    monthCardOrder.setUserheadPhoto(userInfoVo.getHeadPhoto());
+                    //拼接月卡具体信息
+                    MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardOrder.getMonthCardId());
+                    monthCardOrder.setMonthCard(monthCard);
+                    userOrderList.add(monthCardOrder);
+                    break;
+                case 3:
+                    Order_houseServiceVo houseServiceOrder = orderMapper.getHouseServiceByOrderNumber(orderVo.getOrderNumber());
+                    //拼接家政服务具体信息
+                    HouseServiceVo houseServiceVo =  houseServiceMapper.getHouseServiceByItemId(houseServiceOrder.getHouseServiceId());
+                    houseServiceOrder.setHouseServiceVo(houseServiceVo);
+                    userOrderList.add(houseServiceOrder);
+                    break;
+                case 4:
+                    Order_custom_houseServiceVo customHouseServiceOrder = orderMapper.getCustomHouseServiceByOrderNumber(orderVo.getOrderNumber());
+                    break;
             }
         }
         return new ResultVo("SUCCESS", 0, "查询成功", null);

@@ -21,13 +21,13 @@ public class Reservation extends Base{
     private static final long serialVersionUID = 5087055302184564912L;
     @Id
     private Integer reservationId;
-    private Byte status;
-    private Byte trackingStatus;
-    private Integer orderType;
-    private Integer grabOrderId;
-    private String address;
+    private Integer status;  //订单状态
+    private Integer trackingStatus;  //订单追踪状态
+    private Integer orderType; //订单类型
+    private Integer grabOrderId; //抢单人ID
+    private String address; //地址
     private Integer userId;
     private String orderNumber;
-    private String longitude;
-    private String latitude;
+    private String longitude; //经度
+    private String latitude; //纬度
 }

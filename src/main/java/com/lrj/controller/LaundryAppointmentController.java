@@ -1,18 +1,19 @@
 package com.lrj.controller;
-
-import com.lrj.VO.BuyCardOptionVo;
 import com.lrj.VO.FormerResult;
-import com.lrj.mapper.UserMonthCardMapper;
-import com.lrj.pojo.PageParam;
+import com.lrj.VO.Order_custom_houseServiceVo;
+import com.lrj.VO.Order_monthCardVo;
+import com.lrj.mapper.IOrderMapper;
+import com.lrj.service.IOrderService;
 import com.lrj.service.LaundryAppointmentService;
-import com.lrj.util.CommonUtil;
+
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.io.IOException;
-import java.text.ParseException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Lxh
@@ -22,19 +23,100 @@ import java.text.ParseException;
 public class LaundryAppointmentController {
     @Resource
     private LaundryAppointmentService laundryAppointmentService;
+    @Resource
+    private IOrderMapper orderMapper;
+    @Resource
+    private IOrderService orderService;
 
     /**
      * 预约洗衣
-     *
-     * @param option
+     * @param request
      * @return
      */
-    @RequestMapping("/create")
-    public FormerResult createAppoint(BuyCardOptionVo option) {
-        if (option.getUserId() == null || option.getAddressId() == null) {
-            return CommonUtil.FAIL(new FormerResult(), "缺少参数", null);
+    @RequestMapping(value = "/createWashingAppoint",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult createWashingAppoint(HttpServletRequest request) {
+        Integer userId = Integer.parseInt(request.getParameter("userId"));
+        String userName = request.getParameter("userName");
+        Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
+        String visitTime = request.getParameter("visitTime");
+        String orderNumber = request.getParameter("orderNumber");
+        //效验必须参数
+        if (userId == null || userName == null || takeConsigneeId == null || visitTime == null) {
+            return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
         }
-        return laundryAppointmentService.createAppoint(option);
+        //查询用户月卡
+        Order_monthCardVo monthCardOrder = orderMapper.getMonthCatdOrder(orderNumber);
+        //封装预约参数
+        Map<String, Object> reservationMap = new HashMap<String, Object>();
+        reservationMap.put("userId", userId);
+        reservationMap.put("userName", userName);
+        reservationMap.put("takeConsigneeId", takeConsigneeId);
+        reservationMap.put("visitTime", visitTime);
+        reservationMap.put("orderNumber", orderNumber);
+        //判断月卡是否到期
+        if(monthCardOrder.getActive() ==0){
+            return new FormerResult("SUCCESS", 1, "您的月卡已经到期或使用次数不够,请联系客服", null);
+        }else {
+            //创建预约
+            laundryAppointmentService.createWashingAppoint(reservationMap);
+            if(monthCardOrder.getUserMonthCardCount()>=1){
+                //如果月卡使用是最后一次
+                if(monthCardOrder.getUserMonthCardCount()-1 ==0){
+                    //修改月卡为不可用
+                    orderMapper.updateUserMonthCardActive(orderNumber);
+                }
+                //更新月卡使用次数
+                orderService.updateUserMonthCardCount(monthCardOrder.getUserMonthCardCount()-1,orderNumber);
+            }else {
+                return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 预约家政
+     * @return
+     */
+    @RequestMapping(value = "createHouseServiceAppoint",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult createHouseServiceAppoint(HttpServletRequest request){
+        Integer userId = Integer.parseInt(request.getParameter("userId"));
+        String userName = request.getParameter("userName");
+        Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
+        String visitTime = request.getParameter("visitTime");
+        String orderNumber = request.getParameter("orderNumber");
+        //效验必须参数
+        if (userId == null || userName == null || takeConsigneeId == null || visitTime == null) {
+            return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
+        }
+        //查询用户定制的家政
+        Order_custom_houseServiceVo customHouseServiceOrder = orderMapper.getCustomHouseServiceByOrderNumber(orderNumber);
+        //封装预约参数
+        Map<String, Object> reservationMap = new HashMap<String, Object>();
+        reservationMap.put("userId", userId);
+        reservationMap.put("userName", userName);
+        reservationMap.put("takeConsigneeId", takeConsigneeId);
+        reservationMap.put("visitTime", visitTime);
+        reservationMap.put("orderNumber", orderNumber);
+        //判断定制家政是否到期
+        if(customHouseServiceOrder.getActive() ==0){
+            return new FormerResult("SUCCESS", 1, "您的月卡已经到期或使用次数不够,请联系客服", null);
+        }else {
+            //创建预约
+            laundryAppointmentService.createHouseServiceAppoint(reservationMap);
+            if(customHouseServiceOrder.getBaseServiceCount()>=1){
+                //如果定制家政使用是最后一次
+                if(customHouseServiceOrder.getBaseServiceCount()-1 ==0){
+                    //修改定制家政为不可用
+                    orderMapper.updateUserHouseServiceActive(orderNumber);
+                }
+                //更新定制家政基础使用次数
+                orderService.updateUserHouseServiceBaseServiceCount(customHouseServiceOrder.getBaseServiceCount()-1,orderNumber);
+            }else {
+                return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
+            }
+        }
+        return null;
     }
 
     /**
@@ -43,25 +125,22 @@ public class LaundryAppointmentController {
      * @param option
      * @return
      */
-    @RequestMapping("/changeAuto")
-    @ResponseBody
-    public FormerResult changeAuto(BuyCardOptionVo option) {
+
+    /*public FormerResult changeAuto(BuyCardOptionVo option) {
         FormerResult result = new FormerResult();
         if (option.getIsAuto() == null || option.getUserId() == null ||
                 option.getIsAuto() < 1 || option.getIsAuto() > 2) {
             return CommonUtil.FAIL(result,"缺少参数!",null);
         }
         return CommonUtil.SUCCESS(result,"更新成功!",laundryAppointmentService.changeAuto(option));
-    }
+    }*/
     /**
      * 获取预约列表
      *
      * @param option
      * @return
      */
-    @RequestMapping("/list")
-    @ResponseBody
-    public FormerResult getList(BuyCardOptionVo option) {
+    /*public FormerResult getList(BuyCardOptionVo option) {
         FormerResult result = new FormerResult();
         if (option.getUserId() == null) {
             return CommonUtil.FAIL(result,"缺少参数",null);
@@ -74,5 +153,5 @@ public class LaundryAppointmentController {
         }
         option.setCurrentPage((option.getCurrentPage() - 1) * option.getPageSize());
         return laundryAppointmentService.getList(option);
-    }
+    }*/
 }

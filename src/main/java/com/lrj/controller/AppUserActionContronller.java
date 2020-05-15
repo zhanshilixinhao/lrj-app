@@ -8,6 +8,7 @@ import com.lrj.service.IMemberServiceUserRelationService;
 import com.lrj.service.IUserLevelVoService;
 import com.lrj.service.IUserService;
 import com.lrj.util.CommonUtil;
+import com.lrj.util.DateUtils;
 import com.lrj.util.RequestParameterUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,7 +81,6 @@ public class AppUserActionContronller {
         Map<String, Object> res = new HashMap<String, Object>();
         /** 获取参数 **/
         Integer userId = Integer.valueOf(request.getParameter("userId"));
-
         /** 判断是否已经是会员 **/
         if (!iMemberServiceUserRelationService.judgeTheUserIsMemberService(userId)) {
             /** 额度0 **/

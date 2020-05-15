@@ -19,4 +19,9 @@ public interface IHouseServiceMapper {
      */
     List<HouseServiceVo> getHouseService(Integer typeId);
 
+    /**
+     * 通过家政itemId 查询单独的家政服务
+     */
+    HouseServiceVo getHouseServiceByItemId(Integer houseServiceId);
+
 }

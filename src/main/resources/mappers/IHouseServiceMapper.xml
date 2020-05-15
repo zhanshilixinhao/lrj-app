@@ -4,6 +4,7 @@
                 "http://mybatis.org/dtd/mybatis-3-mapper.dtd"
                 >
 <mapper namespace="com.lrj.mapper.IHouseServiceMapper">
+	<!--通过家政类型查询家政服务项目-->
     <select id="getHouseService" parameterType="Integer" resultType="com.lrj.VO.HouseServiceVo">
 	SELECT
 	id AS id,
@@ -22,4 +23,23 @@
 	AND
 	active = 1
     </select>
+	<!--通过家政ID 查询对应家政信息-->
+	<select id="getHouseServiceByItemId" parameterType="java.lang.Integer" resultType="com.lrj.VO.HouseServiceVo">
+		SELECT
+		id AS id,
+		pid AS pid,
+		service_type AS type,
+		service_name AS houseName,
+		service_include AS include,
+		accept_norm AS acceptNnorm,
+		service_price AS price,
+		service_note AS serviceNote,
+		image_url AS img
+		FROM
+		houseservice_type
+		WHERE
+		id = #{houseServiceId}
+		AND
+		active = 1
+	</select>
 </mapper>

@@ -81,12 +81,14 @@ public class PayController {
                 return new FormerResult("success", 1, "参数有误,请检查参数", null);
             //微信支付
             }else if(payType == 1){
-                appWXPayNotify(request, orderNumber, 0.00);
+                FormerResult formerResult = appWXPayNotify(request, orderNumber, 0.00);
+                return formerResult;
             //支付宝支付
             }else if(payType == 2){
-                appAliPay(request, orderNumber, 0.00);
+                FormerResult formerResult = appAliPay(request, orderNumber, 0.00);
+                return formerResult;
             }
-            return new FormerResult("success", 1, "请求支付完成", null);
+            return new FormerResult("success", 0, "请求支付完成", null);
             //使用
         } else if (isBalance == 1) {
             Balance balance = new Balance();
@@ -326,16 +328,27 @@ public class PayController {
      * @throws Exception
      */
     public FormerResult appAliPay(HttpServletRequest request,String orderNumber,double payMoney) throws Exception {
+        //构建请求：公共参数
+        String app_id = PayConfig.getApp_appID();
+        String method = "alipay.trade.app.pay";
+        String charset = "utf-8";
+        String sign_type = "RSA2";
+        String sign = "";
+        String timestamp = DateUtils.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
+        String version = "1.0";
+        String notify_url = "http://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";
         //业务参数封装
         String biz_content = "";
         //构建请求：业务参数
         JSONObject bizContentJSON=new JSONObject();
         bizContentJSON.put("subject", "懒人家订单");
         bizContentJSON.put("out_trade_no", orderNumber);
-        bizContentJSON.put("total_amount", String.valueOf(BigDecimalUtil.round(payMoney, 2, BigDecimalUtil.DEF_SCALE_4)));
+        bizContentJSON.put("total_amount", "0.01");//String.valueOf(BigDecimalUtil.round(payMoney, 2, BigDecimalUtil.DEF_SCALE_4)));
         bizContentJSON.put("product_code", "QUICK_MSECURITY_PAY");
-        biz_content = bizContentJSON.toString();
-        //支付宝支付方式一：使用SDK支付
+        bizContentJSON.put("timeout_express","90m");
+
+        biz_content = String.valueOf(bizContentJSON);
+      //支付宝支付方式一：使用SDK支付
         AlipayClient alipayClient = new DefaultAlipayClient(
                 PayConfig.getAlipayUrl(),
                 PayConfig.getAlipayAppId(),
@@ -352,22 +365,19 @@ public class PayController {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);
             System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
-            return new FormerResult("SUCCESS", 0, "支付订单构建成功", response.getBody());
+            if(response.isSuccess()){
+                System.out.println("调用成功");
+                return new FormerResult("SUCCESS", 0, "支付订单构建成功", response.getBody());
+            } else {
+                System.out.println("调用失败");
+                return new FormerResult("SUCCESS", 1, "支付订单构建失败",null);
+            }
         } catch (AlipayApiException e) {
-            e.printStackTrace();
+            return new FormerResult("SUCCESS",1,"支付失败",e);
         }
-        //支付宝支付方式二：自定义参数和流程支付
-        //构建请求：公共参数
-        /*String app_id = PayConfig.getApp_appID();
-        String method = "alipay.trade.app.pay";
-        String charset = "utf-8";
-        String sign_type = "RSA2";
-        String sign = "";
-        String timestamp = DateUtils.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
-        String version = "1.0";
-        String notify_url = "http://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";*/
-        return null;
+       //支付宝支付方式二：自定义参数和流程支付
     }
+
     @RequestMapping(value = "/AliPayNotifyUrl",method = {RequestMethod.GET,RequestMethod.POST})
     public String AliPayNotifyUrl(HttpServletRequest request){
         //获取支付宝POST过来反馈信息

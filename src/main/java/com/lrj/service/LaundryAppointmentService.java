@@ -3,14 +3,23 @@ package com.lrj.service;
 import com.lrj.VO.BuyCardOptionVo;
 import com.lrj.VO.FormerResult;
 
+import java.util.Map;
+
 /**
  * @author Lxh
  * @date 2020/4/17 17:07
  */
 public interface LaundryAppointmentService {
-    FormerResult createAppoint(BuyCardOptionVo option);
+    /**
+     * 创建 洗衣 预约
+     * @param reservationMap
+     * @return
+     */
+    FormerResult createWashingAppoint(Map<String,Object> reservationMap);
 
-    Object changeAuto(BuyCardOptionVo option);
-
-    FormerResult getList(BuyCardOptionVo option);
+    /**
+     * 创建 家政 预约
+     * @param reservationMap
+     */
+    FormerResult createHouseServiceAppoint(Map<String, Object> reservationMap);
 }

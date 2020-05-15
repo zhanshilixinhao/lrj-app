@@ -14,6 +14,12 @@ import java.util.Map;
  */
 @Repository
 public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Reservation> {
+
+    /**
+     * 保存预约 单
+     * @param reservation
+     */
+    Integer insertReservation(Reservation reservation);
     /**
      * 查询待抢的洗衣订单
      */

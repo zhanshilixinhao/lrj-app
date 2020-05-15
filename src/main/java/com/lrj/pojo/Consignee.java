@@ -28,4 +28,6 @@ public class Consignee {
     private Integer isDefault; //
     private String createTime = ""; //
     private Integer active;
+    private String longitude; //经度
+    private String latitude; //纬度
 }

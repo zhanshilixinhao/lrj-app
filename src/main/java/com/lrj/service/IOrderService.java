@@ -47,4 +47,18 @@ public interface IOrderService {
      * @return
      */
     Boolean lockOrderDetailIsLock(String orderNumber,Integer staffId);
+
+    /**
+     * 通过订单号 更新月卡使用次数
+     * @param monthCardCount
+     * @param orderNumber
+     */
+    void updateUserMonthCardCount(int monthCardCount, String orderNumber);
+
+    /**
+     * 通过订单号 更新定制家政基础使用次数
+     * @param houseServiceBaseServiceCount
+     * @param orderNumber
+     */
+    void updateUserHouseServiceBaseServiceCount(int houseServiceBaseServiceCount, String orderNumber);
 }

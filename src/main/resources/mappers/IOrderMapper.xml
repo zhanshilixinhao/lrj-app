@@ -63,6 +63,34 @@
 				FROM order_washing
 		WHERE order_number=#{orderNumber}
 	</select>
+	<!--查询用户月卡-->
+	<select id="getMonthCatdOrder" resultType="com.lrj.VO.Order_monthCardVo" parameterType="java.lang.String">
+	  SELECT id AS id,
+	  		order_number AS orderNumber,
+	  		user_id AS userId,
+	  		month_card_id AS monthCardId,
+	  		user_month_card_count AS userMonthCardCount,
+	  		user_month_card_item_json AS userMonthCardItemJson,
+	  		create_time AS createTime,
+	  		end_time AS endTime
+	  WHERE order_number=#{orderNumber} AND active=1
+	</select>
+	<!--更改月卡订单为不可用-->
+	<update id="updateUserMonthCardActive">
+		UPDATE order_month_card SET active=0 WHERE order_number=#{orderNumber}
+	</update>
+	<!--更改月卡订单可使用次数-->
+	<update id="updateUserMonthCardCout" parameterType="java.util.HashMap">
+		UPDATE order_month_card SET user_month_card_count=#{monthCardCount} WHERE order_number=#{orderNumber}
+	</update>
+	<!--更改定制家政订单为不可用-->
+	<update id="updateUserHouseServiceActive" parameterType="java.lang.String">
+		UPDATE order_custom_house_service SET active=1 WHERE order_number=#{orderNumber}
+	</update>
+	<!--更改定制家政订单可使用次数-->
+	<update id="updateUserHouseServiceBaseServiceCount" parameterType="java.util.HashMap">
+		UPDATE order_custom_house_service SET base_service_count=#{houseServiceBaseServiceCount} WHERE order_number=#{orderNumber}
+	</update>
 	<!--锁定单项洗衣订单-->
 	<update id="lockWashingOrder" parameterType="java.lang.String">
 		UPDATE order_washing SET is_lock =1 WHERE order_number=#{orderNumber} AND is_lock=0

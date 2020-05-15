@@ -130,7 +130,6 @@ public class UserController {
         return new ResultVo("success", 0, "查询成功",userCouponVoList);
     }
 
-
     /**
      * 预约洗衣
      */

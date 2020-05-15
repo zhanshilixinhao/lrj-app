@@ -19,7 +19,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class Order_houseServiceVo  extends OrderVo{
     private String orderNumber;//  订单号
-    private Integer status;  //状态
-    private Integer itemId;  //服务id
-    private Integer isLock;  //是否抢单 0：未抢   1：已抢
+    private Integer active;  //状态
+    private Integer isLock; //是否被抢
+    private Integer takeConsigneeId;//服务地址
+    private Integer houseServiceId; //家政服务Id
+    private HouseServiceVo houseServiceVo;  //家政服务
+
 }

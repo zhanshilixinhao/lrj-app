@@ -10,6 +10,10 @@
 	<select id="getHouseServiceOrderList" resultType="com.lrj.pojo.Reservation">
 		SELECT * FROM reservation WHERE status=0 AND order_type IN (3,4)
 	</select>
+	<!--保存预约单-->
+	<insert id="insertReservation" parameterType="com.lrj.pojo.Reservation" useGeneratedKeys="true" keyProperty="reservation_id">
+
+	</insert>
 	<!--锁定预约订单,并绑定锁单人-->
 	<update id="lockReservation" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="reservation_id">
 		UPDATE reservation SET status=1,grab_order_id=#{staffId} WHERE order_number=#{orderNumber} AND status=0

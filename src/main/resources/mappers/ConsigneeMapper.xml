@@ -4,4 +4,19 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lrj.mapper.ConsigneeMapper">
 	<!--留着以后用  -->
+	<!--通过ID查询-->
+	<select id="getConsigneeByConsigneeId" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Consignee">
+		SELECT app_consignee_id as appConsigneeId,
+		user_id AS userId,
+		consignee_name AS consigneeName,
+		consignee_mobile AS consigneeMobile,
+		address AS address,
+		is_default AS isDefault,
+		create_time AS createTime,
+		active AS active,
+		longitude AS longitude,
+		latitude AS latitude
+		FROM app_consignee
+		WHERE app_consignee_id=#{consigneeId}
+	</select>
 </mapper>

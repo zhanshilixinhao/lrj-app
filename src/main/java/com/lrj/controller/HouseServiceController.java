@@ -46,10 +46,4 @@ public class HouseServiceController {
         }
         return new ResultVo("success", 0, "查询成功", houseServiceVoList);
     }
-
-    @RequestMapping(value = "/customHouseService",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo customHouseService(HttpServletRequest request){
-        request.getParameterValues("");
-        return null;
-    }
 }

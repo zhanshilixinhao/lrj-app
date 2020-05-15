@@ -17,8 +17,7 @@ import java.util.Date;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "user_wx_month_card")
-public class UserMonthCard extends Base{
+public class UserMonthCard{
     private static final long serialVersionUID = -1667954499663620799L;
     @Id
     private Integer id;

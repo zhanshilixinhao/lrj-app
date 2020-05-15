@@ -13,4 +13,11 @@ import tk.mybatis.mapper.common.MySqlMapper;
 @Repository
 public interface ConsigneeMapper extends Mapper<Consignee>, MySqlMapper<Consignee> {
     void getUserAddress(Order_washingVo washingOrder);
+
+    /**
+     * 通过ID  查询地址信息
+     * @param consigneeId
+     * @return
+     */
+    Consignee getConsigneeByConsigneeId(Integer consigneeId);
 }

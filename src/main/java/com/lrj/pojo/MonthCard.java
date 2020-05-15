@@ -19,18 +19,17 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "wx_month_card")
-public class CardCat extends Base{
+public class MonthCard {
     private static final long serialVersionUID = 1393109529600812281L;
     @Id
     private Integer id;
     private Integer count;
     private String name;
     private BigDecimal price;
-    private Integer expire;
     private Integer status;
-    private Integer cardType;
-    private Integer timeType;
     private String detail;
     private Float shareDicount;
+    private String createTime;
+    private String updateTime;
+    private String itemJson;
 }

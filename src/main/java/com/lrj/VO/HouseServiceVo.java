@@ -25,5 +25,5 @@ public class HouseServiceVo {
     private String serviceNote; //服务说明
     private String img; //图片路径
     private Integer active; //状态 0：下架 1：上架
-    private String acceptNnorm; //查收标准
+    private String acceptNnorm; //服务标准
 }
