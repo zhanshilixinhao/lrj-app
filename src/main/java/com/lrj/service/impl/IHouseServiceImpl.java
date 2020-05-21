@@ -2,6 +2,7 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.ConsigneeVo;
 import com.lrj.VO.HouseServiceVo;
+import com.lrj.VO.HouserServicePidVo;
 import com.lrj.VO.UserInfoVo;
 import com.lrj.mapper.IHouseServiceMapper;
 import com.lrj.mapper.IUserMapper;
@@ -27,10 +28,26 @@ private IHouseServiceMapper houseServiceMapper;
 
     /**
      * 通过家政类型查询家政服务项目
-     * @param pid
+     * @param itemCategoryId
      * @return
      */
-    public List<HouseServiceVo> findHouseService(Integer pid) {
-        return houseServiceMapper.getHouseService(pid);
+    public List<HouseServiceVo> findHouseService(Integer itemCategoryId) {
+        return houseServiceMapper.getHouseService(itemCategoryId);
+    }
+
+    /**
+     * 查询家政导航栏
+     * @return
+     */
+    public List<HouserServicePidVo> findHouseServicePidList() {
+        return houseServiceMapper.getHouseServicePidList();
+    }
+
+    /**
+     * 查询家政个性服务
+     * @return
+     */
+    public List<HouseServiceVo> findCustomHouseService() {
+        return houseServiceMapper.getCustomHouseService();
     }
 }

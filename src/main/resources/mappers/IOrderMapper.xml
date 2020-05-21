@@ -95,4 +95,14 @@
 	<update id="lockWashingOrder" parameterType="java.lang.String">
 		UPDATE order_washing SET is_lock =1 WHERE order_number=#{orderNumber} AND is_lock=0
 	</update>
+
+	<!--添加订单备注-->
+	<insert id="addOrderRemark" parameterType="com.lrj.VO.SmsTemplateVo">
+			INSERT INTO sms_template (is_wear_out,is_dye,is_balling_up,is_yellow_white,is_cross_color,other,create_time,order_number)
+		VALUES  (#{isWearOut},#{isDye},#{isBallingUp},#{isYellowWhite},#{isCrossColor},#{other},#{createTime},#{orderNumber})
+	</insert>
+	<!--删除订单备注-->
+	<delete id="deleteOrderRemark" parameterType="java.lang.String">
+		DELETE FROM sms_template WHERE order_number =#{orderNumber}
+	</delete>
 </mapper>

@@ -7,19 +7,19 @@
 	<!--通过家政类型查询家政服务项目-->
     <select id="getHouseService" parameterType="Integer" resultType="com.lrj.VO.HouseServiceVo">
 	SELECT
-	id AS id,
-	pid AS pid,
-	service_type AS type,
-	service_name AS houseName,
-	service_include AS include,
+	app_item_id AS id,
+	item_category_id AS itemCategoryId,
+	house_service_type AS type,
+	item_name AS houseName,
+	commodity_explain AS include,
 	accept_norm AS acceptNnorm,
-	service_price AS price,
-	service_note AS serviceNote,
-	image_url AS img
+	price AS price,
+	house_service_note AS serviceNote,
+	picture AS img
 	FROM
-	houseservice_type
+	app_item
 	WHERE
-	pid = #{pid}
+	item_category_id = #{getHouseService}
 	AND
 	active = 1
     </select>
@@ -41,5 +41,34 @@
 		id = #{houseServiceId}
 		AND
 		active = 1
+	</select>
+	<!--查询家政导航栏-->
+	<select id="getHouseServicePidList" resultType="com.lrj.VO.HouserServicePidVo">
+		SELECT app_item_category_id AS itemCategoryId,
+			category_name AS categoryName,
+			categrory_pic AS categoryPic,
+			pid AS pid,
+			is_show AS isShow
+			FROM app_item_category
+			WHERE pid=25
+	</select>
+	<!--家政个性服务-->
+	<select id="getCustomHouseService" resultType="com.lrj.VO.HouseServiceVo">
+		SELECT
+	app_item_id AS id,
+	item_category_id AS itemCategoryId,
+	house_service_type AS type,
+	item_name AS houseName,
+	commodity_explain AS include,
+	accept_norm AS acceptNnorm,
+	price AS price,
+	house_service_note AS serviceNote,
+	picture AS img
+	FROM
+	app_item
+	WHERE
+	house_service_type =2
+	AND
+	active = 1
 	</select>
 </mapper>

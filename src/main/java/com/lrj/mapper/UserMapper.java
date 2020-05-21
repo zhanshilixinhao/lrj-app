@@ -4,6 +4,7 @@ import com.lrj.VO.ConsigneeVo;
 import com.lrj.VO.UserCouponVo;
 import com.lrj.VO.UserInfoVo;
 import com.lrj.VO.UserLevelVo;
+import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
@@ -35,4 +36,6 @@ public interface UserMapper extends Mapper<User>, MySqlMapper<User> {
     UserInfoVo getUserInfoByUserId(Integer userId);
 
     Integer giveFeeBack(Map<String, Object> params);
+
+    Balance getUserBalanceInfo(Integer userId);
 }

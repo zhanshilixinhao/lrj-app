@@ -2,6 +2,7 @@ package com.lrj.controller;
 
 import com.lrj.VO.AppItemVo;
 import com.lrj.VO.HouseServiceVo;
+import com.lrj.VO.HouserServicePidVo;
 import com.lrj.VO.ResultVo;
 import com.lrj.service.IHouseService;
 import com.lrj.util.MessagesUtil;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.text.Format;
 import java.util.List;
 
 /**
@@ -25,12 +27,12 @@ public class HouseServiceController {
     private IHouseService houseService;
 
     @RequestMapping(value = "/getHouseService",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getHouseService(Integer pid,HttpServletRequest request){
+    public ResultVo getHouseService(Integer itemCategoryId,HttpServletRequest request){
         /** 校验必须参数 **/
-        if (pid == 0 || pid==null) {
+        if (itemCategoryId == 0 || itemCategoryId==null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
-        List<HouseServiceVo> houseServiceVoList = houseService.findHouseService(pid);
+        List<HouseServiceVo> houseServiceVoList = houseService.findHouseService(itemCategoryId);
         /** 获取请求地址 **/ //request.getRequestURL();
         StringBuffer url = new StringBuffer();
         url.append("http://192.168.0.103:8080/getHouseService");
@@ -45,5 +47,17 @@ public class HouseServiceController {
             houseServiceVo.setImg(tempContextUrl + directory + houseServiceVo.getImg());
         }
         return new ResultVo("success", 0, "查询成功", houseServiceVoList);
+    }
+
+    @RequestMapping(value = "/getHouseServicePid",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getHouseServicePid(){
+        List<HouserServicePidVo> houserServicePidVoList = houseService.findHouseServicePidList();
+        return new ResultVo("SUCCESS", 0, "查询成功！", houserServicePidVoList);
+    }
+
+    @RequestMapping(value = "/getCustomHouseService",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getCustomHouseService(){
+        List<HouseServiceVo> customHouseServiceList = houseService.findCustomHouseService();
+        return new ResultVo("SUCCESS", 0, "查询成功！", customHouseServiceList);
     }
 }

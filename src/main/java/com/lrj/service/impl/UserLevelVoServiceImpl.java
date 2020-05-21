@@ -23,7 +23,6 @@ public class UserLevelVoServiceImpl implements IUserLevelVoService {
     @Resource
     private LevelUserRelationMapper levelUserRelationMapper;
 
-    @Override
     public FormerResult findCurrentUserLevelInfo(Integer userId, FormerResult result) {
         UserLevelVo levelInfo = userLevelVoMapper.getCurrentUserLevelInfo(userId);
         /** 如果用户等级不存在则创建 **/

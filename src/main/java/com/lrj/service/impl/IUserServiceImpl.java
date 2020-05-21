@@ -4,6 +4,7 @@ import com.lrj.VO.*;
 import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IUserMapper;
 import com.lrj.mapper.UserMapper;
+import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import com.lrj.service.IUserService;
 import org.springframework.stereotype.Service;
@@ -24,8 +25,6 @@ import java.util.Map;
 @Transactional
 public class IUserServiceImpl implements IUserService{
 
-    /*@Resource
-    private IUserMapper userMapper;*/
     @Resource
     private UserMapper userMapper;
 
@@ -58,6 +57,10 @@ public class IUserServiceImpl implements IUserService{
 
     public Integer giveFeeBack(Map<String, Object> params) {
        return userMapper.giveFeeBack(params);
+    }
+
+    public Balance getUserBalanceInfo(Integer userId) {
+        return userMapper.getUserBalanceInfo(userId);
     }
 
 

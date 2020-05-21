@@ -38,10 +38,9 @@ public class LaundryAppointmentController {
         Integer userId = Integer.parseInt(request.getParameter("userId"));
         String userName = request.getParameter("userName");
         Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
-        String visitTime = request.getParameter("visitTime");
         String orderNumber = request.getParameter("orderNumber");
         //效验必须参数
-        if (userId == null || userName == null || takeConsigneeId == null || visitTime == null) {
+        if (userId == null || userName == null || takeConsigneeId == null) {
             return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
         }
         //查询用户月卡
@@ -51,7 +50,6 @@ public class LaundryAppointmentController {
         reservationMap.put("userId", userId);
         reservationMap.put("userName", userName);
         reservationMap.put("takeConsigneeId", takeConsigneeId);
-        reservationMap.put("visitTime", visitTime);
         reservationMap.put("orderNumber", orderNumber);
         //判断月卡是否到期
         if(monthCardOrder.getActive() ==0){
@@ -78,7 +76,7 @@ public class LaundryAppointmentController {
      * 预约家政
      * @return
      */
-    @RequestMapping(value = "createHouseServiceAppoint",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/createHouseServiceAppoint",method = {RequestMethod.GET,RequestMethod.POST})
     public FormerResult createHouseServiceAppoint(HttpServletRequest request){
         Integer userId = Integer.parseInt(request.getParameter("userId"));
         String userName = request.getParameter("userName");

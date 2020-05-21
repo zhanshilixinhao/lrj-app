@@ -2,6 +2,7 @@ package com.lrj.service;
 
 import com.lrj.VO.ConsigneeVo;
 import com.lrj.VO.HouseServiceVo;
+import com.lrj.VO.HouserServicePidVo;
 import com.lrj.VO.UserInfoVo;
 
 import java.util.List;
@@ -16,5 +17,17 @@ public interface IHouseService {
     /**
      * 通过家政类型查询家政服务项目
      */
-    List<HouseServiceVo> findHouseService(Integer pid);
+    List<HouseServiceVo> findHouseService(Integer itemCategoryId);
+
+    /**
+     * 查询家政导航栏
+     * @return
+     */
+    List<HouserServicePidVo> findHouseServicePidList();
+
+    /**
+     *查询家政的个性服务
+     * @return
+     */
+    List<HouseServiceVo> findCustomHouseService();
 }

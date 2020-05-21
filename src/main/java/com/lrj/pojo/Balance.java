@@ -25,7 +25,7 @@ public class Balance {
     private BigDecimal balance;
     private BigDecimal topupAmount;
     private BigDecimal expendAmount;
-    private Date lastModifyTime;
-    private Date createTime;
+    private String lastModifyTime;
+    private String createTime;
 
 }

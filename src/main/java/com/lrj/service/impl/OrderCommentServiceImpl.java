@@ -13,7 +13,7 @@ import java.util.List;
 /**
  * @author : cwj
  * @describe : 评论 服务实现层
- * @date : ${date}
+ * @date : 2020-5-21
  */
 @Component
 @Service
@@ -25,5 +25,9 @@ public class OrderCommentServiceImpl implements IOrderCommentService {
 
     public List<OrderCommentVo> listLatestOrderComment() {
         return orderCommentMapper.listLatestOrderComment();
+    }
+
+    public List<OrderCommentVo> getMyReservationComment(Integer staffId) {
+        return orderCommentMapper.getMyReservationComment(staffId);
     }
 }

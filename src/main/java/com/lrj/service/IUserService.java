@@ -1,6 +1,7 @@
 package com.lrj.service;
 
 import com.lrj.VO.*;
+import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import org.omg.PortableInterceptor.INACTIVE;
 
@@ -31,4 +32,6 @@ public interface IUserService {
     UserInfoVo findUserInfoByUserId(Integer userId);
 
     Integer giveFeeBack(Map<String, Object> params);
+
+    Balance getUserBalanceInfo(Integer userId);
 }

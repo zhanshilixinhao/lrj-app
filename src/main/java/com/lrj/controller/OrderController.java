@@ -45,7 +45,7 @@ public class OrderController {
     @Resource
     private IHouseServiceMapper houseServiceMapper;
 
-    /**
+    /** 创建订单  +增值服务
      * @param request
      * @return
      */
@@ -73,7 +73,9 @@ public class OrderController {
        Integer createNum = orderService.createOrder(orderVo,request);
        //订单创建成功后处理业务
         if(createNum ==1){
+            //更新红包
             userService.updateCoupon(couponId);
+            //清空购物车
             shoppingService.emptyShopCart(userId);
         }
         OrderVo orderVo1 = orderService.findOrderByOrderNumber(orderVo.getOrderNumber());

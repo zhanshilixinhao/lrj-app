@@ -54,11 +54,11 @@
 	<!--查询用户红包-->
 	<select id="getUserRedPacket" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserCouponVo">
 	  SELECT
-			a.id AS couponId,
-			a.user_id AS userId,
+			a.id AS id,
 			a.create_time AS createTime,
 			a.limit_time AS limitTime,
 			a.sys_coupon_id AS sysCouponId,
+			a.active AS active,
 			b.denomination AS denomination,
 			b.type AS couponType,
 			b.instructions AS useInstructions
@@ -70,6 +70,7 @@
 				a.active = 1
 	</select>
 
+	<!--更新红包-->
 	<update id="updateCoupon" parameterType="java.lang.Integer">
 		UPDATE user_coupon SET active = 1 WHERE id = #{couponId}
 	</update>
@@ -78,6 +79,7 @@
 	<select id="getUserLevelInfo" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserLevelVo">
 		 SELECT
 			a.user_id AS userId,
+			a.level_id AS levelId,
 			b.digimarc AS digimarc,
 			b.level_name AS levelName,
 			b.description AS description,
@@ -91,9 +93,20 @@
 	</select>
 
 	<insert id="giveFeeBack" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="app_feedback_id">
-		INSERT INTO app_feeback (user_id,invited_id,back_money,create_time,status)
+		INSERT INTO app_rebate (user_id,invited_id,back_money,create_time,status)
 		VALUES  (#{userId},#{invitedId},#{backMoney},#{createTime},#{status})
 	</insert>
 
+	<!--用户资金信息-->
+	<select id="getUserBalanceInfo" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Balance">
+		SELECT  user_id AS userId,
+		balance AS balance,
+		top_up_amount AS topupAmount,
+		expend_amount AS expendAmount,
+		last_modify_time AS lastModifyTime,
+		create_time AS createTime
+		FROM balance
+		WHERE user_id=#{userId}
+	</select>
 	<!--留着以后用  -->
 </mapper>

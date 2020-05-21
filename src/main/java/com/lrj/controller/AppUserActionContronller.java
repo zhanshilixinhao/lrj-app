@@ -1,3 +1,4 @@
+/*
 package com.lrj.controller;
 
 import com.lrj.VO.FormerResult;
@@ -23,10 +24,12 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+*/
 /**
  * @author Lxh
  * @date 2020/4/1 17:37
- */
+ *//*
+
 @RestController
 public class AppUserActionContronller {
 
@@ -38,26 +41,10 @@ public class AppUserActionContronller {
     @Resource
     private IUserLevelVoService iUserLevelVoService;
 
-    /**
-     * @功能说明:获取用户当前等级相关信息
-     * @param userId
-     * @return
-     * @throws Exception
-     * @返回类型:FormerResult
-     * @作者:SAM QZL lxh
-     * @版本:1.0
-     */
-    @RequestMapping(value = "/getUserLevelInfo", method = RequestMethod.POST)
-    public FormerResult getUserLevelInfo(Integer userId) throws Exception {
-        /** 校验必须参数 **/
-        if (userId == null) {
-            return new FormerResult("success", 1, "参数有误,请检查参数",null);
-        }
-        UserLevelVo userLevelVo =userService.findUserLevelInfo(userId);
-        return new FormerResult("success",0,"查询成功",userLevelVo);
-    }
 
-    /**
+
+    */
+/**
      * @功能说明:获取用户当月剩余额度用于支付。
      * @param result
      *            结果对象
@@ -69,34 +56,54 @@ public class AppUserActionContronller {
      * @方法名称:getResidueLimit
      * @作者:SAM QZL lxh
      * @版本:1.0
-     */
+     *//*
+
     @RequestMapping(value = "/getResidueLimit/v3", method = RequestMethod.POST)
     public FormerResult getResidueLimit(FormerResult result, HttpServletRequest request) throws Exception {
 
-        /** 校验必须字段 **/
+        */
+/** 校验必须字段 **//*
+
         if (RequestParameterUtil.checkRequestParametersIsNull(request, new String[] { "userId" }, result)) {
             return result;
         }
-        /** 返回结果对象 **/
+        */
+/** 返回结果对象 **//*
+
         Map<String, Object> res = new HashMap<String, Object>();
-        /** 获取参数 **/
+        */
+/** 获取参数 **//*
+
         Integer userId = Integer.valueOf(request.getParameter("userId"));
-        /** 判断是否已经是会员 **/
+        */
+/** 判断是否已经是会员 **//*
+
         if (!iMemberServiceUserRelationService.judgeTheUserIsMemberService(userId)) {
-            /** 额度0 **/
+            */
+/** 额度0 **//*
+
             res.put("residueLimit", 0);
-            /** 返回结果 **/
+            */
+/** 返回结果 **//*
+
             return CommonUtil.SUCCESS(result, "查询成功！", null);
         }
 
-        /** 查询用户当月额度 **/
+        */
+/** 查询用户当月额度 **//*
+
         BigDecimal residueLimit = iMemberServiceUserRelationService.findResidueLimitByUserId(userId);
-        /** 当月额度 **/
+        */
+/** 当月额度 **//*
+
         res.put("residueLimit", residueLimit);
-        /** 返回结果 **/
+        */
+/** 返回结果 **//*
+
         return CommonUtil.SUCCESS(result, "查询成功！", res);
     }
-    /**
+    */
+/**
      * @功能说明:判断用户是否是会员接口。
      * @param result
      *            结果对象
@@ -108,25 +115,39 @@ public class AppUserActionContronller {
      * @方法名称:judgeUserIsMemberService
      * @作者:SAM QZL lxh
      * @版本:1.0
-     */
+     *//*
+
     @RequestMapping(value = "/judgeUserIsMemberService/v3", method = RequestMethod.POST)
     public FormerResult judgeUserIsMemberService(FormerResult result, HttpServletRequest request) throws Exception {
-        /** 校验必须字段 **/
+        */
+/** 校验必须字段 **//*
+
         if (RequestParameterUtil.checkRequestParametersIsNull(request, new String[] { "userId" }, result)) {
             return result;
         }
-        /** 获取参数 **/
+        */
+/** 获取参数 **//*
+
         Integer userId = Integer.valueOf(request.getParameter("userId"));
 
-        /** 调用判断会员业务方法 **/
+        */
+/** 调用判断会员业务方法 **//*
+
         Integer isMemberService = iMemberServiceUserRelationService.judgeTheUserIsMemberService(userId)==true ? 1 : 0;
 
-        /** 结果 **/
+        */
+/** 结果 **//*
+
         Map<String, Object> res = new HashMap<String, Object>();
-        /** 放入map **/
+        */
+/** 放入map **//*
+
         res.put("isMemberService", isMemberService);
-        /** 返回结果 **/
+        */
+/** 返回结果 **//*
+
         return CommonUtil.SUCCESS(result, "获取成功!", res);
 
     }
 }
+*/

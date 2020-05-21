@@ -18,7 +18,12 @@ public interface IStaffMapper extends Mapper<User>, MySqlMapper<User> {
 
     StaffInfoVo getStaffInfoByStaffId(Integer staffId);
 
-    void updateStaffPassWord(Integer staffId, String newPassWord);
+    void updateStaffPassWord(Map<String,Object> params);
 
-    Integer updateOrderDetailStatus(Integer staffId, String orderNumber);
+    /**
+     * 通过员工登录名查询 员工信息
+     * @param loginName
+     * @return
+     */
+    StaffInfoVo findStaffInfoByLoginInfo(String loginName);
 }

@@ -11,7 +11,6 @@ import java.util.Map;
  * @author Lxh
  * @date 2020/4/7 14:30
  */
-@Repository
 public interface IStaffService {
 
     StaffInfoVo getStaffInfoByStaffId(Integer staffId);
@@ -23,4 +22,10 @@ public interface IStaffService {
      */
     void updateStaffPassWord(Integer staffId, String newPassWord);
 
+    /**
+     * 员工登录查询并效验
+     * @param parMap
+     * @return
+     */
+    StaffInfoVo findStaffInfoByLoginInfo(Map<String, String> parMap);
 }

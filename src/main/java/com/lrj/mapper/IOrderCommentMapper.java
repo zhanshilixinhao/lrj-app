@@ -17,4 +17,11 @@ public interface IOrderCommentMapper {
      * 查询 显示的订单评论
      */
     List<OrderCommentVo> listLatestOrderComment();
+
+    /**
+     * 根据员工ID 查询对应服务的评论
+     * @param staffId
+     * @return
+     */
+    List<OrderCommentVo> getMyReservationComment(Integer staffId);
 }

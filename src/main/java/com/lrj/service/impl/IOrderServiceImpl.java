@@ -7,12 +7,11 @@ import com.lrj.constant.Constant;
 import com.lrj.mapper.IMonthCardMapper;
 import com.lrj.mapper.IOrderMapper;
 import com.lrj.mapper.ReservationMapper;
+import com.lrj.pojo.Consignee;
 import com.lrj.pojo.MonthCard;
 import com.lrj.pojo.Order;
 import com.lrj.pojo.Reservation;
-import com.lrj.service.IOrderService;
-import com.lrj.service.IShoppingService;
-import com.lrj.service.IUserService;
+import com.lrj.service.*;
 import com.lrj.util.DateUtils;
 import com.mysql.cj.xdevapi.JsonArray;
 import com.mysql.cj.xdevapi.JsonValue;
@@ -43,12 +42,20 @@ public class IOrderServiceImpl implements IOrderService{
     @Resource
     private ReservationMapper reservationMapper;
     @Resource
+    private LaundryAppointmentService laundryAppointmentService;
+    @Resource
     private IMonthCardMapper monthCardMapper;
+    @Resource
+    private IUserService userService;
 
     public Integer createOrder(OrderVo orderVo, HttpServletRequest request) {
         //不同订单走不同通道
         Integer orderType = orderVo.getOrderType();
         Integer insertNum = null;
+        //封装预约参数
+        Map<String, Object> reservationMap = new HashMap<String, Object>();
+        //用户信息
+        UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
         switch (orderType){
             //单项洗衣通道
             case 1:
@@ -56,7 +63,6 @@ public class IOrderServiceImpl implements IOrderService{
                 String takeTime = request.getParameter("takeTime");
                 Integer takeConsigneeId =Integer.parseInt(request.getParameter("takeConsigneeId"));
                 Integer sendConsigneeId = Integer.parseInt(request.getParameter("sendConsigneeId"));
-
                 Integer isUrgent = 0;
                 Order_washingVo washingOrder = new Order_washingVo();
                 washingOrder.setCreateTime(DateUtils.getNowDateTime());
@@ -75,11 +81,19 @@ public class IOrderServiceImpl implements IOrderService{
                     shoppingJSON.put("quantity",shoppingVo.getQuantity());
                     shoppingJSON.put("price",shoppingVo.getPrice());
                     shoppingJSON.put("itemName",shoppingVo.getItemName());
+                    shoppingJSON.put("valueAddService", shoppingVo.getValueAddedServicesVos());
                     array.add(shoppingJSON);
                 }
                 washingOrder.setShoppingJSON(array.toString());
                 //保存单项洗衣订单
                insertNum = orderMapper.createWashingOrder(washingOrder);
+               //创建单项洗衣预约记录
+                reservationMap = null;
+                reservationMap.put("userId", orderVo.getUserId());
+                reservationMap.put("userName",userInfoVo.getNickname());
+                reservationMap.put("takeConsigneeId", takeConsigneeId);
+                reservationMap.put("orderNumber", orderVo.getOrderNumber());
+                laundryAppointmentService.createWashingAppoint(reservationMap);
                break;
             //月卡洗衣
             case 2:
@@ -108,6 +122,14 @@ public class IOrderServiceImpl implements IOrderService{
                 houseServiceOrder.setHouseServiceId(Integer.parseInt(request.getParameter("houseServiceId")));
                 //保存单项家政服务订单
                 insertNum = orderMapper.createHouseServiceOrder(houseServiceOrder);
+                //创建单项家政预约记录
+                //封装预约参数
+                reservationMap = null;
+                reservationMap.put("userId", orderVo.getUserId());
+                reservationMap.put("userName",userInfoVo.getNickname());
+                reservationMap.put("takeConsigneeId", Integer.parseInt(request.getParameter("takeConsigneeId")));
+                reservationMap.put("orderNumber", orderVo.getOrderNumber());
+                laundryAppointmentService.createHouseServiceAppoint(reservationMap);
                 break;
             /*****************************定制家政服务*********************************/
             case 4:
@@ -192,5 +214,23 @@ public class IOrderServiceImpl implements IOrderService{
         params.put("houseServiceBaseServiceCount", houseServiceBaseServiceCount);
         params.put("orderNumber", orderNumber);
         orderMapper.updateUserHouseServiceBaseServiceCount(params);
+    }
+
+
+
+    /**
+     * 添加订单备注
+     * @param smsTemplateVo
+     */
+    public void addOrderRemark(SmsTemplateVo smsTemplateVo) {
+        orderMapper.addOrderRemark(smsTemplateVo);
+    }
+
+    /**
+     * 删除订单备注
+     * @param orderNumber
+     */
+    public void deleteOrderRemark(String orderNumber) {
+        orderMapper.deleteOrderRemark(orderNumber);
     }
 }

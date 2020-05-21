@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.mapper.IStaffMapper">
+	<!--通过Id查询员工信息-->
+	<select id="getStaffInfoByStaffId" parameterType="java.lang.Integer" resultType="com.lrj.VO.StaffInfoVo">
+SELECT
+			  admin_name AS adminName,
+			  admin_password AS adminPassword,
+			  active AS active,
+			  sys_admin_roles AS sysAdminRoles,
+			  sys_admin_role_type AS sysAdminRoles,
+			  create_time AS createTime,
+			  invitationCode AS invitationCode,
+			  sysType AS sysType,
+			  businessName AS businessName,
+			  businessAddress AS businessAddress,
+			  businessPhone AS businessPhone,
+			  businessContactPerson AS businessContactPerson,
+			  businessInfo AS businessInfo,
+			  businessDistributionRatio AS businessDistributionRatio
+		FROM sys_admin
+		WHERE sys_admin_id=#{staffId}
+		AND active=1
+	</select>
+	<!--通过登录名查询员工信息-->
+	<select id="findStaffInfoByLoginInfo" parameterType="java.lang.String" resultType="com.lrj.VO.StaffInfoVo">
+		SELECT
+		admin_name AS adminName,
+		admin_password AS adminPassword,
+		active AS active,
+		sys_admin_roles AS sysAdminRoles,
+		sys_admin_role_type AS sysAdminRoles,
+		create_time AS createTime,
+		invitationCode AS invitationCode,
+		sysType AS sysType,
+		businessName AS businessName,
+		businessAddress AS businessAddress,
+		businessPhone AS businessPhone,
+		businessContactPerson AS businessContactPerson,
+		businessInfo AS businessInfo,
+		businessDistributionRatio AS businessDistributionRatio
+		FROM sys_admin
+		WHERE admin_name=#{loginName}
+		AND active=1
+	</select>
+	<!--更改密码-->
+	<update id="updateStaffPassWord" parameterType="java.util.HashMap">
+		UPDATE sys_admin SET admin_password=#{newPassWord} WHERE sys_admin_id=#{staffId}
+	</update>
+	<!--留着以后用  -->
+</mapper>

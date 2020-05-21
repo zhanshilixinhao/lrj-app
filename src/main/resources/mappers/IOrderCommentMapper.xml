@@ -32,4 +32,35 @@
         a.create_time DESC
         LIMIT 0,20
     </select>
+
+    <!--根据员工Id 查询对应服务的评论-->
+    <select id="getMyReservationComment" parameterType="java.lang.Integer" resultType="com.lrj.VO.OrderCommentVo">
+         SELECT
+        a.comment_content AS commentContent,
+        a.create_time AS createTime,
+        IFNULL(
+        ROUND(
+        (
+        a.distributionStar + a.qualityStar + a.serviceStar
+        ) / 3
+        ),
+        a.comment_level
+        ) AS star,
+        a.commentImage,
+        b.head_photo AS headPhoto,
+        IFNULL(b.nick_name,
+        '匿名用户') AS nickname,
+        b.user_phone as userPhone
+        FROM
+        order_comment a
+        LEFT JOIN app_user
+        b ON a.user_id = b.app_user_id
+        WHERE
+        a.isVisible =1
+        AND
+        a.staffId=#{staffId}
+        ORDER BY
+        a.create_time DESC
+        LIMIT 0,20
+    </select>
 </mapper>

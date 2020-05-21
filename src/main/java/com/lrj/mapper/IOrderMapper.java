@@ -110,4 +110,16 @@ public interface IOrderMapper {
      * @param params
      */
     void updateUserHouseServiceBaseServiceCount(Map<String, Object> params);
+
+    /**
+     * 添加订单备注
+     * @param smsTemplateVo
+     */
+    void addOrderRemark(SmsTemplateVo smsTemplateVo);
+
+    /**
+     * 删除订单 备注
+     * @param orderNumber
+     */
+    void deleteOrderRemark(String orderNumber);
 }

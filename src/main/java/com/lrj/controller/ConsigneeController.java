@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -22,7 +23,7 @@ public class ConsigneeController {
     @Resource
     private IConsigneeService consigneeService;
     //查询用户地址
-    @RequestMapping("getUserAddressList")
+        @RequestMapping("/getUserAddressList")
     public FormerResult getUserAddressList(Integer userId){
         if (userId==null||userId==0) {
             return CommonUtil.FAIL(new FormerResult(),"参数不能为空",null);
@@ -31,14 +32,12 @@ public class ConsigneeController {
     }
 
 //添加用户地址
-    @RequestMapping("createConsignee")
-    public FormerResult createConsignee( Consignee consignee){
+    @RequestMapping("/createConsignee")
+    public FormerResult createConsignee(Consignee consignee){
         /** 校验必须参数 **/
         if (consignee == null) {
             return new FormerResult("success", 1, "参数有误,请检查参数",null);
         }
         return consigneeService.countUserAddress(consignee);
     }
-
-
 }

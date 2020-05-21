@@ -2,6 +2,7 @@ package com.lrj.service;
 
 import com.lrj.VO.ConsigneeVo;
 import com.lrj.VO.OrderVo;
+import com.lrj.VO.SmsTemplateVo;
 import com.lrj.VO.UserInfoVo;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,4 +62,16 @@ public interface IOrderService {
      * @param orderNumber
      */
     void updateUserHouseServiceBaseServiceCount(int houseServiceBaseServiceCount, String orderNumber);
+
+    /**
+     * 给订单添加备注
+     * @param smsTemplateVo
+     */
+    void addOrderRemark(SmsTemplateVo smsTemplateVo);
+
+    /**
+     * 删除备注
+     * @param orderNumber
+     */
+    void deleteOrderRemark(String orderNumber);
 }

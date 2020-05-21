@@ -12,4 +12,12 @@ import java.util.List;
 public interface IOrderCommentService {
 
     List<OrderCommentVo> listLatestOrderComment();
+
+
+    /**
+     * 根据员工Id 查询对应服务的评论
+     * @param staffId
+     * @return
+     */
+    List<OrderCommentVo> getMyReservationComment(Integer staffId);
 }

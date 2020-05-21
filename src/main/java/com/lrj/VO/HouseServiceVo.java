@@ -17,7 +17,7 @@ import lombok.experimental.Accessors;
 public class HouseServiceVo {
 
     private Integer id; //服务Id
-    private Integer pid; //服务类别
+    private Integer itemCategoryId; //导航栏Id
     private Integer type;  //类型：1：基础服务  2：个性服务
     private String houseName; //名称
     private String include; //服务包含项目

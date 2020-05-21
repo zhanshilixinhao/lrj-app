@@ -1,5 +1,6 @@
 package com.lrj.mapper;
 
+import com.lrj.VO.HouseServiceWorkTimeVo;
 import com.lrj.pojo.Reservation;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
@@ -43,4 +44,19 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
      * @return
      */
     Integer updateReservationStatus(Map<String, Object> params);
+
+    /**
+     * 根据 预约单状态和员工账号 查询预约单
+     * @param status
+     * @param staffId
+     * @return
+     */
+    List<Reservation> getReservationList(Integer status, Integer staffId);
+
+    /**
+     * 查询家政服务工作时长
+     * @param staffId
+     * @return
+     */
+    List<HouseServiceWorkTimeVo> getHouseServiceWorkTime(Integer staffId);
 }

@@ -1,6 +1,7 @@
 package com.lrj.controller;
 
 import com.lrj.VO.*;
+import com.lrj.pojo.Balance;
 import com.lrj.service.IUserService;
 
 import com.lrj.util.DateUtils;
@@ -54,9 +55,9 @@ public class UserController {
     @RequestMapping(value = "/getVerificationCode",method = {RequestMethod.GET,RequestMethod.POST})
     public FormerResult getAuthenticationCode(String userPhone){
         /** 校验必须参数 **/
-       /* if (userPhone == null) {
-            return new ResultVo("success", 1, "参数有误,请检查参数",null);
-        }*/
+        if (userPhone == null) {
+            return new FormerResult("success", 1, "参数有误,请检查参数",null);
+        }
         // 生成随机六位验证码
         String verificationCode = RandomUtil.generateOrder(6) + "";
         // 设置发送的内容(内容必须和模板匹配）
@@ -83,6 +84,7 @@ public class UserController {
     /**
      * 被邀请人注册
      */
+    @RequestMapping(value = "/inviteRegister",method = {RequestMethod.POST,RequestMethod.GET})
     public ResultVo inviteRegister(String userPhone,String verificationCode,String inviteCode){
         /** 校验必须参数 **/
         if (userPhone == null || verificationCode == null || inviteCode==null) {
@@ -118,6 +120,25 @@ public class UserController {
     }
 
     /**
+     * @功能说明:获取用户当前等级相关信息
+     * @param userId
+     * @return
+     * @throws Exception
+     * @返回类型:FormerResult
+     * @作者:SAM QZL lxh
+     * @版本:1.0
+     */
+    @RequestMapping(value = "/getUserLevelInfo", method = RequestMethod.POST)
+    public FormerResult getUserLevelInfo(Integer userId) throws Exception {
+        /** 校验必须参数 **/
+        if (userId == null) {
+            return new FormerResult("success", 1, "参数有误,请检查参数",null);
+        }
+        UserLevelVo userLevelVo =userService.findUserLevelInfo(userId);
+        return new FormerResult("success",0,"查询成功",userLevelVo);
+    }
+
+    /**
      * 获取用户 红包
      */
     @RequestMapping(value = "/getRedPacket",method = {RequestMethod.GET,RequestMethod.POST})
@@ -131,27 +152,15 @@ public class UserController {
     }
 
     /**
-     * 预约洗衣
+     * 获取用户资金信息
      */
-    @RequestMapping(value = "/AppointmentWashing",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo AppointmentWashing(Integer userId){
+    @RequestMapping(value = "/getUserBalanceInfo",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult getUserBalanceInfo(Integer userId){
         /** 校验必须参数 **/
         if (userId == null) {
-            return new ResultVo("success", 1, "参数有误,请检查参数", null);
+            return new FormerResult("success", 1, "参数有误,请检查参数",null);
         }
-        return null;
-    }
-
-    /**
-     * 预约家政
-     */
-    @RequestMapping(value = "/AppointmentCustomHouseService",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo AppointmentCustomHouseService(Integer userId){
-        /** 校验必须参数 **/
-        if (userId == null) {
-            return new ResultVo("success", 1, "参数有误,请检查参数",null);
-        }
-        //List<> userService.findAppointmentCustomHouseService(userId);
-        return null;
+        Balance userBalance = userService.getUserBalanceInfo(userId);
+        return new FormerResult("SUCCESS", 0, "查询成功", userBalance);
     }
 }

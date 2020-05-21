@@ -22,4 +22,22 @@
 	<update id="updateReservationStatus" parameterType="java.util.HashMap">
 		UPDATE reservation SET status=#{traceStatus} WHERE order_number=#{order_number} AND grab_order_id=#{staffId}
 	</update>
+	<!--根据状态和账号 查询对应预约单-->
+	<select id="getReservationList" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Reservation">
+		SELECT * FROM reservation WHERE status=#{status} AND grab_order_id=#{staffId}
+	</select>
+	<!--根据员工ID 查询对应的家政服务 工作时长-->
+	<select id="getHouseServiceWorkTime" parameterType="java.lang.Integer" resultType="com.lrj.VO.HouseServiceWorkTimeVo">
+		SELECT id AS id,
+		staff_id AS staffId,
+		open_time AS openTime,
+		end_time AS endTime,
+		order_number AS orderNumber,
+		reservation_id AS reservationId,
+		total_time AS totalTime,
+		status AS status
+		FROM houseservice_work_time
+		WHERE staff_id=#{staffId}
+		AND status="1"
+	</select>
 </mapper>
