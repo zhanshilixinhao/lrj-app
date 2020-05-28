@@ -54,7 +54,7 @@
 	</select>
 	<!--家政个性服务-->
 	<select id="getCustomHouseService" resultType="com.lrj.VO.HouseServiceVo">
-		SELECT
+	SELECT
 	app_item_id AS id,
 	item_category_id AS itemCategoryId,
 	house_service_type AS type,

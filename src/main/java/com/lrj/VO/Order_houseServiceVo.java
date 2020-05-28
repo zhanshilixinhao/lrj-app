@@ -23,6 +23,7 @@ public class Order_houseServiceVo  extends OrderVo{
     private Integer isLock; //是否被抢
     private Integer takeConsigneeId;//服务地址
     private Integer houseServiceId; //家政服务Id
+    private String createTime; //创建时间
     private HouseServiceVo houseServiceVo;  //家政服务
 
 }

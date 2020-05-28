@@ -2,6 +2,7 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.BuyCardOptionVo;
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.MonthCardWashingCountVo;
 import com.lrj.VO.UserMonthCardVo;
 import com.lrj.mapper.*;
 
@@ -26,6 +27,7 @@ import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lxh
@@ -41,6 +43,10 @@ public class MonthCardServiceImpl implements IMonthCardService {
 
     public List<MonthCard> getMonthCardList() {
         return IMonthCardMapper.getMonthCardList();
+    }
+
+    public List<MonthCardWashingCountVo> getMonthCardWashingCountList(Integer id) {
+        return IMonthCardMapper.getMonthCardWashingCountList(id);
     }
 
     /*public FormerResult selectUserMonthCard(Integer userId) {

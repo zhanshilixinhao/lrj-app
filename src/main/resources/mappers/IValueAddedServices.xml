@@ -16,7 +16,7 @@
 		a.servicePrice,
 		a.serviceDescription
 		FROM
-		valueAddedServices a
+		valueaddedservices a
 		ORDER BY
 		a.sort ASC
 	</select>

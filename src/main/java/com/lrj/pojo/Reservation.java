@@ -26,6 +26,8 @@ public class Reservation extends Base{
     private Integer orderType; //订单类型
     private Integer grabOrderId; //抢单人ID
     private String address; //地址
+    private String createTime; //创建时间
+    private String updateTime; //更新时间
     private Integer userId;
     private String orderNumber;
     private String longitude; //经度

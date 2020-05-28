@@ -19,4 +19,6 @@ public class UserLevelVo {
 	private BigDecimal discount; // 等级折扣
 	private BigDecimal distributionRatio;//分销比例
 	private String remark; //备注
+	private String privilegeDescription; //会员权限说明
+	private Integer inviteNum;  //邀请人数
 }

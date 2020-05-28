@@ -28,7 +28,7 @@
 				user_phone = #{userPhone}
 	</select>
 
-	<select id="getUserInfoByUserId" parameterType="String" resultType="com.lrj.VO.UserInfoVo">
+	<select id="getUserInfoByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserInfoVo">
 		SELECT
 		*
 		FROM
@@ -80,12 +80,14 @@
 		 SELECT
 			a.user_id AS userId,
 			a.level_id AS levelId,
+			a.invite_num AS inviteNum,
 			b.digimarc AS digimarc,
 			b.level_name AS levelName,
 			b.description AS description,
 			b.discount AS discount,
-			b.distributionRatio AS distributionRatio,
-			b.remark AS remark
+			b.distribution_ratio AS distributionRatio,
+			b.remark AS remark,
+			b.privilege_description AS privilegeDescription
 			FROM
 			  	user_level a LEFT JOIN level b ON a.level_id = b.level_id
 			WHERE

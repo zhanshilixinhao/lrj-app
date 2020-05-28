@@ -7,15 +7,9 @@ import com.lrj.constant.Constant;
 import com.lrj.mapper.IMonthCardMapper;
 import com.lrj.mapper.IOrderMapper;
 import com.lrj.mapper.ReservationMapper;
-import com.lrj.pojo.Consignee;
 import com.lrj.pojo.MonthCard;
-import com.lrj.pojo.Order;
-import com.lrj.pojo.Reservation;
 import com.lrj.service.*;
 import com.lrj.util.DateUtils;
-import com.mysql.cj.xdevapi.JsonArray;
-import com.mysql.cj.xdevapi.JsonValue;
-import org.apache.ibatis.annotations.Result;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -88,7 +82,6 @@ public class IOrderServiceImpl implements IOrderService{
                 //保存单项洗衣订单
                insertNum = orderMapper.createWashingOrder(washingOrder);
                //创建单项洗衣预约记录
-                reservationMap = null;
                 reservationMap.put("userId", orderVo.getUserId());
                 reservationMap.put("userName",userInfoVo.getNickname());
                 reservationMap.put("takeConsigneeId", takeConsigneeId);
@@ -102,12 +95,12 @@ public class IOrderServiceImpl implements IOrderService{
                 Order_monthCardVo monthCardOrder = new Order_monthCardVo();
                 monthCardOrder.setActive(1);
                 monthCardOrder.setCreateTime(DateUtils.getNowDateTime());
-                monthCardOrder.setEndTime(DateUtils.getParamDateAfterNMonthDate(monthCardOrder.getCreateTime(),30));
+                monthCardOrder.setEndTime(DateUtils.getParamDateAfterNMonthDate(monthCardOrder.getCreateTime(),1));
                 monthCardOrder.setOrderNumber(orderVo.getOrderNumber());
                 //购买哪种月卡
                 MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardId);
                 monthCardOrder.setUserMonthCardCount(monthCard.getCount());
-                monthCardOrder.setMonthCard(monthCard);
+                monthCardOrder.setMonthCardId(monthCard.getCardId());
                 monthCardOrder.setUserId(orderVo.getUserId());
                 //保存月卡订单
                 insertNum = orderMapper.createMonthCardOrder(monthCardOrder);
@@ -115,17 +108,19 @@ public class IOrderServiceImpl implements IOrderService{
             /*****************************单项家政服务*********************************/
             case 3:
                 orderMapper.createOrder(orderVo);
+                //拼接家政信息
                 Order_houseServiceVo houseServiceOrder = new Order_houseServiceVo();
                 houseServiceOrder.setOrderNumber(orderVo.getOrderNumber());
                 houseServiceOrder.setIsLock(Constant.UNLOCK);
                 houseServiceOrder.setTakeConsigneeId(Integer.parseInt(request.getParameter("takeConsigneeId")));
                 houseServiceOrder.setHouseServiceId(Integer.parseInt(request.getParameter("houseServiceId")));
+                houseServiceOrder.setActive(1);
+                houseServiceOrder.setCreateTime(DateUtils.getNowDateTime());
                 //保存单项家政服务订单
                 insertNum = orderMapper.createHouseServiceOrder(houseServiceOrder);
                 //创建单项家政预约记录
                 //封装预约参数
-                reservationMap = null;
-                reservationMap.put("userId", orderVo.getUserId());
+                reservationMap.put("userId",orderVo.getUserId());
                 reservationMap.put("userName",userInfoVo.getNickname());
                 reservationMap.put("takeConsigneeId", Integer.parseInt(request.getParameter("takeConsigneeId")));
                 reservationMap.put("orderNumber", orderVo.getOrderNumber());
@@ -134,24 +129,22 @@ public class IOrderServiceImpl implements IOrderService{
             /*****************************定制家政服务*********************************/
             case 4:
                 orderMapper.createOrder(orderVo);
-                Integer serviceCycle = Integer.parseInt(request.getParameter(" serviceCycle"));
+                Integer serviceCycle = Integer.parseInt(request.getParameter("serviceCycle"));
                 Integer baseServiceCount = Integer.parseInt(request.getParameter("baseServiceCount"));
                 Integer workTime = Integer.parseInt(request.getParameter("workTime"));
-                Integer houseArea = Integer.parseInt(request.getParameter("houseArea"));
+                String houseArea = request.getParameter("houseArea");
                 //定制家政订单
                 Order_custom_houseServiceVo customHouseServiceOrder = new Order_custom_houseServiceVo();
                 customHouseServiceOrder.setOrderNumber(orderVo.getOrderNumber());
                 customHouseServiceOrder.setBaseServiceCount(baseServiceCount);
                 customHouseServiceOrder.setWorkTime(workTime);
                 customHouseServiceOrder.setHouseArea(houseArea);
+                customHouseServiceOrder.setServiceCycle(serviceCycle);
                 BigDecimal baseServicePrice = new BigDecimal(request.getParameter("baseServicePrice"));
                 customHouseServiceOrder.setBaseServicePrice(baseServicePrice);
-                Integer days = serviceCycle*30;
-                customHouseServiceOrder.setOpenTime(DateUtils.getNowTime("yyyy-MM-DD"));
-                customHouseServiceOrder.setEndTime(DateUtils.getParamDateAfterNDays("yyyy-MM-DD",days));
+                customHouseServiceOrder.setOpenTime(DateUtils.getNowDateTime());
+                customHouseServiceOrder.setEndTime(DateUtils.getParamDateAfterNMonthDate(customHouseServiceOrder.getOpenTime(),serviceCycle));
                 customHouseServiceOrder.setIndividualServiceJson(request.getParameter("individualServiceJson"));
-                BigDecimal individualServicePrice = new BigDecimal(request.getParameter("individualServicePrice"));
-                customHouseServiceOrder.setIndividualServicePrice(individualServicePrice);
                 //保存定制家政服务订单
                 insertNum = orderMapper.createCustomHouseServiceOrder(customHouseServiceOrder);
                 break;

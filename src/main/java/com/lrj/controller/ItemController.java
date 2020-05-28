@@ -26,9 +26,9 @@ public class ItemController {
     private IItemService itemService;
 
     @RequestMapping(value = "/getItemList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getItemList(Integer categoryId,Integer page,Integer rows,Integer userId, HttpServletRequest request){
+    public ResultVo getItemList(Integer itemCategoryId,Integer page,Integer rows,Integer userId, HttpServletRequest request){
         /** 校验必须参数 **/
-        if (categoryId == null || page == null || rows == null) {
+        if (itemCategoryId == null || page == null || rows == null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
         /** 计算分页索引 **/
@@ -37,7 +37,7 @@ public class ItemController {
         Map<String, Integer> paramMap = new HashMap<String, Integer>();
         paramMap.put("start", start); // 开始条数
         paramMap.put("rows", rows); // 每页要显示多少条
-        paramMap.put("categoryId", categoryId); // 商品类表id
+        paramMap.put("categoryId", itemCategoryId); // 商品类表id
         /** 用户id **/
         paramMap.put("userId", userId);
         /** 查询商品列表 **/

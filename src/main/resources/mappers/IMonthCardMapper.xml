@@ -7,4 +7,15 @@
 	<select id="getMonthCardList" resultType="com.lrj.pojo.MonthCard">
 		select * from wx_month_card;
 	</select>
+	<!--通过ID 查询具体月卡内容-->
+	<select id="getMonthCardById" parameterType="java.lang.Integer" resultType="com.lrj.pojo.MonthCard">
+	  	select * from wx_month_card WHERE card_id=#{monthCardId}
+	</select>
+	<!--查询月卡可洗具体内容-->
+	<select id="getMonthCardWashingCountList" parameterType="java.lang.Integer" resultType="com.lrj.VO.MonthCardWashingCountVo">
+		SELECT b.category_name AS itemCategoryName,
+				a.category_num AS itemCategoryCount
+		FROM app_month_card_item_category a LEFT JOIN app_item_category b ON b.app_item_category_id=a.app_item_category_id
+		WHERE a.card_id=#{id}
+	</select>
 </mapper>

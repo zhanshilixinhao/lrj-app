@@ -1,5 +1,6 @@
 package com.lrj.pojo;
 
+import com.lrj.VO.MonthCardWashingCountVo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -9,6 +10,8 @@ import lombok.experimental.Accessors;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lxh
@@ -21,15 +24,14 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class MonthCard {
     private static final long serialVersionUID = 1393109529600812281L;
-    @Id
-    private Integer id;
+    private Integer cardId;
     private Integer count;
     private String name;
     private BigDecimal price;
     private Integer status;
-    private String detail;
     private Float shareDicount;
     private String createTime;
     private String updateTime;
-    private String itemJson;
+    private String notice; //月卡使用注意事项
+    private List<MonthCardWashingCountVo> MonthCardWashingCountList; //月卡可洗具体内容
 }

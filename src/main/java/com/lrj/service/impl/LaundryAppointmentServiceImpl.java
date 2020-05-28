@@ -49,6 +49,9 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         reservation.setGrabOrderId(null);
         reservation.setStatus(orderVo.getPayStatus());
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
+        reservation.setCreateTime(DateUtils.getNowDateTime());
+        reservation.setUpdateTime(DateUtils.getNowDateTime());
+        reservation.setUserId(Integer.parseInt(reservationMap.get("userId").toString()));
         Integer insertNumber = reservationMapper.insertReservation(reservation);
         return new FormerResult("SUCCESS", 0, "预约成功！", null);
     }

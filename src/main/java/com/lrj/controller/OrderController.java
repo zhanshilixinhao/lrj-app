@@ -64,17 +64,21 @@ public class OrderController {
         orderVo.setStatus(Constant.ORDER_STATUS_UNFINISHED);
         orderVo.setPayStatus(Constant.ORDER_PAYSTATUS_NOPAY);
         orderVo.setCreateTime(DateUtils.getNowtime());
-        Integer couponId = Integer.parseInt(request.getParameter("couponId"));
+        String couponId = request.getParameter("couponId");
+        Integer couponIdInt = 0;
         //是否使用红包
-        if(couponId >0){
-            orderVo.setUserCouponId(couponId);
+        if(couponId.equals("") || couponId==null || couponId.equals("0")){
+            orderVo.setUserCouponId(couponIdInt);
+        }else {
+            couponIdInt = Integer.parseInt(couponId);
+            orderVo.setUserCouponId(Integer.parseInt(couponId));
         }
         orderVo.setTotalPrice(totalPrice);
        Integer createNum = orderService.createOrder(orderVo,request);
        //订单创建成功后处理业务
         if(createNum ==1){
             //更新红包
-            userService.updateCoupon(couponId);
+            userService.updateCoupon(couponIdInt);
             //清空购物车
             shoppingService.emptyShopCart(userId);
         }
@@ -94,7 +98,7 @@ public class OrderController {
         List<OrderVo> orderVoList = orderService.findOrderListByUserId(userId);
         //订单分类
         List<Object> userOrderList = new ArrayList<Object>();
-        for (OrderVo orderVo : orderVoList){
+        /*for (OrderVo orderVo : orderVoList){
             switch (orderVo.getOrderType()){
                 case 1:
                     Order_washingVo washingOrder = orderMapper.getWashingOrderByOrderNumber(orderVo.getOrderNumber());
@@ -120,8 +124,7 @@ public class OrderController {
                 case 4:
                     Order_custom_houseServiceVo customHouseServiceOrder = orderMapper.getCustomHouseServiceByOrderNumber(orderVo.getOrderNumber());
                     break;
-            }
+            }*/
+        return new ResultVo("SUCCESS", 0, "查询成功", orderVoList);
         }
-        return new ResultVo("SUCCESS", 0, "查询成功", null);
-    }
 }
