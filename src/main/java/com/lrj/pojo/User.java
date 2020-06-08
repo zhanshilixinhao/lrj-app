@@ -41,4 +41,5 @@ public class User {
     private String openId;
     private String unionId;
     private String verificationCode;
+    private Byte age;
 }

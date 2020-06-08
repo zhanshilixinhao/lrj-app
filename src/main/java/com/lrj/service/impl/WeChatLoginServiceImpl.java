@@ -15,6 +15,7 @@ import com.lrj.util.JavaSmsApi;
 import com.lrj.util.RandomUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
@@ -36,6 +37,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     private UserLevelMapper userLevelMapper;
 
 
+    @Override
     public void findUserByOpenId(String openId, String userInfo) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
@@ -48,6 +50,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         }
     }
 
+    @Override
     public User findUserByUnionId(String unionId) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
@@ -59,6 +62,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         return null;
     }
 
+    @Override
     public FormerResult getCaptcha(String userPhone) {
         User user = new User();
         HashMap<String, Object> map = new HashMap<String,Object>();
@@ -88,7 +92,9 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         return CommonUtil.SUCCESS(new FormerResult(),"验证码获取成功!",map);
     }
 
-    public FormerResult bindPhoneNumber(WxUserInfo wxUserInfo, String userPhone,String verificationCode) {
+    @Override
+    @Transactional
+    public FormerResult bindPhoneNumber(WxUserInfo wxUserInfo, String userPhone, String verificationCode,Byte age) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("verificationCode", verificationCode);
@@ -97,10 +103,17 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
             return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
         }
         for (User user : users) {
-            user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId());
-            int i = userMapper.updateByPrimaryKeySelective(user);
-            System.out.println("更新"+i);
-            UserLevel userLevel = new UserLevel(user.getAppUserId(), 1);
+            user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId()).setAge(age)
+            .setHeadPhoto(wxUserInfo.getHeadImgUrl());
+            try {
+                int i = userMapper.updateByPrimaryKeySelective(user);
+                System.out.println("更新"+i);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
+            }
+            UserLevel userLevel = new UserLevel();
+            userLevel.setUserId(user.getAppUserId()).setLevelId(1);
             int insert = userLevelMapper.insert(userLevel);
             System.out.println("用户等级"+insert);
             return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());

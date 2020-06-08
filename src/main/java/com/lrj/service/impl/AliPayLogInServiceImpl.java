@@ -1,6 +1,8 @@
 package com.lrj.service.impl;
 
 
+import com.alipay.api.AlipayClient;
+import com.alipay.api.DefaultAlipayClient;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -13,9 +15,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AliPayLogInServiceImpl implements InitializingBean {
 
+    /**Alipay客户端*/
+    private AlipayClient alipayClient;
 
     @Override
     public void afterPropertiesSet() throws Exception {
-
+        //alipayClient = new DefaultAlipayClient();
     }
 }

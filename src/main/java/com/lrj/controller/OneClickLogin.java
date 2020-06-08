@@ -60,7 +60,9 @@ public class OneClickLogin {
                     return CommonUtil.FAIL(formerResult,"用户添加失败!",null);
                 }else {
                     List<User> userListNew = userService.findUserByPhone(phoneNum);
-                    return CommonUtil.SUCCESS(formerResult,"用户登录成功!",userListNew);
+                    for (User user1 : userListNew) {
+                        return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user1);
+                    }
                 }
              //已经注册过了
             }else {
