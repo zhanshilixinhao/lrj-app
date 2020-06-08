@@ -17,6 +17,10 @@ import java.util.Map;
 public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Reservation> {
 
     /**
+     * 查询用户的所有预约单
+     */
+     List<Reservation> getReservationListByUserId(Integer userId);
+    /**
      * 保存预约 单
      * @param reservation
      */

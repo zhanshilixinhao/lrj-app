@@ -1,9 +1,6 @@
 package com.lrj.mapper;
 
-import com.lrj.VO.ConsigneeVo;
-import com.lrj.VO.UserCouponVo;
-import com.lrj.VO.UserInfoVo;
-import com.lrj.VO.UserLevelVo;
+import com.lrj.VO.*;
 import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import org.springframework.stereotype.Repository;
@@ -38,4 +35,8 @@ public interface UserMapper extends Mapper<User>, MySqlMapper<User> {
     Integer giveFeeBack(Map<String, Object> params);
 
     Balance getUserBalanceInfo(Integer userId);
+
+    void sendRandomCoupon(UserCouponVo userCouponVo);
+
+    List<UserRebateVo> getUserRebate(Integer userId);
 }

@@ -110,5 +110,22 @@
 		FROM balance
 		WHERE user_id=#{userId}
 	</select>
+
+	<!--分享订单后获得红包（需分享用户下单后生效）-->
+	<insert id="sendRandomCoupon" parameterType="com.lrj.VO.UserCouponVo">
+		INSERT INTO user_coupon (user_id,create_time,limit_time,active,denomination,source,coupon_type,useInstructions,order_number)
+		VALUES  (#{userId},#{createTime},#{limitTime},#{active},#{denomination},#{source},#{couponType},#{useInstructions},#{orderNumber})
+	</insert>
+
+	<!--查询用户的返利记录（收益记录）-->
+	<select id="getUserRebate" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserRebateVo">
+		SELECT app_feed_back_id AS id,
+				user_id AS userId,
+				low_id AS lowId,
+				back_money AS backMoney,
+				create_time AS createTime,
+				`type` AS userType,
+				source AS source
+	</select>
 	<!--留着以后用  -->
 </mapper>

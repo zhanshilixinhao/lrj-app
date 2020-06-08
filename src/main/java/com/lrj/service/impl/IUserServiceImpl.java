@@ -7,6 +7,9 @@ import com.lrj.mapper.UserMapper;
 import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import com.lrj.service.IUserService;
+import com.lrj.util.DateUtils;
+import com.lrj.util.RandomUtil;
+import jdk.internal.util.xml.impl.Input;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
@@ -61,6 +64,40 @@ public class IUserServiceImpl implements IUserService{
 
     public Balance getUserBalanceInfo(Integer userId) {
         return userMapper.getUserBalanceInfo(userId);
+    }
+
+    //赠送随机红包
+    public void sendRandomCoupon(Integer userId,Integer source) {
+        UserCouponVo userCouponVo = new UserCouponVo();
+        userCouponVo.setActive(0);
+        userCouponVo.setUserId(userId);
+        userCouponVo.setCreateTime(DateUtils.getNowTime("YYYY-MM-DD HH:MM:SS"));
+           //订单分享获得红包
+        userCouponVo.setCouponType(1);
+        userCouponVo.setLimitTime(DateUtils.getParamDateAfterNDays(userCouponVo.getCreateTime(), 30));
+        //获取红包面额
+        String rString = RandomUtil.getRandomCopuon();
+        userCouponVo.setDenomination(Integer.parseInt(rString));
+        userCouponVo.setSource(source);
+        if(source==2){
+            userCouponVo.setUseInstructions("订单分享后获得,需分享人员使用才生效");
+        }else if(source==4){
+            userCouponVo.setUseInstructions("邀请新用户所得,需新用户使用后才生效");
+        }
+
+        userMapper.sendRandomCoupon(userCouponVo);
+    }
+
+    public List<UserRebateVo> getUserRebate(Integer userId) {
+       List<UserRebateVo> userRebateVoList =  userMapper.getUserRebate(userId);
+       //拼接Id关联的信息
+        UserInfoVo userInfoVo = userMapper.getUserInfoByUserId(userId);
+        for(UserRebateVo userRebateVo:userRebateVoList){
+            UserInfoVo userInfoVoLow = userMapper.getUserInfoByUserId(userId);
+            userRebateVo.setUserName(userInfoVo.getNickname());
+            userRebateVo.setLowUserName(userInfoVoLow.getNickname());
+        }
+        return userRebateVoList;
     }
 
 

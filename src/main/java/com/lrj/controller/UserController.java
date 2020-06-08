@@ -163,4 +163,17 @@ public class UserController {
         Balance userBalance = userService.getUserBalanceInfo(userId);
         return new FormerResult("SUCCESS", 0, "查询成功", userBalance);
     }
+
+    /**
+     * 获取用户收益流水记录
+     */
+    @RequestMapping(value = "/getUserRebate",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getUserRebate(Integer userId){
+        /** 校验必须参数 **/
+        if (userId == null) {
+            return new ResultVo("success", 1, "参数有误,请检查参数",null);
+        }
+        List<UserRebateVo>  userRebateVoList = userService.getUserRebate(userId);
+        return new ResultVo("SUCCESS",0,"查询成功！",userRebateVoList);
+    }
 }

@@ -26,6 +26,7 @@ public class UserInfoVo {
     private Integer ischeck;
     private String inviteCode; //邀请码
     private String invitedCode; //上级邀请码
+    private Integer superId;  //上级ID
     private String checkTime = "";
     private Integer isYearsService;
 }

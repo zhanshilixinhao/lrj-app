@@ -55,6 +55,28 @@ public class RandomUtil {
     }
 
     /**
+     * 从指定数组中随机选取一个数（红包赠送）
+     */
+    public static String getRandomCopuon() {
+
+        String[] array = {"1", "2", "3", "4", "5", "6", "7", "8", "9","10"};
+        String rString = "";
+        Random rand = new Random();
+        rString = array[rand.nextInt(array.length)];
+        return rString;
+    }
+    /**
+     * 从指定数组中随机选取一个数（红包类型选择）
+     */
+    public static String getRandomCopuonType() {
+
+        String[] array = {"2", "3", "4", "5"};
+        String rString = "";
+        Random rand = new Random();
+        rString = array[rand.nextInt(array.length)];
+        return rString;
+    }
+    /**
      * 随机形成指定位数的密码
      * @return
      * @throws Exception

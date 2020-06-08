@@ -21,7 +21,12 @@ public class OrderVo {
     private Integer id;//主键
     private String orderNumber; //  订单号
     private Integer userId; // 用户Id
-    private BigDecimal totalPrice; // 总价
+    private BigDecimal totalPrice; // 实际支付价格
+    private BigDecimal originalPrice;//原价金额
+    private BigDecimal activityPrice; //活动减免金额
+    private BigDecimal levelPrice;//等级减免金额
+    private Integer activity; //参与的活动Id
+
     private Integer status; // 订单状态
     private Integer payStatus; //  支付状态
     private String createTime = ""; // 生成时间

@@ -13,9 +13,10 @@
 	</select>
 	<!--查询月卡可洗具体内容-->
 	<select id="getMonthCardWashingCountList" parameterType="java.lang.Integer" resultType="com.lrj.VO.MonthCardWashingCountVo">
-		SELECT b.category_name AS itemCategoryName,
-				a.category_num AS itemCategoryCount
-		FROM app_month_card_item_category a LEFT JOIN app_item_category b ON b.app_item_category_id=a.app_item_category_id
-		WHERE a.card_id=#{id}
+		SELECT item_id AS itemId,
+			  item_num AS `count`,
+			  washing_type AS washingType
+		 FROM app_month_card_item
+		 WHERE card_id=#{id}
 	</select>
 </mapper>

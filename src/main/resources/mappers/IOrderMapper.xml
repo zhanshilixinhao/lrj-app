@@ -22,8 +22,8 @@
 	</select>
     <!--保存单项洗衣订单-->
     <insert id="createWashingOrder" parameterType="com.lrj.VO.Order_washingVo" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO order_washing (order_number,take_time,take_consignee_id,send_consignee_id,is_urgent,is_lock,shopping_JSON)
-        VALUES  (#{orderNumber},#{takeTime},#{takeConsigneeId},#{sendConsigneeId},#{isUrgent},#{isLock},#{shoppingJSON})
+        INSERT INTO order_washing (order_number,take_time,take_consignee_id,send_consignee_id,urgent_price,is_lock,shopping_json,service_price)
+        VALUES  (#{orderNumber},#{takeTime},#{takeConsigneeId},#{sendConsigneeId},#{urgentPrice},#{isLock},#{shoppingJson},#{servicePrice})
     </insert>
 	<!--保存 月卡订单-->
 	<insert id="createMonthCardOrder" parameterType="com.lrj.VO.Order_monthCardVo">
@@ -62,9 +62,10 @@
 		SELECT take_consignee_id AS takeConsigneeId,
 				send_consignee_id AS sendConsigneeId
 				take_time AS takeTime,
-				is_urgent AS isUrgent,
+				urgent_price AS urgentPrice,
 				is_lock AS isLock,
-				shopping_JSON AS shoppingJSON
+				shopping_json AS shoppingJson,
+				service_price AS servicePrice
 				FROM order_washing
 		WHERE order_number=#{orderNumber}
 	</select>

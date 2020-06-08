@@ -42,12 +42,13 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         reservation.setLongitude(consignee.getLongitude());
         //拼接订单信息
         String orderNumber = reservationMap.get("orderNumber").toString();
-        OrderVo orderVo = orderMapper.getOrderByOrderNumber(orderNumber);
+        Order_washingVo washingOrderVo = orderMapper.getWashingOrderByOrderNumber(orderNumber);
         reservation.setOrderNumber(reservationMap.get("orderNumber").toString());
-        reservation.setOrderType(orderVo.getOrderType());
+        reservation.setOrderType(washingOrderVo.getOrderType());
+        reservation.setReservationJson(washingOrderVo.getShoppingJson());
         //其他信息
         reservation.setGrabOrderId(null);
-        reservation.setStatus(orderVo.getPayStatus());
+        reservation.setStatus(washingOrderVo.getPayStatus());
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
         reservation.setCreateTime(DateUtils.getNowDateTime());
         reservation.setUpdateTime(DateUtils.getNowDateTime());
@@ -67,12 +68,13 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         reservation.setLongitude(consignee.getLongitude());
         //拼接订单信息
         String orderNumber = reservationMap.get("orderNumber").toString();
-        OrderVo orderVo = orderMapper.getOrderByOrderNumber(orderNumber);
+        Order_houseServiceVo houseServiceOrderVo = orderMapper.getHouseServiceByOrderNumber(orderNumber);
         reservation.setOrderNumber(reservationMap.get("orderNumber").toString());
-        reservation.setOrderType(orderVo.getOrderType());
+        reservation.setOrderType(houseServiceOrderVo.getOrderType());
+        reservation.setReservationJson(houseServiceOrderVo.getHouseServiceVo().toString());
         //其他信息
         reservation.setGrabOrderId(null);
-        reservation.setStatus(orderVo.getPayStatus());
+        reservation.setStatus(houseServiceOrderVo.getPayStatus());
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
         Integer insertNumber = reservationMapper.insertReservation(reservation);
         return new FormerResult("SUCCESS", 0, "预约成功！", null);

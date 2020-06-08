@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 import net.sf.json.JSONArray;
 
+import java.math.BigDecimal;
+
 /**
  * @author : cwj
  * @describe : 单项洗衣
@@ -21,6 +23,7 @@ public class Order_washingVo extends OrderVo{
     private Integer sendConsigneeId; // 送件地址
     private Integer isLock; //  订单是否已抢
     private String takeTime = ""; // 取件时间
-    private Integer isUrgent; //是否加急
-    private String shoppingJSON; //购物车信息
+    private BigDecimal urgentPrice; //是否加急
+    private String shoppingJson; //购物车信息
+    private BigDecimal servicePrice; //服务费
 }

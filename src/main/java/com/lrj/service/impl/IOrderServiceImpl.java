@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,21 +54,28 @@ public class IOrderServiceImpl implements IOrderService{
         switch (orderType){
             //单项洗衣通道
             case 1:
+                BigDecimal levelPrice = new BigDecimal(request.getParameter("levelPrice")); //等级减免金额
+                orderVo.setLevelPrice(levelPrice);
                 orderMapper.createOrder(orderVo);
                 String takeTime = request.getParameter("takeTime");
                 Integer takeConsigneeId =Integer.parseInt(request.getParameter("takeConsigneeId"));
                 Integer sendConsigneeId = Integer.parseInt(request.getParameter("sendConsigneeId"));
-                Integer isUrgent = 0;
+                BigDecimal urgentPrice = new BigDecimal(request.getParameter("urgentPrice"));
+                BigDecimal servicePrice = new BigDecimal(request.getParameter("servicePrice"));
                 Order_washingVo washingOrder = new Order_washingVo();
                 washingOrder.setCreateTime(DateUtils.getNowDateTime());
                 washingOrder.setOrderNumber(orderVo.getOrderNumber());
                 washingOrder.setIsLock(0);
-                washingOrder.setIsUrgent(isUrgent);
+                washingOrder.setUrgentPrice(urgentPrice);
                 washingOrder.setTakeTime(takeTime);
                 washingOrder.setSendConsigneeId(sendConsigneeId);
                 washingOrder.setTakeConsigneeId(takeConsigneeId);
+                washingOrder.setServicePrice(servicePrice);
+                washingOrder.setLevelPrice(levelPrice);
+
                 /** 获取购物车商品列表 **/
                 List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(orderVo.getUserId());
+                //商品信息 方式一
                 JSONArray array = new JSONArray();
                 for (ShoppingVo shoppingVo : shoppingVoList){
                     JSONObject shoppingJSON=new JSONObject();
@@ -78,7 +86,7 @@ public class IOrderServiceImpl implements IOrderService{
                     shoppingJSON.put("valueAddService", shoppingVo.getValueAddedServicesVos());
                     array.add(shoppingJSON);
                 }
-                washingOrder.setShoppingJSON(array.toString());
+                washingOrder.setShoppingJson(array.toJSONString());
                 //保存单项洗衣订单
                insertNum = orderMapper.createWashingOrder(washingOrder);
                //创建单项洗衣预约记录
@@ -87,6 +95,8 @@ public class IOrderServiceImpl implements IOrderService{
                 reservationMap.put("takeConsigneeId", takeConsigneeId);
                 reservationMap.put("orderNumber", orderVo.getOrderNumber());
                 laundryAppointmentService.createWashingAppoint(reservationMap);
+                //清空购物车
+                shoppingService.emptyShopCart(orderVo.getUserId());
                break;
             //月卡洗衣
             case 2:
@@ -102,6 +112,10 @@ public class IOrderServiceImpl implements IOrderService{
                 monthCardOrder.setUserMonthCardCount(monthCard.getCount());
                 monthCardOrder.setMonthCardId(monthCard.getCardId());
                 monthCardOrder.setUserId(orderVo.getUserId());
+                //月卡具体商品信息
+                List<MonthCardWashingCountVo> monthCardDetailList = monthCardMapper.getMonthCardWashingCountList(monthCardId);
+                String json = JSONArray.toJSONString(monthCardDetailList);
+                monthCardOrder.setUserMonthCardItemJson(json);
                 //保存月卡订单
                 insertNum = orderMapper.createMonthCardOrder(monthCardOrder);
                 break;

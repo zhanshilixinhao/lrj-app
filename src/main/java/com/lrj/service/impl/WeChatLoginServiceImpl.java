@@ -35,7 +35,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     @Resource
     private UserLevelMapper userLevelMapper;
 
-    @Override
+
     public void findUserByOpenId(String openId, String userInfo) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
@@ -48,7 +48,6 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         }
     }
 
-    @Override
     public User findUserByUnionId(String unionId) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
@@ -60,7 +59,6 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         return null;
     }
 
-    @Override
     public FormerResult getCaptcha(String userPhone) {
         User user = new User();
         HashMap<String, Object> map = new HashMap<String,Object>();
@@ -90,7 +88,6 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         return CommonUtil.SUCCESS(new FormerResult(),"验证码获取成功!",map);
     }
 
-    @Override
     public FormerResult bindPhoneNumber(WxUserInfo wxUserInfo, String userPhone,String verificationCode) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();

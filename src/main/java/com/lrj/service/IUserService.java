@@ -34,4 +34,8 @@ public interface IUserService {
     Integer giveFeeBack(Map<String, Object> params);
 
     Balance getUserBalanceInfo(Integer userId);
+
+    void sendRandomCoupon(Integer userId,Integer source);
+
+    List<UserRebateVo> getUserRebate(Integer userId);
 }

@@ -58,6 +58,77 @@ public class PayController {
     private IBalanceService balanceService;
 
     /**
+     * 用户充值 入口
+     */
+    @RequestMapping(value = "/recharge",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult recharge(Integer userId,Integer payType,HttpServletRequest request,Integer rechargeType) throws Exception{
+        /** 校验必须参数 **/
+        if (userId == null || userId == 0 || payType==null || payType==0 || rechargeType==null || rechargeType==0) {
+            return new FormerResult("success", 1, "参数有误,请检查参数", null);
+        }
+        String orderNumber = "00000000000000";
+        switch (rechargeType){
+            //充值100 送20%余额
+            case 1:
+                if(payType == 1){
+                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 100.00);
+                    return formerResult;
+                    //支付宝支付
+                }else if(payType == 2){
+                    FormerResult formerResult = appAliPay(request, orderNumber, 100.00);
+                    return formerResult;
+                }
+                break;
+            //充值300 送25%余额
+            case 2:
+                if(payType == 1){
+                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 300.00);
+                    return formerResult;
+                    //支付宝支付
+                }else if(payType == 2){
+                    FormerResult formerResult = appAliPay(request, orderNumber, 300.00);
+                    return formerResult;
+                }
+                break;
+            //充值500 送30%余额
+            case 3:
+                if(payType == 1){
+                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 500.00);
+                    return formerResult;
+                    //支付宝支付
+                }else if(payType == 2){
+                    FormerResult formerResult = appAliPay(request, orderNumber, 500.00);
+                    return formerResult;
+                }
+                break;
+            //充值1000 送40%余额
+            case 4:
+                if(payType == 1){
+                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 1000.00);
+                    return formerResult;
+                    //支付宝支付
+                }else if(payType == 2){
+                    FormerResult formerResult = appAliPay(request, orderNumber, 1000.00);
+                    return formerResult;
+                }
+                break;
+            //自定义充值   不送
+            case 5:
+                BigDecimal payMoney = new BigDecimal(request.getParameter("payMoney"));
+                if(payType == 1){
+                    FormerResult formerResult = appWXPayNotify(request, orderNumber, payMoney.doubleValue());
+                    return formerResult;
+                    //支付宝支付
+                }else if(payType == 2){
+                    FormerResult formerResult = appAliPay(request, orderNumber, payMoney.doubleValue());
+                    return formerResult;
+                }
+                break;
+        }
+        return null;
+    }
+
+    /**
      * 判断 支付方式
      */
     @RequestMapping(value = "/payForChoose", method = {RequestMethod.GET, RequestMethod.POST})
