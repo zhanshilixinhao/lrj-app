@@ -23,8 +23,6 @@ import java.util.List;
 @SpringBootTest
 public class LrjAppApplicationTests {
 
-
-
     @Resource
     private ConsigneeMapper consigneeMapper;
     @Resource

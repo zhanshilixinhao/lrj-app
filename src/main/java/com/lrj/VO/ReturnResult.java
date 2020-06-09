@@ -25,4 +25,9 @@ public class ReturnResult {
     private String errCode;
     @JSONField(name = "errmsg")
     private String errMsg;
+    /**会话密钥*/
+    @JSONField(name = "session_key")
+    private String sessionKey;
+    @JSONField(name = "unionid")
+    private String unionId;
 }

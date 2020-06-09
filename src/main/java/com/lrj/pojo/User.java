@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
@@ -21,6 +23,7 @@ import java.util.Date;
 @Table(name = "app_user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer appUserId;
     private String userPhone;
     private String userPassword;
@@ -42,4 +45,6 @@ public class User {
     private String unionId;
     private String verificationCode;
     private Byte age;
+    private Integer superId;
+    public static final String COLUMN_USER_PHONE = "userPhone";
 }
