@@ -135,6 +135,23 @@ public class UserController {
             return new FormerResult("success", 1, "参数有误,请检查参数",null);
         }
         UserLevelVo userLevelVo =userService.findUserLevelInfo(userId);
+        switch (userLevelVo.getLevelId()){
+            case 1:
+                userLevelVo.setUpPeopleNum(6 - userLevelVo.getInviteNum());
+                break;
+            case 2:
+                userLevelVo.setUpPeopleNum(16 - userLevelVo.getInviteNum());
+                break;
+            case 3:
+                userLevelVo.setUpPeopleNum(31 - userLevelVo.getInviteNum());
+                break;
+            case 4:
+                userLevelVo.setUpPeopleNum(50 - userLevelVo.getInviteNum());
+                break;
+            case 5:
+                userLevelVo.setUpPeopleNum(0);
+                break;
+        }
         return new FormerResult("success",0,"查询成功",userLevelVo);
     }
 

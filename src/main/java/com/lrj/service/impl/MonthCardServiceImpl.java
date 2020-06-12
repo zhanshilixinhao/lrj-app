@@ -45,8 +45,8 @@ public class MonthCardServiceImpl implements IMonthCardService {
         return IMonthCardMapper.getMonthCardList();
     }
 
-    public List<MonthCardWashingCountVo> getMonthCardWashingCountList(Integer id) {
-        return IMonthCardMapper.getMonthCardWashingCountList(id);
+    public List<MonthCardWashingCountVo> getMonthCardWashingCountList(Integer monthCardId) {
+        return IMonthCardMapper.getMonthCardWashingCountList(monthCardId);
     }
 
     /*public FormerResult selectUserMonthCard(Integer userId) {

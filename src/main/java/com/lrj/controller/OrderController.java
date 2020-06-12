@@ -14,6 +14,7 @@ import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
 import com.lrj.util.DateUtils;
 import com.lrj.util.RandomUtil;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.tomcat.util.bcel.Const;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -59,7 +61,7 @@ public class OrderController {
     @RequestMapping(value = "/createOrder",method = {RequestMethod.GET,RequestMethod.POST})
     public FormerResult createOrder(HttpServletRequest request){
         Integer userId = Integer.parseInt(request.getParameter("userId"));
-        BigDecimal totalPrice = new BigDecimal(request.getParameter("totalPrice")); //实际支付金
+        BigDecimal totalPrice = new BigDecimal(request.getParameter("totalPrice")).setScale(2, RoundingMode.FLOOR); //实际支付金
         BigDecimal originalPrice = new BigDecimal(request.getParameter("originalPrice")); //原价金额
         BigDecimal activityPrice = null; //活动减免金额
         Integer orderType = Integer.parseInt(request.getParameter("orderType"));
@@ -117,7 +119,7 @@ public class OrderController {
     /**
      * 查询订单(预约服务)
      */
-    @RequestMapping(value = "/findUserOrder",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/findUserReservation",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo findUserOrder(Integer userId){
         /** 校验必须参数 **/
         if (userId == null || userId == 0) {
@@ -126,5 +128,63 @@ public class OrderController {
         List<Reservation> reservationList =reservationMapper.getReservationListByUserId(userId);
 
         return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
+    }
+
+    /**
+     *  查询月卡订单(根据type：1：可用月卡   2：全部月卡)
+     */
+    @RequestMapping(value = "/findUserMonthCardOrder",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult findUserMonthCardOrder(Integer userId,Integer type){
+        //效验必须参数
+        if (userId == null || userId==0 || type==null || type==0) {
+            return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
         }
+        if(type==1){
+            Order_monthCardVo monthCardVo = orderMapper.getMonthCatdOrderByUserId(userId);
+            //拼接月卡名字
+            MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardVo.getMonthCardId());
+            monthCardVo.setMonthCardName(monthCard.getName());
+            //转化json 为JSONArray  供前端使用
+            JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardVo.getUserMonthCardItemJson());
+            monthCardVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
+            return new FormerResult("SUCCESS",0,"查询成功！",monthCardVo);
+        }else if(type==2){
+            List<Order_monthCardVo> monthCardOrderList = orderMapper.getMonthCatdOrderListByUserId(userId);
+            for(Order_monthCardVo monthCardOrderVo : monthCardOrderList){
+                MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardOrderVo.getMonthCardId());
+                monthCardOrderVo.setMonthCardName(monthCard.getName());
+                //转化json 为JSONArray  供前端使用
+                JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardOrderVo.getUserMonthCardItemJson());
+                monthCardOrderVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
+            }
+            return new FormerResult("SUCCESS",0,"查询成功！",monthCardOrderList);
+        }
+        return null;
+    }
+
+    /**
+     * 查询用户的定制家政订单
+     */
+    @RequestMapping(value = "/findCustomHouseServiceOrder",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult findCustomHouseServiceOrder(Integer userId,Integer type){
+        //效验必须参数
+        if (userId == null || userId==0 || type==null || type==0) {
+            return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
+        }
+        if(type==1){
+            Order_custom_houseServiceVo customHouseServiceVo = orderMapper.getCustomHouseServiceOrderByUserId(userId);
+            //转化json 为JSONArray  供前端使用
+            JSONArray individualServiceJSONArray= JSONArray.fromObject(customHouseServiceVo.getIndividualServiceJson());
+            customHouseServiceVo.setIndividualServiceJSONArray(individualServiceJSONArray);
+            return new FormerResult("SUCCESS",0,"查询成功！",customHouseServiceVo);
+        }else if(type==2){
+            List<Order_custom_houseServiceVo> customHouseServiceOrderList = orderMapper.getCustomHouseServiceOrderListByUserId(userId);
+            for(Order_custom_houseServiceVo customHouseServiceOrderVo : customHouseServiceOrderList) {
+                //转化json 为JSONArray  供前端使用
+                JSONArray individualServiceJSONArray = JSONArray.fromObject(customHouseServiceOrderVo.getIndividualServiceJson());
+                customHouseServiceOrderVo.setIndividualServiceJSONArray(individualServiceJSONArray);
+            }
+        }
+       return null;
+    }
 }
