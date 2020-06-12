@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author Lxh
@@ -21,4 +22,8 @@ public class UserLevel {
     @Id
     private Integer userId;
     private Integer levelId;
+    @Transient
+    private Integer inviteNum;
+    @Transient
+    private Integer remainingNum;
 }

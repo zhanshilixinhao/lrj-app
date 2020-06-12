@@ -17,5 +17,5 @@ public interface IWeChatLoginService {
 
     FormerResult getCaptcha(String userPhone);
 
-    FormerResult bindPhoneNumber(WxUserInfo wxUserInfo, String userPhone,String verificationCode);
+    FormerResult bindPhoneNumber(WxUserInfo wxUserInfo, String userPhone,String verificationCode,Byte age);
 }

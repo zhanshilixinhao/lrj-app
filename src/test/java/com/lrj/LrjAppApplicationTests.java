@@ -15,6 +15,7 @@ import tk.mybatis.mapper.entity.Example;
 
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -22,15 +23,6 @@ import java.util.List;
 @SpringBootTest
 public class LrjAppApplicationTests {
 
-
-    @Resource
-    private CardCatMapper cardCatMapper;
-    @Resource
-    private UserMonthCardMapper userMonthCardMapper;
-    @Resource
-    private CardOrderMapper cardOrderMapper;
-    @Resource
-    private UserMonthCardOrderMapper userMonthCardOrderMapper;
     @Resource
     private ConsigneeMapper consigneeMapper;
     @Resource
@@ -43,12 +35,16 @@ public class LrjAppApplicationTests {
     private UserCouponMapper userCouponMapper;
     @Resource
     private WxUserInfoMapper wxUserInfoMapper;
+    @Resource
+    private MemberServiceUserRelationMapper memberServiceUserRelationMapper;
     @Test
     public void contextLoads() {
-        WxUserInfo wxUserInfo = new WxUserInfo();
+        BigDecimal residueLimitByUserId = memberServiceUserRelationMapper.getResidueLimitByUserId(7);
+        System.out.println(residueLimitByUserId);
+        /*WxUserInfo wxUserInfo = new WxUserInfo();
         wxUserInfo.setCity("螺蛳湾").setSex(2);
         int i = wxUserInfoMapper.insertSelective(wxUserInfo);
-        System.out.println(i);
+        System.out.println(i);*/
         /*UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(36891);
         System.out.println(userMonthCardVo.getIsAuto());*/
        /* Order order = cardOrderMapper.selectByPrimaryKey(14);
