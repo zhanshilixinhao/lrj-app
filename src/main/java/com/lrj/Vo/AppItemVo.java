@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 public class AppItemVo {
 
     private Integer itemId;
+    private Integer itemCategoryId;
     private String picture;
     private BigDecimal originalPrice;
     private BigDecimal price;

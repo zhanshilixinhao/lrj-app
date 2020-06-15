@@ -27,13 +27,13 @@
     </insert>
 	<!--保存 月卡订单-->
 	<insert id="createMonthCardOrder" parameterType="com.lrj.VO.Order_monthCardVo">
-		INSERT INTO order_month_card (order_number,user_id,active,month_card_id,user_month_card_count,create_time,end_time)
-		VALUES  (#{orderNumber},#{userId},#{active},#{monthCardId},#{userMonthCardCount},#{createTime},#{endTime})
+		INSERT INTO order_month_card (order_number,user_id,active,month_card_id,user_month_card_count,create_time,end_time,user_month_card_item_json)
+		VALUES  (#{orderNumber},#{userId},#{active},#{monthCardId},#{userMonthCardCount},#{createTime},#{endTime},#{userMonthCardItemJson})
 	</insert>
     <!--保存单项家政服务订单-->
     <insert id="createHouseServiceOrder" parameterType="com.lrj.VO.Order_houseServiceVo">
-      	INSERT INTO order_house_service (order_number,item_id,is_lock,take_consigneeId,active,create_time)
-		VALUES  (#{orderNumber},#{houseServiceId},#{isLock},#{takeConsigneeId},#{active},#{createTime})
+      	INSERT INTO order_house_service (order_number,house_service_json,is_lock,take_consignee_id,active,create_time)
+		VALUES  (#{orderNumber},#{houseServiceJson},#{isLock},#{takeConsigneeId},#{active},#{createTime})
     </insert>
     <!--保存定制家政服务订单-->
     <insert id="createCustomHouseServiceOrder" parameterType="com.lrj.VO.Order_custom_houseServiceVo">
@@ -60,7 +60,7 @@
 	<!--查询单项洗衣订单-->
 	<select id="getWashingOrderByOrderNumber" resultType="com.lrj.VO.Order_washingVo" parameterType="java.lang.String">
 		SELECT take_consignee_id AS takeConsigneeId,
-				send_consignee_id AS sendConsigneeId
+				send_consignee_id AS sendConsigneeId,
 				take_time AS takeTime,
 				urgent_price AS urgentPrice,
 				is_lock AS isLock,
@@ -69,7 +69,7 @@
 				FROM order_washing
 		WHERE order_number=#{orderNumber}
 	</select>
-	<!--查询用户月卡-->
+	<!--查询用户可用月卡 通过订单号-->
 	<select id="getMonthCatdOrder" resultType="com.lrj.VO.Order_monthCardVo" parameterType="java.lang.String">
 	  SELECT id AS id,
 	  		order_number AS orderNumber,
@@ -80,6 +80,78 @@
 	  		create_time AS createTime,
 	  		end_time AS endTime
 	  WHERE order_number=#{orderNumber} AND active=1
+	</select>
+	<!--查询用户可用月卡 通过userId-->
+	<select id="getMonthCatdOrderByUserId" resultType="com.lrj.VO.Order_monthCardVo" parameterType="java.lang.Integer">
+		SELECT a.id AS id,
+		a.order_number AS orderNumber,
+		a.total_price AS totalPrice,
+		a.user_id AS userId,
+		a.status AS status,
+		a.pay_status AS payStatus,
+		b.month_card_id AS monthCardId,
+		b.user_month_card_count AS userMonthCardCount,
+		b.user_month_card_item_json AS userMonthCardItemJson,
+		b.create_time AS createTime,
+		b.end_time AS endTime
+		FROM
+		`order` a
+		LEFT JOIN order_month_card b ON a.order_number=b.order_number
+		WHERE a.user_id=#{userId} AND b.active=1
+	</select>
+	<!--查询用户月卡购买记录 通过userId-->
+	<select id="getMonthCatdOrderListByUserId" resultType="com.lrj.VO.Order_monthCardVo" parameterType="java.lang.Integer">
+		SELECT a.id AS id,
+		a.order_number AS orderNumber,
+		a.total_price AS totalPrice,
+		a.user_id AS userId,
+		a.status AS status,
+		a.pay_status AS payStatus,
+		b.month_card_id AS monthCardId,
+		b.user_month_card_count AS userMonthCardCount,
+		b.user_month_card_item_json AS userMonthCardItemJson,
+		b.create_time AS createTime,
+		b.end_time AS endTime
+		FROM
+		`order` a
+		LEFT JOIN order_month_card b ON a.order_number=b.order_number
+		WHERE a.user_id=#{userId}
+	</select>
+
+	<!--查询单项家政订单 通过orderNumber-->
+	<select id="getHouseServiceByOrderNumber" parameterType="java.lang.String" resultType="com.lrj.VO.Order_houseServiceVo">
+		SELECT order_number AS orderNumber,
+				house_service_json AS houseServiceJson,
+				take_consignee_id AS takeConsigneeId,
+				active AS active,
+				create_time AS createTime
+		 FROM order_house_service WHERE order_number=#{orderNumber}
+	</select>
+	<!--查询可用定制家政订单 通过userId -->
+	<select id="getCustomHouseServiceOrderByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.Order_custom_houseServiceVo">
+		SELECT a.id AS id,
+		a.order_number AS orderNumber,
+		a.total_price AS totalPrice,
+		a.user_id AS userId,
+		a.status AS status,
+		a.pay_status AS payStatus,
+		b.open_time AS openTime,
+		b.end_time AS endTime,
+		b.base_service_count AS baseServiceCount,
+		b.base_service_price AS baseServicePrice,
+		b.individual_service_json AS individualServiceJson,
+		b.service_cycle AS serviceCycle,
+		b.work_time AS workTime,
+		b.house_area AS houseArea,
+		b.active AS active
+		FROM
+		`order` a
+		LEFT JOIN order_custom_house_service b ON a.order_number=b.order_number
+		WHERE a.user_id=#{userId} AND b.active=1
+	</select>
+	<!--查询定制家政订单购买记录 通过userId -->
+	<select id="getCustomHouseServiceOrderListByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.Order_custom_houseServiceVo">
+
 	</select>
 	<!--更改月卡订单为不可用-->
 	<update id="updateUserMonthCardActive">

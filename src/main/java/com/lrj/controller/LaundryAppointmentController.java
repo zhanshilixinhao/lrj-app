@@ -38,19 +38,20 @@ public class LaundryAppointmentController {
         Integer userId = Integer.parseInt(request.getParameter("userId"));
         String userName = request.getParameter("userName");
         Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
-        String orderNumber = request.getParameter("orderNumber");
+        String reservationJson = request.getParameter("reservationJson");
         //效验必须参数
         if (userId == null || userName == null || takeConsigneeId == null) {
             return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
         }
         //查询用户月卡
-        Order_monthCardVo monthCardOrder = orderMapper.getMonthCatdOrder(orderNumber);
+        Order_monthCardVo monthCardOrder = orderMapper.getMonthCatdOrderByUserId(userId);
         //封装预约参数
         Map<String, Object> reservationMap = new HashMap<String, Object>();
         reservationMap.put("userId", userId);
         reservationMap.put("userName", userName);
         reservationMap.put("takeConsigneeId", takeConsigneeId);
-        reservationMap.put("orderNumber", orderNumber);
+        reservationMap.put("orderNumber", monthCardOrder.getOrderNumber());
+        reservationMap.put("reservationJson", reservationJson);
         //判断月卡是否到期
         if(monthCardOrder.getActive() ==0){
             return new FormerResult("SUCCESS", 1, "您的月卡已经到期或使用次数不够,请联系客服", null);
@@ -61,10 +62,10 @@ public class LaundryAppointmentController {
                 //如果月卡使用是最后一次
                 if(monthCardOrder.getUserMonthCardCount()-1 ==0){
                     //修改月卡为不可用
-                    orderMapper.updateUserMonthCardActive(orderNumber);
+                    orderMapper.updateUserMonthCardActive(monthCardOrder.getOrderNumber());
                 }
-                //更新月卡使用次数
-                orderService.updateUserMonthCardCount(monthCardOrder.getUserMonthCardCount()-1,orderNumber);
+                //更新月卡使用情况
+                orderService.updateUserMonthCardCount(monthCardOrder.getUserMonthCardCount()-1,monthCardOrder.getOrderNumber());
             }else {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }
@@ -82,20 +83,21 @@ public class LaundryAppointmentController {
         String userName = request.getParameter("userName");
         Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
         String visitTime = request.getParameter("visitTime");
-        String orderNumber = request.getParameter("orderNumber");
+        String reservationJson = request.getParameter("reservationJson");
         //效验必须参数
         if (userId == null || userName == null || takeConsigneeId == null || visitTime == null) {
             return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
         }
         //查询用户定制的家政
-        Order_custom_houseServiceVo customHouseServiceOrder = orderMapper.getCustomHouseServiceByOrderNumber(orderNumber);
+        Order_custom_houseServiceVo customHouseServiceOrder = orderMapper.getCustomHouseServiceOrderByUserId(userId);
         //封装预约参数
         Map<String, Object> reservationMap = new HashMap<String, Object>();
         reservationMap.put("userId", userId);
         reservationMap.put("userName", userName);
         reservationMap.put("takeConsigneeId", takeConsigneeId);
         reservationMap.put("visitTime", visitTime);
-        reservationMap.put("orderNumber", orderNumber);
+        reservationMap.put("orderNumber", customHouseServiceOrder.getOrderNumber());
+        reservationMap.put("reservationJson", reservationJson);
         //判断定制家政是否到期
         if(customHouseServiceOrder.getActive() ==0){
             return new FormerResult("SUCCESS", 1, "您的月卡已经到期或使用次数不够,请联系客服", null);
@@ -106,10 +108,10 @@ public class LaundryAppointmentController {
                 //如果定制家政使用是最后一次
                 if(customHouseServiceOrder.getBaseServiceCount()-1 ==0){
                     //修改定制家政为不可用
-                    orderMapper.updateUserHouseServiceActive(orderNumber);
+                    orderMapper.updateUserHouseServiceActive(customHouseServiceOrder.getOrderNumber());
                 }
                 //更新定制家政基础使用次数
-                orderService.updateUserHouseServiceBaseServiceCount(customHouseServiceOrder.getBaseServiceCount()-1,orderNumber);
+                orderService.updateUserHouseServiceBaseServiceCount(customHouseServiceOrder.getBaseServiceCount()-1,customHouseServiceOrder.getOrderNumber());
             }else {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }

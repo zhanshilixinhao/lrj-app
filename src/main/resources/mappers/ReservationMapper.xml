@@ -16,8 +16,8 @@
 	</select>
 	<!--保存预约单-->
 	<insert id="insertReservation" parameterType="com.lrj.pojo.Reservation" useGeneratedKeys="true" keyProperty="reservationId">
-			INSERT INTO reservation (status,tracking_status,order_type,grab_order_id,address,create_time,update_time,user_id,order_number,longitude,latitude)
-		VALUES  (#{status},#{trackingStatus},#{orderType},#{grabOrderId},#{address},#{createTime},#{updateTime},#{userId},#{orderNumber},#{longitude},#{latitude})
+			INSERT INTO reservation (status,tracking_status,order_type,grab_order_id,address,create_time,update_time,user_id,order_number,longitude,latitude,reservation_json)
+		VALUES  (#{status},#{trackingStatus},#{orderType},#{grabOrderId},#{address},#{createTime},#{updateTime},#{userId},#{orderNumber},#{longitude},#{latitude},#{reservationJson})
 	</insert>
 	<!--锁定预约订单,并绑定锁单人-->
 	<update id="lockReservation" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="reservation_id">

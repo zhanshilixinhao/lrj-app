@@ -29,8 +29,8 @@ public interface IMonthCardMapper extends Mapper<MonthCard>,MySqlMapper<MonthCar
 
     /**
      * 通过ID 查询月卡可洗具体内容
-     * @param id
+     * @param monthCardId
      * @return
      */
-    List<MonthCardWashingCountVo> getMonthCardWashingCountList(Integer id);
+    List<MonthCardWashingCountVo> getMonthCardWashingCountList(Integer monthCardId);
 }
