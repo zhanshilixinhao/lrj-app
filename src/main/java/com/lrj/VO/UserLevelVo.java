@@ -21,5 +21,4 @@ public class UserLevelVo {
 	private String remark; //备注
 	private String privilegeDescription; //会员权限说明
 	private Integer inviteNum;  //邀请人数
-	private Integer upPeopleNum; // 升级所差人数
 }

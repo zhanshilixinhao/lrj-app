@@ -2,10 +2,8 @@ package com.lrj.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.alipay.api.domain.CategoryVO;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
-import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IMonthCardMapper;
 import com.lrj.mapper.IOrderMapper;
 import com.lrj.mapper.ReservationMapper;
@@ -44,8 +42,6 @@ public class IOrderServiceImpl implements IOrderService{
     private IMonthCardMapper monthCardMapper;
     @Resource
     private IUserService userService;
-    @Resource
-    private IItemMapper itemMapper;
 
     public Integer createOrder(OrderVo orderVo, HttpServletRequest request) {
         //不同订单走不同通道
@@ -118,15 +114,6 @@ public class IOrderServiceImpl implements IOrderService{
                 monthCardOrder.setUserId(orderVo.getUserId());
                 //月卡具体商品信息
                 List<MonthCardWashingCountVo> monthCardDetailList = monthCardMapper.getMonthCardWashingCountList(monthCardId);
-                //拼接月卡的其他信息
-                for(MonthCardWashingCountVo monthCardWashingCountVo: monthCardDetailList){
-                    //单位
-                    AppItemVo itemInfo = itemMapper.getItemInfoByItemId(monthCardWashingCountVo.getItemId());
-                    monthCardWashingCountVo.setItemUnit(itemInfo.getItemUnit());
-                    //名字
-                    ItemCategoryVo itemCategoryVo = itemMapper.getItemCategoryInfoByCategoryId(itemInfo.getItemCategoryId());
-                    monthCardWashingCountVo.setItemCategoryName(itemCategoryVo.getCategoryName());
-                }
                 String json = JSONArray.toJSONString(monthCardDetailList);
                 monthCardOrder.setUserMonthCardItemJson(json);
                 //保存月卡订单
@@ -140,15 +127,7 @@ public class IOrderServiceImpl implements IOrderService{
                 houseServiceOrder.setOrderNumber(orderVo.getOrderNumber());
                 houseServiceOrder.setIsLock(Constant.UNLOCK);
                 houseServiceOrder.setTakeConsigneeId(Integer.parseInt(request.getParameter("takeConsigneeId")));
-                //将单项家政Id 变为【json】格式
-                Map<String, String> houseServiceJsonMap = new HashMap<>();
-                houseServiceJsonMap.put("itemId", request.getParameter("houseServiceId"));
-                houseServiceJsonMap.put("quantity", "1");
-                String houServiceJsonString = JSONArray.toJSONString(houseServiceJsonMap).toString();
-                List<String> houServiceJsonList = new ArrayList<>();
-                houServiceJsonList.add(houServiceJsonString);
-                houseServiceOrder.setHouseServiceJson(houServiceJsonList.toString());
-
+                houseServiceOrder.setHouseServiceId(Integer.parseInt(request.getParameter("houseServiceId")));
                 houseServiceOrder.setActive(1);
                 houseServiceOrder.setCreateTime(DateUtils.getNowDateTime());
                 //保存单项家政服务订单

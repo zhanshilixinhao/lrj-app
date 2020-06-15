@@ -7,7 +7,6 @@ import com.lrj.service.IValueAddedServicesService;
 import com.lrj.util.SimpleCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -91,13 +90,5 @@ public class ValueAddedServicesController extends BaseController {
         }
         /** 返回结果 **/
         return new ResultVo("SUCCESS",0, "查询成功！", listValueAddedServices2);
-    }
-
-    /**
-     * 修改增值服务
-     */
-    @RequestMapping(value = "/updateValueAddedServices",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo updateValueAddedServices(){
-        return new ResultVo("SUCCESS",0, "查询成功！", null);
     }
 }

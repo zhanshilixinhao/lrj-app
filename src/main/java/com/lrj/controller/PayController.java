@@ -66,11 +66,10 @@ public class PayController {
         if (userId == null || userId == 0 || payType==null || payType==0 || rechargeType==null || rechargeType==0) {
             return new FormerResult("success", 1, "参数有误,请检查参数", null);
         }
-        String orderNumber = ""; //用于判断支付成功后的充值方式
+        String orderNumber = "00000000000000";
         switch (rechargeType){
             //充值100 送20%余额
             case 1:
-                orderNumber = "00000000000001";
                 if(payType == 1){
                     FormerResult formerResult = appWXPayNotify(request, orderNumber, 100.00);
                     return formerResult;
@@ -82,7 +81,6 @@ public class PayController {
                 break;
             //充值300 送25%余额
             case 2:
-                orderNumber = "00000000000002";
                 if(payType == 1){
                     FormerResult formerResult = appWXPayNotify(request, orderNumber, 300.00);
                     return formerResult;
@@ -94,7 +92,6 @@ public class PayController {
                 break;
             //充值500 送30%余额
             case 3:
-                orderNumber = "00000000000003";
                 if(payType == 1){
                     FormerResult formerResult = appWXPayNotify(request, orderNumber, 500.00);
                     return formerResult;
@@ -106,7 +103,6 @@ public class PayController {
                 break;
             //充值1000 送40%余额
             case 4:
-                orderNumber = "00000000000004";
                 if(payType == 1){
                     FormerResult formerResult = appWXPayNotify(request, orderNumber, 1000.00);
                     return formerResult;
@@ -118,7 +114,6 @@ public class PayController {
                 break;
             //自定义充值   不送
             case 5:
-                orderNumber = "00000000000000";
                 BigDecimal payMoney = new BigDecimal(request.getParameter("payMoney"));
                 if(payType == 1){
                     FormerResult formerResult = appWXPayNotify(request, orderNumber, payMoney.doubleValue());

@@ -23,3 +23,5 @@ mybatis:
 mapper:
   mappers:
     - tk.mybatis.mapper.common.Mapper
+mybatis-plus:
+  mapper-locations: classpath:mappers/*.xml

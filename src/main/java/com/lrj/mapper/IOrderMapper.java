@@ -62,38 +62,19 @@ public interface IOrderMapper {
      */
     Order_washingVo getWashingOrderByOrderNumber(String orderNumber);
     /**
-     * 查询用户可用月卡订单(订单号)
+     * 查询用户可用月卡订单
      * @param orderNumber
      * @return
      */
     Order_monthCardVo getMonthCatdOrder(String orderNumber);
-    /**
-     * 查询用户可用月卡订单（userId）
-     * @param userId
-     * @return
-     */
-    Order_monthCardVo getMonthCatdOrderByUserId(Integer userId);
-    /**
-     * 查询用户月卡购买月卡记录
-     */
-    List<Order_monthCardVo> getMonthCatdOrderListByUserId(Integer userId);
 
     /**
-     * 查询单项家政服务订单(orderNumber)
+     * 查询单项家政服务订单
      * @param orderNumber
      * @return
      */
     Order_houseServiceVo getHouseServiceByOrderNumber(String orderNumber);
-    /**
-     * 查询单项家政服务订单(userId)
-     * @param userId
-     * @return
-     */
-    Order_custom_houseServiceVo getCustomHouseServiceOrderByUserId(Integer userId);
-    /**
-     * 查询定制服务购买记录
-     */
-    List<Order_custom_houseServiceVo> getCustomHouseServiceOrderListByUserId(Integer userId);
+
     /**
      * 查询定制家政服务订单
      * @param orderNumber

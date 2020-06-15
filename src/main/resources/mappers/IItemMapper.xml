@@ -47,21 +47,4 @@
         app_item_id = #{itemId}
     </select>
 
-    <!--通过itemId 查询商品信息-->
-    <select id="getItemInfoByItemId" parameterType="java.lang.Integer" resultType="com.lrj.VO.AppItemVo">
-        SELECT app_item_id AS itemId,
-        item_category_id AS itemCategoryId,
-        item_name AS itemName,
-        item_unit AS itemUnit,
-        price AS price
-        FROM app_item
-        WHERE app_item_id=#{itemId}
-    </select>
-    <!--通过 itemCategoryId 查询商品类别信息-->
-    <select id="getItemCategoryInfoByCategoryId" parameterType="java.lang.Integer" resultType="com.lrj.VO.ItemCategoryVo">
-        SELECT app_item_category_id AS categoryId,
-        category_name AS categoryName
-        FROM app_item_category
-        WHERE app_item_category_id=#{itemCategoryId}
-    </select>
 </mapper>
