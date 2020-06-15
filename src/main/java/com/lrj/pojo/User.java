@@ -1,6 +1,7 @@
 package com.lrj.pojo;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "app_user")
+@TableName("app_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,4 +49,5 @@ public class User {
     private Byte age;
     private Integer superId;
     public static final String COLUMN_USER_PHONE = "userPhone";
+    public static final String APP_USER_ID_COLUMN = "app_user_id";
 }
