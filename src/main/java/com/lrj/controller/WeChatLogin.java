@@ -70,7 +70,10 @@ public class WeChatLogin {
             //return CommonUtil.FAIL(formerResult,"用户登录成功!",wxUserInfo);
             return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(userInfo);
         }
-        return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user.getAppUserId());
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("userId",user.getAppUserId());
+        map.put("headPhoto",user.getHeadPhoto());
+        return CommonUtil.SUCCESS(formerResult,"用户登录成功!",map);
     }
     /*微信登录获取验证码*/
     @RequestMapping("/toGetCaptcha")
@@ -82,13 +85,13 @@ public class WeChatLogin {
     }
     //绑定用户电话号码
     @RequestMapping("/toBindPhoneNumber")
-    public FormerResult bindPhoneNumber(String jsonWxUserInfo,String userPhone,String verificationCode){
+    public FormerResult bindPhoneNumber(String jsonWxUserInfo,String userPhone,String verificationCode,Byte age){
         ParserConfig.getGlobalInstance().propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
         WxUserInfo wxUserInfo = JSON.parseObject(jsonWxUserInfo, WxUserInfo.class);
         if (wxUserInfo.getUnionId()==null||userPhone==null) {
             return CommonUtil.FAIL(new FormerResult(),"参数异常",null);
         }
-        return weChatLoginService.bindPhoneNumber(wxUserInfo,userPhone,verificationCode);
+        return weChatLoginService.bindPhoneNumber(wxUserInfo,userPhone,verificationCode,age);
     }
 
     private String getUserInfo(String accessToken, String openId) {

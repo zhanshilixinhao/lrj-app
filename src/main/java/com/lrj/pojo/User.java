@@ -1,11 +1,14 @@
 package com.lrj.pojo;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.util.Date;
@@ -19,8 +22,10 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "app_user")
+@TableName("app_user")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer appUserId;
     private String userPhone;
     private String userPassword;
@@ -41,4 +46,8 @@ public class User {
     private String openId;
     private String unionId;
     private String verificationCode;
+    private Byte age;
+    private Integer superId;
+    public static final String COLUMN_USER_PHONE = "userPhone";
+    public static final String APP_USER_ID_COLUMN = "app_user_id";
 }

@@ -1,6 +1,10 @@
 package com.lrj.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.VO.*;
+import com.lrj.dto.RequestDTO;
 import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IUserMapper;
 import com.lrj.mapper.UserMapper;
@@ -26,11 +30,10 @@ import java.util.Map;
  */
 @Service
 @Transactional
-public class IUserServiceImpl implements IUserService{
+public class IUserServiceImpl implements IUserService {
 
     @Resource
     private UserMapper userMapper;
-
 
 
     public List<ConsigneeVo> findUserAddressByUserId(Integer userId) {
@@ -59,7 +62,7 @@ public class IUserServiceImpl implements IUserService{
 
 
     public Integer giveFeeBack(Map<String, Object> params) {
-       return userMapper.giveFeeBack(params);
+        return userMapper.giveFeeBack(params);
     }
 
     public Balance getUserBalanceInfo(Integer userId) {
@@ -67,21 +70,21 @@ public class IUserServiceImpl implements IUserService{
     }
 
     //赠送随机红包
-    public void sendRandomCoupon(Integer userId,Integer source) {
+    public void sendRandomCoupon(Integer userId, Integer source) {
         UserCouponVo userCouponVo = new UserCouponVo();
         userCouponVo.setActive(0);
         userCouponVo.setUserId(userId);
         userCouponVo.setCreateTime(DateUtils.getNowTime("YYYY-MM-DD HH:MM:SS"));
-           //订单分享获得红包
+        //订单分享获得红包
         userCouponVo.setCouponType(1);
         userCouponVo.setLimitTime(DateUtils.getParamDateAfterNDays(userCouponVo.getCreateTime(), 30));
         //获取红包面额
         String rString = RandomUtil.getRandomCopuon();
         userCouponVo.setDenomination(Integer.parseInt(rString));
         userCouponVo.setSource(source);
-        if(source==2){
+        if (source == 2) {
             userCouponVo.setUseInstructions("订单分享后获得,需分享人员使用才生效");
-        }else if(source==4){
+        } else if (source == 4) {
             userCouponVo.setUseInstructions("邀请新用户所得,需新用户使用后才生效");
         }
 
@@ -89,10 +92,10 @@ public class IUserServiceImpl implements IUserService{
     }
 
     public List<UserRebateVo> getUserRebate(Integer userId) {
-       List<UserRebateVo> userRebateVoList =  userMapper.getUserRebate(userId);
-       //拼接Id关联的信息
+        List<UserRebateVo> userRebateVoList = userMapper.getUserRebate(userId);
+        //拼接Id关联的信息
         UserInfoVo userInfoVo = userMapper.getUserInfoByUserId(userId);
-        for(UserRebateVo userRebateVo:userRebateVoList){
+        for (UserRebateVo userRebateVo : userRebateVoList) {
             UserInfoVo userInfoVoLow = userMapper.getUserInfoByUserId(userId);
             userRebateVo.setUserName(userInfoVo.getNickname());
             userRebateVo.setLowUserName(userInfoVoLow.getNickname());
@@ -106,11 +109,9 @@ public class IUserServiceImpl implements IUserService{
     }
 
 
-
     public UserInfoVo findUserByInviteCode(String inviteCode) {
         return userMapper.getUserByInviteCode(inviteCode);
     }
-
 
 
     public Integer addUser(UserInfoVo userPhone) {
@@ -118,13 +119,21 @@ public class IUserServiceImpl implements IUserService{
     }
 
 
-
-
     public List<User> findUserByPhone(String phoneNum) {
         Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("userPhone",phoneNum);
+        criteria.andEqualTo("userPhone", phoneNum);
         List<User> users = userMapper.selectByExample(example);
         return users;
+    }
+
+    @Override
+    public User getAppUserByParam(User user) {
+        QueryWrapper<User> queryWrapper = new QueryWrapper();
+        ObjectMapper objectMapper = new ObjectMapper();
+        if (user != null && user.getAppUserId() != null) {
+            queryWrapper.eq(User.APP_USER_ID_COLUMN, user.getAppUserId());
+        }
+        return userMapper.selectOne(queryWrapper);
     }
 }
