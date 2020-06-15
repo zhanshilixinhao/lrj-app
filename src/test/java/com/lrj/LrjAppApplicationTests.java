@@ -24,13 +24,7 @@ public class LrjAppApplicationTests {
 
 
     @Resource
-    private CardCatMapper cardCatMapper;
-    @Resource
-    private UserMonthCardMapper userMonthCardMapper;
-    @Resource
     private CardOrderMapper cardOrderMapper;
-    @Resource
-    private UserMonthCardOrderMapper userMonthCardOrderMapper;
     @Resource
     private ConsigneeMapper consigneeMapper;
     @Resource
@@ -45,10 +39,11 @@ public class LrjAppApplicationTests {
     private WxUserInfoMapper wxUserInfoMapper;
     @Test
     public void contextLoads() {
-        WxUserInfo wxUserInfo = new WxUserInfo();
-        wxUserInfo.setCity("螺蛳湾").setSex(2);
-        int i = wxUserInfoMapper.insertSelective(wxUserInfo);
-        System.out.println(i);
+
+        List<WxUserInfo> all = wxUserInfoMapper.findAll();
+        for (WxUserInfo userInfo : all) {
+            System.out.println(userInfo.toString());
+        }
         /*UserMonthCardVo userMonthCardVo = userMonthCardMapper.selectUserMonthCard(36891);
         System.out.println(userMonthCardVo.getIsAuto());*/
        /* Order order = cardOrderMapper.selectByPrimaryKey(14);
