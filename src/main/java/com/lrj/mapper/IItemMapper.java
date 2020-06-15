@@ -1,7 +1,6 @@
 package com.lrj.mapper;
 
 import com.lrj.VO.AppItemVo;
-import com.lrj.VO.ItemCategoryVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,14 +26,4 @@ public interface IItemMapper {
      * @return
      */
     Integer getItemCategoryByItemId(Integer itemId);
-
-    /**
-     * 通过itemId  查询商品的相应信息
-     */
-    AppItemVo getItemInfoByItemId(Integer itemId);
-
-    /**
-     * 通过 itemCategory 查询商品类别的信息
-     */
-    ItemCategoryVo getItemCategoryInfoByCategoryId(Integer itemCategoryId);
 }

@@ -1,7 +1,6 @@
 package com.lrj.service;
 
 import com.lrj.VO.*;
-import com.lrj.dto.RequestDTO;
 import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import org.omg.PortableInterceptor.INACTIVE;
@@ -39,6 +38,4 @@ public interface IUserService {
     void sendRandomCoupon(Integer userId,Integer source);
 
     List<UserRebateVo> getUserRebate(Integer userId);
-
-   User getAppUserByParam(User user);
 }

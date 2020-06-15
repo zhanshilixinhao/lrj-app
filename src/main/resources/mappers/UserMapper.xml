@@ -55,14 +55,11 @@
 	<select id="getUserRedPacket" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserCouponVo">
 	  SELECT
 			a.id AS id,
-			a.user_id AS userId,
 			a.create_time AS createTime,
 			a.limit_time AS limitTime,
 			a.sys_coupon_id AS sysCouponId,
 			a.active AS active,
-			a.source AS source,
-			a.sys_coupon_id AS sysCouponId,
-			a.denomination AS denomination,
+			b.denomination AS denomination,
 			b.type AS couponType,
 			b.instructions AS useInstructions
 			FROM
@@ -116,7 +113,7 @@
 
 	<!--分享订单后获得红包（需分享用户下单后生效）-->
 	<insert id="sendRandomCoupon" parameterType="com.lrj.VO.UserCouponVo">
-		INSERT INTO user_coupon (user_id,create_time,limit_time,active,denomination,source,coupon_type,instructions,order_number)
+		INSERT INTO user_coupon (user_id,create_time,limit_time,active,denomination,source,coupon_type,useInstructions,order_number)
 		VALUES  (#{userId},#{createTime},#{limitTime},#{active},#{denomination},#{source},#{couponType},#{useInstructions},#{orderNumber})
 	</insert>
 

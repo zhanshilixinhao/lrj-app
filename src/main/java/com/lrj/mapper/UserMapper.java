@@ -1,6 +1,5 @@
 package com.lrj.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lrj.VO.*;
 import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
@@ -16,7 +15,7 @@ import java.util.Map;
  * @date 2020/4/7 14:25
  */
 @Repository
-public interface UserMapper extends Mapper<User>, MySqlMapper<User>, BaseMapper<User> {
+public interface UserMapper extends Mapper<User>, MySqlMapper<User> {
     List<ConsigneeVo> findUserAddressByUserId(Integer userId);
 
     UserInfoVo getUserInfoByUserPhone(String userPhone);

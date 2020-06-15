@@ -15,18 +15,18 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserInfoVo {
-        private Integer appUserId; //
-        private String userPhone = ""; //
-        private String userPassword = ""; //
-        private String nickname = ""; //
-        private String headPhoto = ""; //
-        private String deviceToken = ""; //
-        private Integer active; //
-        private String createTime = ""; //
-        private Integer ischeck;
-        private String inviteCode; //邀请码
-        private String invitedCode; //上级邀请码
-        private Integer superId;  //上级ID
-        private String checkTime = "";
-        private Integer isYearsService;
+    private Integer appUserId; //
+    private String userPhone = ""; //
+    private String userPassword = ""; //
+    private String nickname = ""; //
+    private String headPhoto = ""; //
+    private String deviceToken = ""; //
+    private Integer active; //
+    private String createTime = ""; //
+    private Integer ischeck;
+    private String inviteCode; //邀请码
+    private String invitedCode; //上级邀请码
+    private Integer superId;  //上级ID
+    private String checkTime = "";
+    private Integer isYearsService;
 }
