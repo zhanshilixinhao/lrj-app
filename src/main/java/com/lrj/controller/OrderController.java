@@ -141,23 +141,31 @@ public class OrderController {
         }
         if(type==1){
             Order_monthCardVo monthCardVo = orderMapper.getMonthCatdOrderByUserId(userId);
-            //拼接月卡名字
-            MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardVo.getMonthCardId());
-            monthCardVo.setMonthCardName(monthCard.getName());
-            //转化json 为JSONArray  供前端使用
-            JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardVo.getUserMonthCardItemJson());
-            monthCardVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
-            return new FormerResult("SUCCESS",0,"查询成功！",monthCardVo);
+            if(monthCardVo == null || monthCardVo.equals("")){
+                return new FormerResult("SUCCESS", 0, "查询完成", monthCardVo);
+            }else {
+                //拼接月卡名字
+                MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardVo.getMonthCardId());
+                monthCardVo.setMonthCardName(monthCard.getName());
+                //转化json 为JSONArray  供前端使用
+                JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardVo.getUserMonthCardItemJson());
+                monthCardVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
+                return new FormerResult("SUCCESS",0,"查询成功！",monthCardVo);
+            }
         }else if(type==2){
             List<Order_monthCardVo> monthCardOrderList = orderMapper.getMonthCatdOrderListByUserId(userId);
-            for(Order_monthCardVo monthCardOrderVo : monthCardOrderList){
-                MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardOrderVo.getMonthCardId());
-                monthCardOrderVo.setMonthCardName(monthCard.getName());
-                //转化json 为JSONArray  供前端使用
-                JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardOrderVo.getUserMonthCardItemJson());
-                monthCardOrderVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
+            if(monthCardOrderList == null || monthCardOrderList.equals("")){
+                return new FormerResult("SUCCESS", 0, "查询完成", monthCardOrderList);
+            }else {
+                for (Order_monthCardVo monthCardOrderVo : monthCardOrderList) {
+                    MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardOrderVo.getMonthCardId());
+                    monthCardOrderVo.setMonthCardName(monthCard.getName());
+                    //转化json 为JSONArray  供前端使用
+                    JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardOrderVo.getUserMonthCardItemJson());
+                    monthCardOrderVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
+                }
+                return new FormerResult("SUCCESS", 0, "查询成功！", monthCardOrderList);
             }
-            return new FormerResult("SUCCESS",0,"查询成功！",monthCardOrderList);
         }
         return null;
     }
@@ -173,16 +181,25 @@ public class OrderController {
         }
         if(type==1){
             Order_custom_houseServiceVo customHouseServiceVo = orderMapper.getCustomHouseServiceOrderByUserId(userId);
-            //转化json 为JSONArray  供前端使用
-            JSONArray individualServiceJSONArray= JSONArray.fromObject(customHouseServiceVo.getIndividualServiceJson());
-            customHouseServiceVo.setIndividualServiceJSONArray(individualServiceJSONArray);
-            return new FormerResult("SUCCESS",0,"查询成功！",customHouseServiceVo);
+            if(customHouseServiceVo == null || customHouseServiceVo.equals("")){
+                return new FormerResult("SUCCESS", 0, "查询完成", customHouseServiceVo);
+            }else {
+                //转化json 为JSONArray  供前端使用
+                JSONArray individualServiceJSONArray= JSONArray.fromObject(customHouseServiceVo.getIndividualServiceJson());
+                customHouseServiceVo.setIndividualServiceJSONArray(individualServiceJSONArray);
+                return new FormerResult("SUCCESS",0,"查询成功！",customHouseServiceVo);
+            }
         }else if(type==2){
             List<Order_custom_houseServiceVo> customHouseServiceOrderList = orderMapper.getCustomHouseServiceOrderListByUserId(userId);
-            for(Order_custom_houseServiceVo customHouseServiceOrderVo : customHouseServiceOrderList) {
-                //转化json 为JSONArray  供前端使用
-                JSONArray individualServiceJSONArray = JSONArray.fromObject(customHouseServiceOrderVo.getIndividualServiceJson());
-                customHouseServiceOrderVo.setIndividualServiceJSONArray(individualServiceJSONArray);
+            if(customHouseServiceOrderList == null || customHouseServiceOrderList.equals("")){
+                return new FormerResult("SUCCESS", 0, "查询完成", customHouseServiceOrderList);
+            }else {
+                for(Order_custom_houseServiceVo customHouseServiceOrderVo : customHouseServiceOrderList) {
+                    //转化json 为JSONArray  供前端使用
+                    JSONArray individualServiceJSONArray = JSONArray.fromObject(customHouseServiceOrderVo.getIndividualServiceJson());
+                    customHouseServiceOrderVo.setIndividualServiceJSONArray(individualServiceJSONArray);
+                }
+                return new FormerResult("SUCCESS", 0, "查询完成", customHouseServiceOrderList);
             }
         }
        return null;

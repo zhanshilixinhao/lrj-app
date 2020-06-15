@@ -114,6 +114,13 @@ public interface IOrderMapper {
     void updateUserMonthCardCout(Map<String,Object> params);
 
     /**
+     * 更新月卡使用剩余商品具体信息
+     * @param userMonthCardItemJson
+     * @param orderNumber
+     */
+    void updateUserMonthCardItemJson(String userMonthCardItemJson,String orderNumber);
+
+    /**
      * 修改月卡为不可用
      */
     void updateUserMonthCardActive(String orderNumber);
@@ -129,6 +136,13 @@ public interface IOrderMapper {
      * @param params
      */
     void updateUserHouseServiceBaseServiceCount(Map<String, Object> params);
+
+    /**
+     * 更新定制家政使用剩余具体信息
+     * @param individualServiceJson
+     * @param orderNumber
+     */
+    void updateIndividualServiceJson(String individualServiceJson, String orderNumber);
 
     /**
      * 添加订单备注

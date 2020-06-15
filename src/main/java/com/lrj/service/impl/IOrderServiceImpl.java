@@ -236,6 +236,11 @@ public class IOrderServiceImpl implements IOrderService{
         orderMapper.updateUserMonthCardCout(params);
     }
 
+    @Override
+    public void updateUserMonthCardItemJson(String washingDetailJSONArrayAll, String orderNumber) {
+        orderMapper.updateUserMonthCardItemJson(washingDetailJSONArrayAll,orderNumber);
+    }
+
     public void updateUserHouseServiceBaseServiceCount(int houseServiceBaseServiceCount, String orderNumber) {
         //封装参数
         Map<String, Object> params = new HashMap<String, Object>();
@@ -244,6 +249,10 @@ public class IOrderServiceImpl implements IOrderService{
         orderMapper.updateUserHouseServiceBaseServiceCount(params);
     }
 
+    @Override
+    public void updateIndividualServiceJson(String IndividualServiceJson, String orderNumber) {
+        orderMapper.updateIndividualServiceJson(IndividualServiceJson,orderNumber);
+    }
 
 
     /**

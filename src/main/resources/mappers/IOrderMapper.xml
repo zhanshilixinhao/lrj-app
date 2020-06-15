@@ -161,6 +161,10 @@
 	<update id="updateUserMonthCardCout" parameterType="java.util.HashMap">
 		UPDATE order_month_card SET user_month_card_count=#{monthCardCount} WHERE order_number=#{orderNumber}
 	</update>
+	<!--更改 月卡订单 剩余可洗内容-->
+	<update id="updateUserMonthCardItemJson" parameterType="java.lang.String">
+		UPDATE order_month_card SET user_month_card_item_json=#{userMonthCardItemJson} WHERE order_number=#{orderNumber}
+	</update>
 	<!--更改定制家政订单为不可用-->
 	<update id="updateUserHouseServiceActive" parameterType="java.lang.String">
 		UPDATE order_custom_house_service SET active=1 WHERE order_number=#{orderNumber}
@@ -168,6 +172,10 @@
 	<!--更改定制家政订单可使用次数-->
 	<update id="updateUserHouseServiceBaseServiceCount" parameterType="java.util.HashMap">
 		UPDATE order_custom_house_service SET base_service_count=#{houseServiceBaseServiceCount} WHERE order_number=#{orderNumber}
+	</update>
+	<!--更改定制家政订单 剩余可服务内容-->
+	<update id="updateIndividualServiceJson" parameterType="java.lang.String">
+		UPDATE order_custom_house_service SET individual_service_json=#{individualServiceJson} WHERE order_number=#{orderNumber}
 	</update>
 	<!--锁定单项洗衣订单-->
 	<update id="lockWashingOrder" parameterType="java.lang.String">
