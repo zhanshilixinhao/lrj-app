@@ -70,10 +70,7 @@ public class WeChatLogin {
             //return CommonUtil.FAIL(formerResult,"用户登录成功!",wxUserInfo);
             return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(userInfo);
         }
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("userId",user.getAppUserId());
-        map.put("headPhoto",user.getHeadPhoto());
-        return CommonUtil.SUCCESS(formerResult,"用户登录成功!",map);
+        return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user.getAppUserId());
     }
     /*微信登录获取验证码*/
     @RequestMapping("/toGetCaptcha")
