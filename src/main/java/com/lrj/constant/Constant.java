@@ -275,4 +275,10 @@ public class Constant {
             return MAP;
         }
     }
+
+    /**
+     * 1 APP用户 2. 商家
+     */
+    public static final int APP_USER = 1;
+    public static final int SHOP_USER = 2;
 }

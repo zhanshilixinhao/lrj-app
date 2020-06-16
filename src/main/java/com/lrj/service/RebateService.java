@@ -1,6 +1,7 @@
 package com.lrj.service;
 
 import com.github.pagehelper.PageInfo;
+import com.lrj.VO.OrderVo;
 import com.lrj.dto.RequestDTO;
 import com.lrj.dto.ReturnData;
 import com.lrj.pojo.Rebate;
@@ -22,9 +23,16 @@ public interface RebateService {
 
     /**
      * 添加
-     * @param feedback
+     * @param rebate
      * @return
      */
-    ReturnData<Boolean> add(Rebate feedback) ;
+    ReturnData<Boolean> add(Rebate rebate) ;
+
+    /**
+     * 向上级用户返利
+     * @param orderVo
+     * @return
+     */
+    ReturnData<Boolean> rebate(OrderVo orderVo) ;
 
 }

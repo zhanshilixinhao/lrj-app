@@ -24,6 +24,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -56,6 +57,12 @@ public class PayController {
     private TeamLaundryService teamLaundryService;
     @Resource
     private IBalanceService balanceService;
+
+    private RebateService rebateService;
+
+    public PayController(RebateService rebateService) {
+        this.rebateService = rebateService;
+    }
 
     /**
      * 用户充值 入口
@@ -367,17 +374,8 @@ public class PayController {
                             payService.payFlowRecord(flowRecordMap);
                         }
                         //向上级返利
-                        UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
-                        UserLevelVo userLevelVo = userService.findUserLevelInfo(orderVo.getUserId());
-                        double feeBackMoney = userLevelVo.getDistributionRatio().doubleValue()*Integer.parseInt(total_fee);
-                        UserInfoVo userInfoVoFather = userService.findUserByInviteCode(userInfoVo.getInvitedCode());
-                        Map<String, Object> params = new HashMap<String, Object>();
-                        params.put("userId", userInfoVoFather.getAppUserId());
-                        params.put("invitedId", userInfoVo.getAppUserId());
-                        params.put("backMoney", feeBackMoney);
-                        params.put("createTime", DateUtils.getNowDateTime());
-                        params.put("status", "1");
-                        Integer insertNum = userService.giveFeeBack(params);
+                         rebateService.rebate(orderVo);
+
                         //更改订单 支付状态
                         Integer status = 1;
                         orderService.updateOrderPayStatus(orderVo.getOrderNumber());
