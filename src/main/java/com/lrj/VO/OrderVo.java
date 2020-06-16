@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import sun.security.provider.PolicySpiFile;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -32,4 +33,11 @@ public class OrderVo {
     private String createTime = ""; // 生成时间
     private Integer userCouponId = 0; //红包Id
     private Integer orderType;       //订单类型  1.洗衣订单 2.洗衣月卡订单  3.单项家政服务  4.定制家政服务
+
+    public static final int WASHING = 1;
+    public static final int MONTH_WASHING = 2;
+    public static final int HOUSE = 3;
+    public static final int CUSTOM_HOUSE =4;
+
+
 }
