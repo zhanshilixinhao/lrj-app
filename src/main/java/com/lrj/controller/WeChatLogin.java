@@ -47,6 +47,7 @@ public class WeChatLogin {
         System.out.println(result);
         //设置反序列化下划线转驼峰命名法
         ParserConfig.getGlobalInstance().propertyNamingStrategy = PropertyNamingStrategy.SnakeCase;
+
         ReturnResult returnResult = JSON.parseObject(result, ReturnResult.class);
         if (returnResult.getErrCode()!=null||returnResult.getErrMsg()!=null) {
             return CommonUtil.FAIL(formerResult,returnResult.getErrMsg(),null);

@@ -6,6 +6,7 @@
 	<!--通过Id查询员工信息-->
 	<select id="getStaffInfoByStaffId" parameterType="java.lang.Integer" resultType="com.lrj.VO.StaffInfoVo">
 SELECT
+			  sys_admin_id as sysAdminId,
 			  admin_name AS adminName,
 			  admin_password AS adminPassword,
 			  active AS active,
