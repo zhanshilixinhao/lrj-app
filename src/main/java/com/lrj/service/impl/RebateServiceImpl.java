@@ -95,7 +95,7 @@ public class RebateServiceImpl implements RebateService {
                         }
                         Rebate rebate = new Rebate();
                         rebate.setBackMoney(rebateAmount).setUserId(level.getUserId()).setLowId(orderVo.getUserId())
-                                .setCreateTime(LocalDateTime.now()).setType(Constant.APP_USER);
+                                .setCreateTime(LocalDateTime.now()).setType(Constant.APP_USER).setOrderNumber(orderVo.getOrderNumber());
                        return this.add(rebate);
                     }
                 }
@@ -110,7 +110,7 @@ public class RebateServiceImpl implements RebateService {
                     }
                     Rebate rebate = new Rebate();
                     rebate.setBackMoney(rebateAmount).setUserId(staffInfoVo.getSysAdminId()).setLowId(orderVo.getUserId())
-                            .setCreateTime(LocalDateTime.now()).setType(Constant.SHOP_USER);
+                            .setCreateTime(LocalDateTime.now()).setType(Constant.SHOP_USER).setOrderNumber(orderVo.getOrderNumber());
                     return  this.add(rebate);
                 }
             }
