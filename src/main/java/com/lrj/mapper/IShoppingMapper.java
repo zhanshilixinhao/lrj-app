@@ -1,6 +1,7 @@
 package com.lrj.mapper;
 
 import com.lrj.VO.ShoppingVo;
+import com.lrj.pojo.AppShoppingEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface IShoppingMapper {
     void emptyShopCart(Integer userId);
 
     void deleteShoppingId(Integer shoppingId);
+
+    void updateUserShoppingSupportValue(AppShoppingEntity appShoppingEntityEntity);
 }

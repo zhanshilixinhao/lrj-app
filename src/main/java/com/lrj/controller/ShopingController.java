@@ -1,8 +1,9 @@
 package com.lrj.controller;
 
-import com.lrj.VO.Result;
+import com.lrj.VO.FormerResult;
 import com.lrj.VO.ShoppingVo;
 import com.lrj.VO.ResultVo;
+import com.lrj.pojo.AppShoppingEntity;
 import com.lrj.service.IShoppingService;
 import com.lrj.util.DateUtils;
 import com.lrj.util.MessagesUtil;
@@ -43,7 +44,7 @@ public class ShopingController {
         List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(userId);
         /** 获取请求URL **/
         StringBuffer url = new StringBuffer();
-        url.append("http://www.51lrj.com/getItemList");
+        url.append("http://www.51lrj.com/getShoppingDetails");
         /** 拼接 **/
         String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString()
                 + "/" + MessagesUtil.getString("virtual_directory") + "/";
@@ -79,6 +80,8 @@ public class ShopingController {
         Map<String, Integer> paramMap = new HashMap<String, Integer>();
         /** 用户id **/
         paramMap.put("userId", userId);
+        /** 商品id **/
+        paramMap.put("itemId", Integer.parseInt(itemId));
 
         /** 判断是对个还是单个 **/
         if (itemId.contains(",")) {
@@ -180,5 +183,27 @@ public class ShopingController {
         shoppingService.emptyShopCart(userId);
         /** 返回结果 **/
         return new ResultVo("success", 0, "参数有误,请检查参数",null);
+    }
+
+    /**
+     *
+     * @Title: saveShoppingSupportValue
+     * @Description: 保存购物车商品是否保值
+     * @param shoppingEntity
+     * @param req
+     * @return 设定文件
+     *         date: 2015-10-14 上午10:46:02
+     *         http://127.0.0.1:8080/lanrenxiyi/saveShoppingSupportValue?userId=
+     *         2&itemId=1&supportValue=2&supportScope=800&supportMoney=50
+     */
+    @RequestMapping(value = "/saveShoppingSupportValue",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult saveShoppingSupportValue(AppShoppingEntity shoppingEntity, HttpServletRequest req) {
+
+        if (shoppingEntity.getUserId() == null || shoppingEntity.getItemId() == null
+                || shoppingEntity.getSupportValue() == null) {
+            return new FormerResult("success", 1, "参数有误,请检查参数",null);
+        }
+        shoppingService.updateUserShoppingSupportValue(shoppingEntity);
+        return new FormerResult("success", 0, "成功",null);
     }
 }
