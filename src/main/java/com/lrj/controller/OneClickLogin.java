@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import tk.mybatis.mapper.entity.Example;
 
 
 import javax.annotation.Resource;
@@ -60,11 +61,16 @@ public class OneClickLogin {
             if (userList.size()==0||userList==null) {
                 User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(DateUtils.formatDate(new Date()));
                 int insert = userMapper.insert(user);
-                /**用户等级*/
-                UserLevel userLevel = new UserLevel();
-                userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
-                int userLevelInsert = userLevelMapper.insert(userLevel);
-                System.out.println("用户等级"+userLevelInsert);
+                Example example = new Example(User.class);
+                example.createCriteria().andEqualTo("userPhone",phoneNum);
+                List<User> users = userMapper.selectByExample(example);
+                for (User user1 : users) {
+                    /**用户等级*/
+                    UserLevel userLevel = new UserLevel();
+                    userLevel.setUserId(user1.getAppUserId()).setLevelId(1).setInviteNum(0);
+                    int userLevelInsert = userLevelMapper.insert(userLevel);
+                    System.out.println("用户等级"+userLevelInsert);
+                }
                 if (insert==0) {
                     return CommonUtil.FAIL(formerResult,"用户添加失败!",null);
                 }else {
