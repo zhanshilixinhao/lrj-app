@@ -96,4 +96,17 @@
 		WHERE
 		app_shopping.user_id = #{userId}
 	</delete>
+
+	<!-- 更新购物车商品保值 -->
+	<update id="updateUserShoppingSupportValue" parameterType="com.lrj.pojo.AppShoppingEntity">
+		UPDATE app_shopping
+		SET
+		support_value = #{supportValue},
+		support_scope =#{supportScope},
+		support_money = #{supportMoney}
+		WHERE
+		user_id = #{userId}
+		AND
+		item_id = #{itemId}
+	</update>
 </mapper>

@@ -43,6 +43,13 @@ public interface IOrderService {
     List<OrderVo> findOrderListByUserId(Integer userId);
 
     /**
+     *通过userId,status查询用户的订单
+     * @param userId
+     * @return
+     */
+    List<OrderVo> findOrderListByUserIdAndStatus(Integer userId,Integer status);
+
+    /**
      * 通过订单号 判断是哪种订单的状态（抢单）
      * @param orderNumber
      * @return
@@ -57,11 +64,22 @@ public interface IOrderService {
     void updateUserMonthCardCount(int monthCardCount, String orderNumber);
 
     /**
+     * 通过订单号 更新月卡使用情况
+     */
+    void updateUserMonthCardItemJson(String washingDetailJSONArrayAll,String orderNumber);
+
+    /**
      * 通过订单号 更新定制家政基础使用次数
      * @param houseServiceBaseServiceCount
      * @param orderNumber
      */
     void updateUserHouseServiceBaseServiceCount(int houseServiceBaseServiceCount, String orderNumber);
+    /**
+     * 通过订单号 更新定制家政剩余可使用内容
+     * @param customHouseServiceDetailJSONArrayAll
+     * @param orderNumber
+     */
+    void updateIndividualServiceJson(String customHouseServiceDetailJSONArrayAll, String orderNumber);
 
     /**
      * 给订单添加备注

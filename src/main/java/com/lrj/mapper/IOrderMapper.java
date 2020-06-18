@@ -58,23 +58,49 @@ public interface IOrderMapper {
     List<OrderVo> getOrderListByUserId(Integer userId);
 
     /**
+     * 查询用户的所有订单（userId,status）
+     * @param params
+     * @return
+     */
+    List<OrderVo> getOrderListByUserIdAndStatus(Map<String,Integer> params);
+
+    /**
      * 查询单项洗衣订单
      */
     Order_washingVo getWashingOrderByOrderNumber(String orderNumber);
     /**
-     * 查询用户可用月卡订单
+     * 查询用户可用月卡订单(订单号)
      * @param orderNumber
      * @return
      */
     Order_monthCardVo getMonthCatdOrder(String orderNumber);
+    /**
+     * 查询用户可用月卡订单（userId）
+     * @param userId
+     * @return
+     */
+    Order_monthCardVo getMonthCatdOrderByUserId(Integer userId);
+    /**
+     * 查询用户月卡购买月卡记录
+     */
+    List<Order_monthCardVo> getMonthCatdOrderListByUserId(Integer userId);
 
     /**
-     * 查询单项家政服务订单
+     * 查询单项家政服务订单(orderNumber)
      * @param orderNumber
      * @return
      */
     Order_houseServiceVo getHouseServiceByOrderNumber(String orderNumber);
-
+    /**
+     * 查询单项家政服务订单(userId)
+     * @param userId
+     * @return
+     */
+    Order_custom_houseServiceVo getCustomHouseServiceOrderByUserId(Integer userId);
+    /**
+     * 查询定制服务购买记录
+     */
+    List<Order_custom_houseServiceVo> getCustomHouseServiceOrderListByUserId(Integer userId);
     /**
      * 查询定制家政服务订单
      * @param orderNumber
@@ -95,6 +121,13 @@ public interface IOrderMapper {
     void updateUserMonthCardCout(Map<String,Object> params);
 
     /**
+     * 更新月卡使用剩余商品具体信息
+     * @param userMonthCardItemJson
+     * @param orderNumber
+     */
+    void updateUserMonthCardItemJson(String userMonthCardItemJson,String orderNumber);
+
+    /**
      * 修改月卡为不可用
      */
     void updateUserMonthCardActive(String orderNumber);
@@ -110,6 +143,13 @@ public interface IOrderMapper {
      * @param params
      */
     void updateUserHouseServiceBaseServiceCount(Map<String, Object> params);
+
+    /**
+     * 更新定制家政使用剩余具体信息
+     * @param individualServiceJson
+     * @param orderNumber
+     */
+    void updateIndividualServiceJson(String individualServiceJson, String orderNumber);
 
     /**
      * 添加订单备注

@@ -2,6 +2,7 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.ShoppingVo;
 import com.lrj.mapper.IShoppingMapper;
+import com.lrj.pojo.AppShoppingEntity;
 import com.lrj.service.IShoppingService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,5 +50,10 @@ public class ShoppingServiceImpl implements IShoppingService{
 
     public void deleteShoppingId(Integer shoppingId) {
         shoppingMapper.deleteShoppingId(shoppingId);
+    }
+
+    @Override
+    public void updateUserShoppingSupportValue(AppShoppingEntity appShoppingEntityEntity) {
+        shoppingMapper.updateUserShoppingSupportValue(appShoppingEntityEntity);
     }
 }

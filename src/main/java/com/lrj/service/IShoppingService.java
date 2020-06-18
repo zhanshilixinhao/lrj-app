@@ -1,6 +1,7 @@
 package com.lrj.service;
 
 import com.lrj.VO.ShoppingVo;
+import com.lrj.pojo.AppShoppingEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -55,4 +56,10 @@ public interface IShoppingService {
      * @param shoppingId
      */
     void deleteShoppingId(Integer shoppingId);
+
+    /**
+     * 商品增值服务
+     * @param appShoppingEntityEntity
+     */
+    void updateUserShoppingSupportValue(AppShoppingEntity appShoppingEntityEntity);
 }

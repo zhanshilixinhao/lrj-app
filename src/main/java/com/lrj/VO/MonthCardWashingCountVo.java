@@ -15,8 +15,9 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MonthCardWashingCountVo {
-    private String itemId;
+    private Integer itemId;
     private String itemCategoryName;
     private Integer count;
     private Integer washingType; //洗衣类型 1：基础服务   2：个性服务
+    private String itemUnit;//单位
 }
