@@ -4,9 +4,11 @@ package com.lrj.controller;
 import com.alibaba.fastjson.JSON;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.LoginMess;
+import com.lrj.mapper.UserLevelMapper;
 import com.lrj.mapper.UserMapper;
 import com.lrj.pojo.User;
 
+import com.lrj.pojo.UserLevel;
 import com.lrj.service.IUserService;
 import com.lrj.util.CommonUtil;
 
@@ -34,6 +36,8 @@ public class OneClickLogin {
     private IUserService userService;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserLevelMapper userLevelMapper;
     /**
      * 接收极光推送的token
      */
@@ -56,6 +60,10 @@ public class OneClickLogin {
             if (userList.size()==0||userList==null) {
                 User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(DateUtils.formatDate(new Date()));
                 int insert = userMapper.insert(user);
+                UserLevel userLevel = new UserLevel();
+                userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
+                int userLevelInsert = userLevelMapper.insert(userLevel);
+                System.out.println("用户等级"+userLevelInsert);
                 if (insert==0) {
                     return CommonUtil.FAIL(formerResult,"用户添加失败!",null);
                 }else {
