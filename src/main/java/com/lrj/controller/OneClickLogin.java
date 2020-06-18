@@ -60,6 +60,7 @@ public class OneClickLogin {
             if (userList.size()==0||userList==null) {
                 User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(DateUtils.formatDate(new Date()));
                 int insert = userMapper.insert(user);
+                /**用户等级*/
                 UserLevel userLevel = new UserLevel();
                 userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
                 int userLevelInsert = userLevelMapper.insert(userLevel);
