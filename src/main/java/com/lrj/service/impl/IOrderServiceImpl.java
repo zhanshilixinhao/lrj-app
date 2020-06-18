@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
+import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IMonthCardMapper;
 import com.lrj.mapper.IOrderMapper;
 import com.lrj.mapper.ReservationMapper;
@@ -42,6 +43,8 @@ public class IOrderServiceImpl implements IOrderService{
     private IMonthCardMapper monthCardMapper;
     @Resource
     private IUserService userService;
+    @Resource
+    private IItemMapper itemMapper;
 
     public Integer createOrder(OrderVo orderVo, HttpServletRequest request) {
         //不同订单走不同通道
@@ -114,6 +117,15 @@ public class IOrderServiceImpl implements IOrderService{
                 monthCardOrder.setUserId(orderVo.getUserId());
                 //月卡具体商品信息
                 List<MonthCardWashingCountVo> monthCardDetailList = monthCardMapper.getMonthCardWashingCountList(monthCardId);
+                //拼接月卡的其他信息
+                for(MonthCardWashingCountVo monthCardWashingCountVo: monthCardDetailList){
+                    //单位
+                    AppItemVo itemInfo = itemMapper.getItemInfoByItemId(monthCardWashingCountVo.getItemId());
+                    monthCardWashingCountVo.setItemUnit(itemInfo.getItemUnit());
+                    //名字
+                    ItemCategoryVo itemCategoryVo = itemMapper.getItemCategoryInfoByCategoryId(itemInfo.getItemCategoryId());
+                    monthCardWashingCountVo.setItemCategoryName(itemCategoryVo.getCategoryName());
+                }
                 String json = JSONArray.toJSONString(monthCardDetailList);
                 monthCardOrder.setUserMonthCardItemJson(json);
                 //保存月卡订单
@@ -176,6 +188,14 @@ public class IOrderServiceImpl implements IOrderService{
 
     public List<OrderVo> findOrderListByUserId(Integer userId) {
         return orderMapper.getOrderListByUserId(userId);
+    }
+
+    @Override
+    public List<OrderVo> findOrderListByUserIdAndStatus(Integer userId, Integer status) {
+        Map<String, Integer> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("status", status);
+        return orderMapper.getOrderListByUserIdAndStatus(params);
     }
 
     public Boolean lockOrderDetailIsLock(String orderNumber,Integer staffId) {

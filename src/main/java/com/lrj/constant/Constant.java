@@ -36,6 +36,13 @@ public class Constant {
 /**--------------------------订单常量定义---------------------------------------------**/
     /** 订单未完成 **/
     public static final int ORDER_STATUS_UNFINISHED = 0;
+    /** 订单待付款**/
+    public static final int ORDER_STATUS_UNPAY = 2;
+    /** 订单已付款**/
+    public static final int ORDER_STATUS_PAY = 3;
+    /** 订单待评价**/
+    public static final int ORDER_STATUS_UNCOMMENT = 4;
+
     /** 订单已完成 **/
     public static final int ORDER_STATUS_FINISHED = 1;
     /** 订单已退款 **/

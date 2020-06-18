@@ -45,7 +45,7 @@
 		UPDATE `order` SET pay_status=1 WHERE order_number=#{orderNumber}
 	</update>
 	<!--查询用户的订单-->
-	<select id="getOrderListByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.OrderVo">
+	<select id="getOrderListByUserId" parameterType="java.util.Map" resultType="com.lrj.VO.OrderVo">
 		SELECT order_number AS orderNumber,
 		user_id AS userId,
 		total_price AS totalPrice,
@@ -55,6 +55,20 @@
 		order_type AS orderType,
 		user_coupon_id AS userCouponId
 		FROM `order` WHERE user_id=#{userId}
+	</select>
+
+	<!--查询用户的订单 userId,status-->
+	<select id="getOrderListByUserIdAndStatus" resultType="com.lrj.VO.OrderVo">
+		SELECT order_number AS orderNumber,
+		user_id AS userId,
+		total_price AS totalPrice,
+		status AS status,
+		pay_status AS payStatus,
+		create_time AS createTime,
+		order_type AS orderType,
+		user_coupon_id AS userCouponId
+		FROM `order`
+		WHERE user_id=#{userId} AND status=#{status}
 	</select>
 
 	<!--查询单项洗衣订单-->
@@ -115,7 +129,7 @@
 		FROM
 		`order` a
 		LEFT JOIN order_month_card b ON a.order_number=b.order_number
-		WHERE a.user_id=#{userId}
+		WHERE a.user_id=#{userId} AND a.order_type=2
 	</select>
 
 	<!--查询单项家政订单 通过orderNumber-->
@@ -147,7 +161,7 @@
 		FROM
 		`order` a
 		LEFT JOIN order_custom_house_service b ON a.order_number=b.order_number
-		WHERE a.user_id=#{userId} AND b.active=1
+		WHERE a.user_id=#{userId} AND b.active=1 AND a.order_type=4
 	</select>
 	<!--查询定制家政订单购买记录 通过userId -->
 	<select id="getCustomHouseServiceOrderListByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.Order_custom_houseServiceVo">

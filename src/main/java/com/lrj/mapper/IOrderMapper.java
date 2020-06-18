@@ -58,6 +58,13 @@ public interface IOrderMapper {
     List<OrderVo> getOrderListByUserId(Integer userId);
 
     /**
+     * 查询用户的所有订单（userId,status）
+     * @param params
+     * @return
+     */
+    List<OrderVo> getOrderListByUserIdAndStatus(Map<String,Integer> params);
+
+    /**
      * 查询单项洗衣订单
      */
     Order_washingVo getWashingOrderByOrderNumber(String orderNumber);

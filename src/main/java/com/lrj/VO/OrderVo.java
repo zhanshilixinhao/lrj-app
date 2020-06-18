@@ -28,7 +28,7 @@ public class OrderVo {
     private BigDecimal levelPrice;//等级减免金额
     private Integer activity; //参与的活动Id
 
-    private Integer status; // 订单状态
+    private Integer status; // 订单状态 订单状态 0未完成 1已完成 2：待付款 3：已付款 4：待评价
     private Integer payStatus; //  支付状态
     private String createTime = ""; // 生成时间
     private Integer userCouponId = 0; //红包Id

@@ -43,6 +43,13 @@ public interface IOrderService {
     List<OrderVo> findOrderListByUserId(Integer userId);
 
     /**
+     *通过userId,status查询用户的订单
+     * @param userId
+     * @return
+     */
+    List<OrderVo> findOrderListByUserIdAndStatus(Integer userId,Integer status);
+
+    /**
      * 通过订单号 判断是哪种订单的状态（抢单）
      * @param orderNumber
      * @return

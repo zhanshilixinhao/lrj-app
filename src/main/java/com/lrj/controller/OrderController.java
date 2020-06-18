@@ -84,7 +84,7 @@ public class OrderController {
         orderVo.setOrderNumber(orderNum);
         orderVo.setUserId(userId);
         orderVo.setOrderType(orderType);
-        orderVo.setStatus(Constant.ORDER_STATUS_UNFINISHED);
+        orderVo.setStatus(Constant.ORDER_STATUS_UNPAY);
         orderVo.setPayStatus(Constant.ORDER_PAYSTATUS_NOPAY);
         orderVo.setCreateTime(DateUtils.getNowtime());
         orderVo.setOriginalPrice(originalPrice);
@@ -203,5 +203,24 @@ public class OrderController {
             }
         }
        return null;
+    }
+
+    /**
+     * 查询用户订单（order）
+     */
+    @RequestMapping(value = "/getUserOrderList",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getUserOrderList(Integer userId,Integer status){
+        //效验必须参数
+        if (userId == null || userId==0) {
+            return new ResultVo("SUCCESS", 1, "参数有误", null);
+        }
+        List<OrderVo> orderVoList =null;
+
+        if(status !=null && status!=0){
+            orderVoList = orderService.findOrderListByUserIdAndStatus(userId,status);
+        }else {
+            orderVoList = orderService.findOrderListByUserId(userId);
+        }
+        return new ResultVo("SUCCESS",0,"查询完成",orderVoList);
     }
 }

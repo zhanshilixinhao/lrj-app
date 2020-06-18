@@ -170,10 +170,31 @@ public class UserController {
     @RequestMapping(value = "/getUserRebate",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo getUserRebate(Integer userId){
         /** 校验必须参数 **/
-        if (userId == null) {
+        if (userId == null || userId ==0) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
         List<UserRebateVo>  userRebateVoList = userService.getUserRebate(userId);
         return new ResultVo("SUCCESS",0,"查询成功！",userRebateVoList);
+    }
+
+    /**
+     * 获取用户信息
+     */
+    @RequestMapping(value = "/getUserInfoByUserId",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult getUserInfoByUserId(Integer userId,HttpServletRequest request){
+        /** 校验必须参数 **/
+        if (userId == null || userId ==0) {
+            return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        UserInfoVo userInfoVo = userService.findUserInfoByUserId(userId);
+        if(userInfoVo.getHeadPhoto() ==null || userInfoVo.getHeadPhoto()==""){
+            /** 获取请求地址 **/ //request.getRequestURL();
+            StringBuffer url = new StringBuffer();
+            url = request.getRequestURL();
+            /** 拼接 **/
+            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+            userInfoVo.setHeadPhoto("http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEL6b1CZVfzd2nlfv843XZs017uLYAh3ztNibkLHsKa8rAWXu26RticfrSlAHORpWLic9pib0yS1GjSFicA/132");
+        }
+        return new FormerResult("SUCCESS",0,"查询成功！",userInfoVo);
     }
 }
