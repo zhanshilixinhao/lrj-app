@@ -1,5 +1,6 @@
 package com.lrj.service;
 
+import com.lrj.VO.FormerResult;
 import com.lrj.VO.RawData;
 
 import java.io.IOException;
@@ -18,7 +19,7 @@ public interface AppletsLogInService {
      * @Author: LxH
      * @Date: 2020/6/9 11:01
      */
-    Object login(String code, RawData data);
+    FormerResult login(String code, RawData data);
 
     /**
      * @Description: 微信小程序登录获取验证码
@@ -26,7 +27,7 @@ public interface AppletsLogInService {
      * @Author: LxH
      * @Date: 2020/6/9 15:30
      */
-    Object askCode(String phone) throws IOException;
+    FormerResult askCode(String phone) throws IOException;
 
     /**
      * @Description: 微信小程序登录绑定手机号
@@ -36,5 +37,5 @@ public interface AppletsLogInService {
      * @Author: LxH
      * @Date: 2020/6/9 15:51
      */
-    Object bindPhone(String phone, String code, String s1,Integer superId,Byte age);
+    FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age);
 }

@@ -41,7 +41,7 @@ public class AppletsLogInController {
             return CommonUtil.FAIL(result, "参数异常", 500);
         }
         RawData data = JSON.parseObject(userInfo, RawData.class);
-        return CommonUtil.SUCCESS(result, null, appletsLogInService.login(code, data));
+        return appletsLogInService.login(code, data);
     }
 
     /**

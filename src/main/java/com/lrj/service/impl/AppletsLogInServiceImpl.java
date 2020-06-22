@@ -1,7 +1,9 @@
 package com.lrj.service.impl;
 
+import com.lrj.VO.FormerResult;
 import com.lrj.VO.RawData;
 import com.lrj.VO.WXResult;
+import com.lrj.common.Constant;
 import com.lrj.common.ErrorCode;
 import com.lrj.exception.ServiceException;
 import com.lrj.mapper.ThirdAccMapper;
@@ -51,6 +53,8 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
     @Resource
     private ThirdAccMapper thirdAccMapper;
 
+    private FormerResult formerResult = new FormerResult();
+
     private static final Logger log = LoggerFactory.getLogger(AppletsLogInServiceImpl.class);
 
     /**缓存*/
@@ -64,7 +68,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
      * @Date: 2020/6/9 11:01
      */
     @Override
-    public Object login(String code, RawData userInfo) {
+    public FormerResult login(String code, RawData userInfo) {
         // 获取微信小程序的openid
         WXResult result = WXCodeApi.getSession(3, code);
         // 如果获取失败
@@ -79,18 +83,21 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             criteria.andEqualTo(COLUMN_THIRDACC_OPEN_ID,result.getOpenid());
         }
         List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
+        // 1.1如果账号不存在需要绑定手机号
+        if (thirdAccs.size() == 0) {
+            // 产生一个随机数
+            String key = UUID.randomUUID().toString();
+            userInfo.setOpenid(result.getOpenid());
+            userCache.put(key,userInfo.getOpenid());
+            Map<String, String> map = new HashMap<>();
+            map.put("s1", key);
+            //return "6001";
+            //return CommonUtil.FAIL(formerResult,"需要绑定手机号!",ErrorCode.NEED_BIND_PHONE);
+            return formerResult.setErrorTip("需要绑定手机号!").setErrorCode(6001).setRequestStatus(Constant.SUCCESS).setData(map);
+            //throw new ServiceException(ErrorCode.NEED_BIND_PHONE).data(map);
+            // 如果账号存在，取出用户信息
+        }
         for (ThirdAcc thirdAcc : thirdAccs) {
-            // 1.1如果账号不存在需要绑定手机号
-            if (thirdAcc == null) {
-                // 产生一个随机数
-                String key = UUID.randomUUID().toString();
-                userInfo.setOpenid(result.getOpenid());
-                userCache.put(key,userInfo.getOpenid());
-                Map<String, String> map = new HashMap<>();
-                map.put("s1", key);
-                throw new ServiceException(ErrorCode.NEED_BIND_PHONE).data(map);
-                // 如果账号存在，取出用户信息
-            }
             Example e = new Example(User.class);
             Example.Criteria c = e.createCriteria();
             if (StringUtils.isBlank(thirdAcc.getPhone())) {
@@ -101,7 +108,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
                 if (user != null && user.getActive() != null && user.getActive() != 1) {
                     throw new ServiceException(ErrorCode.ACC_DISABLED);
                 }
-                return user;
+                return CommonUtil.SUCCESS(formerResult,null,user);
             }
         }
         return null;
@@ -115,7 +122,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
      * @Date: 2020/6/9 15:30
      */
     @Override
-    public Object askCode(String phone) throws IOException {
+    public FormerResult askCode(String phone) throws IOException {
         // 判断账号是否存在
         Example example = new Example(ThirdAcc.class);
         Example.Criteria criteria = example.createCriteria();
@@ -123,22 +130,21 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
         }
         List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
-        for (ThirdAcc thirdAcc : thirdAccs) {
+        if (thirdAccs.size()!=0) {
             // 如果已绑定账号
-            if (thirdAcc != null) {
-                throw new ServiceException(ErrorCode.BIND_PHONE_EXIST);
-            }
-            // 生成随机六位验证码
-            String verificationCode = RandomUtil.generateOrder(6) + "";
-            // 设置发送的内容(内容必须和模板匹配)
-            String text = "【懒人家】您的验证码是" + verificationCode + "。如非本人操作，请忽略本短信";
-            // 存储验证码
-            userCache.put(phone, verificationCode);
-            /** 发送短信 **/
-            String str = SmsApi.sendSms(apiKey, text, phone);
-            return str;
+            return formerResult.setErrorTip("该手机号已绑定!").setErrorCode(6004).setRequestStatus(Constant.SUCCESS);
         }
-        return null;
+        // 生成随机六位验证码
+        String verificationCode = RandomUtil.generateOrder(6) + "";
+        // 设置发送的内容(内容必须和模板匹配)
+        String text = "【懒人家】您的验证码是" + verificationCode + "。如非本人操作，请忽略本短信";
+        // 存储验证码
+        userCache.put(phone, verificationCode);
+        /** 发送短信 **/
+        //SmsApi.sendSms(apiKey, text, phone);
+        String str = JavaSmsApi.sendSms(apiKey, text, phone);
+        System.out.println(str);
+        return CommonUtil.SUCCESS(formerResult,null,verificationCode);
     }
 
     /**
@@ -150,12 +156,13 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
      * @Date: 2020/6/9 15:51
      */
     @Override
-    public Object bindPhone(String phone, String code, String s1,Integer superId,Byte age) {
+    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age) {
         // 判断s1是否存在
         String json = userCache.getCache(s1);
         log.info(json);
         if (org.apache.commons.lang.StringUtils.isBlank(json)) {
-            throw new ServiceException(ErrorCode.OPENID_DISABLED);
+            //throw new ServiceException(ErrorCode.OPENID_DISABLED);
+            return formerResult.setErrorTip("操作无效或过期!").setErrorCode(6002).setRequestStatus(Constant.SUCCESS);
         }
         // RawData wxUserInfo = JSON.parseObject(json, RawData.class);
         // String openid = wxUserInfo.getOpenid();
@@ -164,7 +171,8 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         // 判断验证码
         String currentCode = userCache.getCache(phone);
         if (!org.apache.commons.lang.StringUtils.equals(currentCode, code)) {
-            throw new ServiceException(ErrorCode.VERIFY_CODE_ERR);
+            //throw new ServiceException(ErrorCode.VERIFY_CODE_ERR);
+            return formerResult.setErrorTip("短信验证码错误!").setErrorCode(6003).setRequestStatus(Constant.SUCCESS);
         }
         // 判断账号是否存在
         Example example = new Example(ThirdAcc.class);
@@ -173,18 +181,16 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
         }
         List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
-        for (ThirdAcc thirdAcc : thirdAccs) {
+        if (thirdAccs.size()!=0) {
             // 如果已绑定账号
-            if (thirdAcc!=null) {
-                throw new ServiceException(ErrorCode.BIND_PHONE_EXIST);
-            }
-            // 添加新的账号
-            thirdAcc = new ThirdAcc();
-            thirdAcc.setOpenId(openid);
-            thirdAcc.setPhone(phone);
-            thirdAcc.setAccType((byte) 1);
-            thirdAccMapper.insertSelective(thirdAcc);
+            return formerResult.setErrorTip("该手机号已绑定!").setErrorCode(6004).setRequestStatus(Constant.SUCCESS);
         }
+        // 添加新的账号
+        ThirdAcc thirdAcc = new ThirdAcc();
+        thirdAcc.setOpenId(openid);
+        thirdAcc.setPhone(phone);
+        thirdAcc.setAccType((byte) 1);
+        thirdAccMapper.insertSelective(thirdAcc);
         // 判断用户信息是否存在
         Example e = new Example(User.class);
         Example.Criteria c = e.createCriteria();
@@ -193,10 +199,12 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         }
         List<User> users = userMapper.selectByExample(e);
         // 如果没有用户信息，创建一个
-        if (users!=null||users.size()==0) {
+        if (users!=null||users.size()!=0) {
             User user = new User();
             if (superId!=null&&superId!=0) {
                 promoteLevel(superId);
+                user.setSuperId(superId);
+            }
                 try {
                     int i = RandomUtil.generateRandom(6);
                     String name = "懒"+i;
@@ -204,18 +212,17 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
                 }catch (Exception ex){
                     System.out.println(ex.getMessage());
                 }
-                user.setSuperId(superId).setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age);
+                user.setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age);
                 userMapper.insertSelective(user);
                 UserLevel userLevel = new UserLevel();
                 userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
                 userLevelMapper.insertSelective(userLevel);
                 if (user.getActive() != null && user.getActive() != 1) {
-                    throw new ServiceException(ErrorCode.ACC_DISABLED);
+                    //throw new ServiceException(ErrorCode.ACC_DISABLED);
+                    return formerResult.setErrorTip("该账号已被禁用").setErrorCode(5005).setRequestStatus(Constant.SUCCESS);
                 }
-                return user;
+                return CommonUtil.SUCCESS(formerResult,null,user);
             }
-        }
-
         return null;
     }
 

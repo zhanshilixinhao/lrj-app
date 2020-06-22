@@ -67,9 +67,10 @@ public class OrderCommentController {
     public FormerResult fileUpload(MultipartFile filename){
         System.out.println(filename.getOriginalFilename());
         try {
-            filename.transferTo(new File("F:\\java\\myproject\\"+filename.getOriginalFilename()));
+            filename.transferTo(new File("D:\\jav\\myproject\\"+filename.getOriginalFilename()));
         } catch (IOException e) {
             e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         return new FormerResult("SUCCESS", 0, "图片上传成功", null);
     }

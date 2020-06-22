@@ -37,10 +37,14 @@ public class LrjAppApplicationTests {
     private WxUserInfoMapper wxUserInfoMapper;
     @Resource
     private MemberServiceUserRelationMapper memberServiceUserRelationMapper;
+    @Resource
+    private UserLevelMapper userLevelMapper;
     @Test
     public void contextLoads() {
-        BigDecimal residueLimitByUserId = memberServiceUserRelationMapper.getResidueLimitByUserId(7);
-        System.out.println(residueLimitByUserId);
+        UserLevel userLevel = new UserLevel();
+        userLevel.setUserId(1).setLevelId(1).setInviteNum(0);
+        int userLevelInsert = userLevelMapper.insert(userLevel);
+        System.out.println(userLevelInsert);
         /*WxUserInfo wxUserInfo = new WxUserInfo();
         wxUserInfo.setCity("螺蛳湾").setSex(2);
         int i = wxUserInfoMapper.insertSelective(wxUserInfo);
