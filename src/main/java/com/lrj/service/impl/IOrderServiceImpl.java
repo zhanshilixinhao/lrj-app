@@ -54,6 +54,7 @@ public class IOrderServiceImpl implements IOrderService{
         Map<String, Object> reservationMap = new HashMap<String, Object>();
         //用户信息
         UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+        orderVo.setUserPhone(userInfoVo.getUserPhone());
         switch (orderType){
             //单项洗衣通道
             case 1:
@@ -139,7 +140,7 @@ public class IOrderServiceImpl implements IOrderService{
                 houseServiceOrder.setOrderNumber(orderVo.getOrderNumber());
                 houseServiceOrder.setIsLock(Constant.UNLOCK);
                 houseServiceOrder.setTakeConsigneeId(Integer.parseInt(request.getParameter("takeConsigneeId")));
-                houseServiceOrder.setHouseServiceId(Integer.parseInt(request.getParameter("houseServiceId")));
+                houseServiceOrder.setHouseServiceJson(request.getParameter("houseServiceJson"));
                 houseServiceOrder.setActive(1);
                 houseServiceOrder.setCreateTime(DateUtils.getNowDateTime());
                 //保存单项家政服务订单
@@ -237,7 +238,10 @@ public class IOrderServiceImpl implements IOrderService{
 
     @Override
     public void updateUserMonthCardItemJson(String washingDetailJSONArrayAll, String orderNumber) {
-        orderMapper.updateUserMonthCardItemJson(washingDetailJSONArrayAll,orderNumber);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("userMonthCardItemJson", washingDetailJSONArrayAll);
+        params.put("orderNumber", orderNumber);
+        orderMapper.updateUserMonthCardItemJson(params);
     }
 
     public void updateUserHouseServiceBaseServiceCount(int houseServiceBaseServiceCount, String orderNumber) {

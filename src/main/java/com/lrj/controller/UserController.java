@@ -197,4 +197,17 @@ public class UserController {
         }
         return new FormerResult("SUCCESS",0,"查询成功！",userInfoVo);
     }
+
+    /**
+     * 我的邀请
+     */
+    @RequestMapping(value = "/getMyInvitePeople",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo MyInvitePeople(Integer userId){
+        /** 校验必须参数 **/
+        if (userId == null || userId ==0) {
+            return new ResultVo("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        List<UserInfoVo> userInfoVoList = userService.getMyInvitePeople(userId);
+        return new ResultVo("SUCCESS", 0, "查询完成", userInfoVoList);
+    }
 }

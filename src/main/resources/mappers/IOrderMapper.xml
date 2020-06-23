@@ -5,8 +5,8 @@
 		>
 <mapper namespace="com.lrj.mapper.IOrderMapper">
 	<insert id="createOrder" parameterType="com.lrj.VO.OrderVo" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO `order` (order_number,user_id,total_price,status,pay_status,create_time,order_type,user_coupon_id)
-		VALUES  (#{orderNumber},#{userId},#{totalPrice},#{status},#{payStatus},#{createTime},#{orderType},#{userCouponId})
+		INSERT INTO `order` (order_number,user_id,total_price,status,pay_status,create_time,order_type,user_coupon_id,user_phone)
+		VALUES  (#{orderNumber},#{userId},#{totalPrice},#{status},#{payStatus},#{createTime},#{orderType},#{userCouponId},#{userPhone})
 	</insert>
 	<!--通过订单号查询订单-->
 	<select id="getOrderByOrderNumber" parameterType="java.lang.String" resultType="com.lrj.VO.OrderVo">

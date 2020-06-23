@@ -122,10 +122,8 @@ public interface IOrderMapper {
 
     /**
      * 更新月卡使用剩余商品具体信息
-     * @param userMonthCardItemJson
-     * @param orderNumber
      */
-    void updateUserMonthCardItemJson(String userMonthCardItemJson,String orderNumber);
+    void updateUserMonthCardItemJson(Map<String,String> params);
 
     /**
      * 修改月卡为不可用
