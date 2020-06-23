@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -19,5 +20,6 @@ import java.util.Date;
 public class Base implements Serializable {
     private static final long serialVersionUID = -3668598027653287933L;
     private String createTime;
+    @Transient
     private String updateTime;
 }

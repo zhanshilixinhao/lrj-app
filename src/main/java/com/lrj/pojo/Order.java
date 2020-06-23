@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "max_order")
+@Table(name = "`order`")
 public class Order extends Base {
 
     private static final long serialVersionUID = 5758430596298966910L;
@@ -29,12 +29,11 @@ public class Order extends Base {
     private Integer status;
     private Integer payStatus;
     private Integer orderType;
-    private Integer takeAddress;
-    private Integer receiveAddress;
-    private Byte isYearsService;
-    private Byte isShare;
-    private Integer monthCardId;
-    private Integer isLock;
-    private Integer traceStatus;
-    private String takeTime;
+    private Integer userCouponId;
+    private Integer isShare;
+    private Integer deleted;
+    private String traceStatus;
+    private String userPhone;
+
+    public static final String ORDER_NUMBER = "orderNumber";
 }

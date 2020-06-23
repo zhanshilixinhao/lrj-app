@@ -1,7 +1,10 @@
 package com.lrj.mapper;
 
 import com.lrj.VO.*;
+import com.lrj.pojo.Order;
 import org.springframework.stereotype.Repository;
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.common.MySqlMapper;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +15,7 @@ import java.util.Map;
  * @date : 2020-4-2
  */
 @Repository
-public interface IOrderMapper {
+public interface IOrderMapper extends Mapper<Order>, MySqlMapper<Order> {
     /**
      * 创建基础订单
      */

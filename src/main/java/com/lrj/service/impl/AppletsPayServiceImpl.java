@@ -12,6 +12,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.lrj.pojo.Order.ORDER_NUMBER;
@@ -55,8 +56,22 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         }
         for (Order order : orders) {
             Balance balance = balanceMapper.selectByPrimaryKey(order.getUserId());
+            //不使用余额支付
+            if (isBalance == 0) {
+                appletsPay(request);
+            } else if (isBalance == 1) {
+                //使用余额支付
+                if (balance.getBalance().doubleValue() >= order.getTotalPrice().doubleValue()) {
+                  double userBalance =  balance.getBalance().doubleValue() - order.getTotalPrice().doubleValue();
+                  balance.setBalance(new BigDecimal(userBalance));
+                } else {
 
+                }
+            }
         }
         return null;
+    }
+
+    private void appletsPay(HttpServletRequest request) {
     }
 }

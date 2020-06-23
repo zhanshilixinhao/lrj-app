@@ -39,12 +39,16 @@ public class LrjAppApplicationTests {
     private MemberServiceUserRelationMapper memberServiceUserRelationMapper;
     @Resource
     private UserLevelMapper userLevelMapper;
+    @Resource
+    private IOrderMapper orderMapper;
+    @Resource
+    private UserMapper userMapper;
     @Test
     public void contextLoads() {
-        UserLevel userLevel = new UserLevel();
-        userLevel.setUserId(1).setLevelId(1).setInviteNum(0);
-        int userLevelInsert = userLevelMapper.insert(userLevel);
-        System.out.println(userLevelInsert);
+        List<Balance> balances = balanceMapper.selectAll();
+        for (Balance balance : balances) {
+            System.out.println(balance.toString());
+        }
         /*WxUserInfo wxUserInfo = new WxUserInfo();
         wxUserInfo.setCity("螺蛳湾").setSex(2);
         int i = wxUserInfoMapper.insertSelective(wxUserInfo);

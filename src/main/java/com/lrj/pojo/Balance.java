@@ -23,7 +23,7 @@ public class Balance {
     @Id
     private Integer userId;
     private BigDecimal balance;
-    private BigDecimal topupAmount;
+    private BigDecimal topUpAmount;
     private BigDecimal expendAmount;
     private String lastModifyTime;
     private String createTime;

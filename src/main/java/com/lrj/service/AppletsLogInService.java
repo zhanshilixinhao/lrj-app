@@ -15,7 +15,6 @@ public interface AppletsLogInService {
     /**
      * @Description: 微信小程序登录
      * @param code     小程序登录授权码
-     * @param userInfo 小程序加密数据
      * @Author: LxH
      * @Date: 2020/6/9 11:01
      */
