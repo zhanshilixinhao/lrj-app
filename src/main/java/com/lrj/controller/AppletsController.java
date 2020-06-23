@@ -6,6 +6,7 @@ import com.lrj.VO.RawData;
 import com.lrj.common.ErrorCode;
 import com.lrj.exception.ServiceException;
 import com.lrj.service.AppletsLogInService;
+import com.lrj.service.AppletsPayService;
 import com.lrj.util.CommonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -21,10 +23,13 @@ import java.io.IOException;
  * @Date: 2020/6/9 10:30
  */
 @RestController
-public class AppletsLogInController {
+public class AppletsController {
 
     @Resource
     private AppletsLogInService appletsLogInService;
+
+    @Resource
+    private AppletsPayService appletsPayService;
 
     private FormerResult result = new FormerResult();
 
@@ -74,5 +79,15 @@ public class AppletsLogInController {
             return CommonUtil.FAIL(result, "参数异常", 500);
         }
         return CommonUtil.SUCCESS(result, "绑定成功", appletsLogInService.bindPhone(phone,code,s1,superId,age));
+    }
+
+    /**
+     * @Description: 微信第三方支付
+     * @Author: LxH
+     * @Date: 2020/6/23 16:05
+     */
+    @RequestMapping("pay")
+    public FormerResult pay(HttpServletRequest request){
+        return appletsPayService.pay(request);
     }
 }
