@@ -14,7 +14,6 @@ import com.lrj.pojo.User;
 import com.lrj.pojo.UserLevel;
 import com.lrj.service.AppletsLogInService;
 import com.lrj.util.*;
-import com.mysql.cj.Messages;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +99,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         for (ThirdAcc thirdAcc : thirdAccs) {
             Example e = new Example(User.class);
             Example.Criteria c = e.createCriteria();
-            if (StringUtils.isBlank(thirdAcc.getPhone())) {
+            if (thirdAcc.getPhone()!=null) {
                 c.andEqualTo(COLUMN_USER_PHONE,thirdAcc.getPhone());
             }
             List<User> users = userMapper.selectByExample(e);
