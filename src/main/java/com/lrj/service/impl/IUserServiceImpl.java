@@ -136,4 +136,9 @@ public class IUserServiceImpl implements IUserService {
         }
         return userMapper.selectOne(queryWrapper);
     }
+
+    @Override
+    public List<UserInfoVo> getMyInvitePeople(Integer userId) {
+        return userMapper.getMyInvitePeople(userId);
+    }
 }

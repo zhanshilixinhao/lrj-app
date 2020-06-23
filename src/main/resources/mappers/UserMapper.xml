@@ -127,5 +127,15 @@
 				`type` AS userType,
 				source AS source
 	</select>
+
+	<!--通过superId 查询用户的所有下线-->
+	<select id="getMyInvitePeople" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserInfoVo">
+		SELECT
+		*
+		FROM
+		app_user
+		WHERE
+		super_id = #{userId}
+	</select>
 	<!--留着以后用  -->
 </mapper>

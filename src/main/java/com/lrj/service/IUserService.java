@@ -41,4 +41,6 @@ public interface IUserService {
     List<UserRebateVo> getUserRebate(Integer userId);
 
    User getAppUserByParam(User user);
+
+    List<UserInfoVo> getMyInvitePeople(Integer userId);
 }

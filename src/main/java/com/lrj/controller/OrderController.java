@@ -2,10 +2,7 @@ package com.lrj.controller;
 
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
-import com.lrj.mapper.IHouseServiceMapper;
-import com.lrj.mapper.IMonthCardMapper;
-import com.lrj.mapper.IOrderMapper;
-import com.lrj.mapper.ReservationMapper;
+import com.lrj.mapper.*;
 import com.lrj.pojo.MonthCard;
 import com.lrj.pojo.Order;
 import com.lrj.pojo.Reservation;
@@ -53,6 +50,8 @@ public class OrderController {
     private IMonthCardMapper monthCardMapper;
     @Resource
     private IHouseServiceMapper houseServiceMapper;
+    @Resource
+    private IItemMapper itemMapper;
 
     /** 创建订单  +增值服务
      * @param request
@@ -108,7 +107,9 @@ public class OrderController {
             if(orderVoList.size()==1){
                 //赠送随机红包（1-10元：通用类型）
                 UserInfoVo userInfoVo = userService.findUserInfoByUserId(userId);
-                userService.sendRandomCoupon(userInfoVo.getSuperId(),4);
+                if(userInfoVo.getSuperId() !=null) {
+                    userService.sendRandomCoupon(userInfoVo.getSuperId(), 4);
+                }
             }
         }
         OrderVo orderVo1 = orderService.findOrderByOrderNumber(orderVo.getOrderNumber());
@@ -126,6 +127,23 @@ public class OrderController {
             return new ResultVo("success", 1, "参数有误,请检查参数", null);
         }
         List<Reservation> reservationList =reservationMapper.getReservationListByUserId(userId);
+        String reservationJson = "";
+        for(Reservation reservation : reservationList){
+            switch (reservation.getOrderType()){
+                case 1:
+                    reservationJson = reservation.getReservationJson();
+                    break;
+                case 2:
+                     reservationJson = reservation.getReservationJson();
+                    break;
+                case 3:
+                     reservationJson = reservation.getReservationJson();
+                    break;
+                case 4:
+                     reservationJson = reservation.getReservationJson();
+                    break;
+            }
+        }
 
         return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
     }
@@ -149,6 +167,12 @@ public class OrderController {
                 monthCardVo.setMonthCardName(monthCard.getName());
                 //转化json 为JSONArray  供前端使用
                 JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardVo.getUserMonthCardItemJson());
+                //拼接商品信息
+                for(int i=0;i<userMonthCardItemList.size();i++){
+                    Integer itemCategoryId = itemMapper.getItemCategoryByItemId(Integer.parseInt(userMonthCardItemList.getJSONObject(i).get("itemId").toString()));
+                    ItemCategoryVo itemCategoryVo = itemMapper.getItemCategoryInfoByCategoryId(itemCategoryId);
+                    userMonthCardItemList.getJSONObject(i).element("itemCategoryName", itemCategoryVo.getCategoryName());
+                }
                 monthCardVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
                 return new FormerResult("SUCCESS",0,"查询成功！",monthCardVo);
             }
@@ -162,6 +186,12 @@ public class OrderController {
                     monthCardOrderVo.setMonthCardName(monthCard.getName());
                     //转化json 为JSONArray  供前端使用
                     JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardOrderVo.getUserMonthCardItemJson());
+                    //拼接商品信息
+                    for(int i=0;i<userMonthCardItemList.size();i++){
+                        Integer itemCategoryId = itemMapper.getItemCategoryByItemId(Integer.parseInt(userMonthCardItemList.getJSONObject(i).get("itemId").toString()));
+                        ItemCategoryVo itemCategoryVo = itemMapper.getItemCategoryInfoByCategoryId(itemCategoryId);
+                        userMonthCardItemList.getJSONObject(i).element("itemCategoryName", itemCategoryVo.getCategoryName());
+                    }
                     monthCardOrderVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
                 }
                 return new FormerResult("SUCCESS", 0, "查询成功！", monthCardOrderList);

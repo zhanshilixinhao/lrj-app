@@ -40,4 +40,6 @@ public interface UserMapper extends Mapper<User>, MySqlMapper<User>, BaseMapper<
     void sendRandomCoupon(UserCouponVo userCouponVo);
 
     List<UserRebateVo> getUserRebate(Integer userId);
+
+    List<UserInfoVo> getMyInvitePeople(Integer userId);
 }

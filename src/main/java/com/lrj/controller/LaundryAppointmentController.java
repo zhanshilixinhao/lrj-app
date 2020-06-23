@@ -79,7 +79,7 @@ public class LaundryAppointmentController {
                         JSONObject D = washingDetailJSONArrayAll.getJSONObject(j);
                         if (d.get("itemId").equals(D.get("itemId"))) {
                            int num1 =  Integer.parseInt(D.get("count").toString());
-                            int num2 = Integer.parseInt(d.get("count").toString());
+                            int num2 = Integer.parseInt(d.get("quantity").toString());
                             int end = num1-num2;
                             D.element("count", end);
                         }

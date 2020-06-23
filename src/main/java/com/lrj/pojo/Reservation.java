@@ -42,5 +42,7 @@ public class Reservation{
     private String reGetClothesTime;
     private String sendBackTime;
     private String isShare;  //是否是分享单
-    private Integer is_end;
+    private Integer isEnd;
+    private String picture;//图片拼接
+    private String unit;//单位
 }

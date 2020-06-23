@@ -19,7 +19,7 @@
 	FROM
 	app_item
 	WHERE
-	item_category_id = #{getHouseService}
+	item_category_id = #{itemCategoryId}
 	AND
 	active = 1
     </select>
