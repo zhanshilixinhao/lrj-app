@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 /**
@@ -90,4 +91,15 @@ public class AppletsController {
     public FormerResult pay(HttpServletRequest request){
         return appletsPayService.pay(request);
     }
+
+    /**
+     * @Description: 微信第三方支付回调
+     * @Author: LxH
+     * @Date: 2020/6/24 15:55
+     */
+    @RequestMapping("appletsPayNotify")
+    public void appletsPayNotify(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        appletsPayService.appletsPayNotify(request, response);
+    }
+
 }
