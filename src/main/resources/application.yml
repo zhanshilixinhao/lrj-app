@@ -13,7 +13,10 @@ spring:
       max-lifetime: 60000
       maximum-pool-size: 20
       idle-timeout: 30000
-
+  mvc:
+    static-path-pattern: /2020/**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:D://wy/pic2020/
 # mybatis����
 mybatis:
   mapper-locations: classpath:mappers/*.xml

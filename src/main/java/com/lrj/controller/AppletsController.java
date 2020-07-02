@@ -75,11 +75,11 @@ public class AppletsController {
      */
     @RequestMapping(value = "bindPhone")
     @ResponseBody
-    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age) {
+    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId) {
         if (StringUtils.isBlank(phone) || StringUtils.isBlank(code) || StringUtils.isBlank(s1)) {
             return CommonUtil.FAIL(result, "参数异常", 500);
         }
-        return CommonUtil.SUCCESS(result, "绑定成功", appletsLogInService.bindPhone(phone,code,s1,superId,age));
+        return CommonUtil.SUCCESS(result, "绑定成功", appletsLogInService.bindPhone(phone,code,s1,superId,age,merchantId));
     }
 
     /**
@@ -102,4 +102,13 @@ public class AppletsController {
         appletsPayService.appletsPayNotify(request, response);
     }
 
+    /**
+     * @Description: 余额充值
+     * @Author: LxH
+     * @Date: 2020/6/30 17:31
+     */
+    @RequestMapping("balanceTopUp")
+    public FormerResult balanceTopUp(HttpServletRequest request){
+        return appletsPayService.balanceTopUp(request);
+    }
 }

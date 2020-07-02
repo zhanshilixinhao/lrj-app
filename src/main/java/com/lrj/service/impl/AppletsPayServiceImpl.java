@@ -3,14 +3,8 @@ package com.lrj.service.impl;
 import com.lrj.VO.FormerResult;
 import com.lrj.common.Constant;
 import com.lrj.config.PayConfig;
-import com.lrj.mapper.BalanceMapper;
-import com.lrj.mapper.IOrderMapper;
-import com.lrj.mapper.PayOperationMapper;
-import com.lrj.mapper.ThirdAccMapper;
-import com.lrj.pojo.Balance;
-import com.lrj.pojo.Order;
-import com.lrj.pojo.PayOperation;
-import com.lrj.pojo.ThirdAcc;
+import com.lrj.mapper.*;
+import com.lrj.pojo.*;
 import com.lrj.service.AppletsPayService;
 import com.lrj.util.*;
 import org.slf4j.Logger;
@@ -25,7 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.util.Date;
@@ -33,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static com.lrj.VO.FormerResult.Fail_CODE;
 import static com.lrj.pojo.Order.ORDER_NUMBER;
 import static com.lrj.pojo.ThirdAcc.COLUMN_THIRDACC_PHONE;
 
@@ -56,6 +50,9 @@ public class AppletsPayServiceImpl implements AppletsPayService {
 
     @Resource
     private ThirdAccMapper thirdAccMapper;
+
+    @Resource
+    private BalanceLogMapper balanceLogMapper;
 
     private static final Logger log = LoggerFactory.getLogger(AppletsPayServiceImpl.class);
 
@@ -83,9 +80,10 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         }
         for (Order order : orders) {
             //不使用余额支付
-            if (isBalance == 0) {
-                return appletsPay(request,userBalance);
-            } else if (isBalance == 1) {
+            if (isBalance == 0&&order.getOrderType()==2||order.getOrderType()==4) {
+                return appletsPay(request,order.getOrderNumber(),userBalance,order.getUserId());
+            } else if (isBalance == 1&&order.getOrderType()== 1 || order.getOrderType()==3) {
+                BalanceLog balanceLog = new BalanceLog();
                 Balance balance = balanceMapper.selectByPrimaryKey(order.getUserId());
                 //使用余额支付
                 if (balance.getBalance().doubleValue() >= order.getTotalPrice().doubleValue()) {
@@ -101,6 +99,9 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                     payOperationMapper.insertSelective(payOperation);
                     order.setStatus(3).setPayStatus(1);
                     orderMapper.updateByPrimaryKeySelective(order);
+                    balanceLog.setUserId(order.getUserId()).setType("2").setAmount(order.getTotalPrice()).
+                            setCreateTime(DateUtils.formatDate(new Date()));
+                    balanceLogMapper.insertSelective(balanceLog);
                     return new FormerResult(Constant.SUCCESS,Constant.YES,"余额支付成功",null);
                 } else {
                     //用户余额小于订单总价
@@ -108,8 +109,11 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                     //更新用户余额
                     balance.setBalance(new BigDecimal("0.00"));
                     balanceMapper.updateByPrimaryKeySelective(balance);
+                    balanceLog.setUserId(order.getUserId()).setType("2").setAmount(balance.getBalance()).
+                            setCreateTime(DateUtils.formatDate(new Date()));
+                    balanceLogMapper.insertSelective(balanceLog);
                     //剩余价格微信支付
-                    return appletsPay(request, userBalance);
+                    return appletsPay(request, orderNumber,userBalance,order.getUserId());
                 }
             }
         }
@@ -163,7 +167,8 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                         setTransactionId(String.valueOf(map.get("transaction_id"))).setTotalFee(new BigDecimal(String.valueOf(map.get("total_fee")))).
                         setTradeType(1).setBankType(String.valueOf(map.get("bank_type")));
                 int i = payOperationMapper.insertSelective(payOperation);
-                System.out.println("添加成功"+1);
+                System.out.println("添加成功"+i);
+
                 //通知微信服务器已经支付成功
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
@@ -184,15 +189,62 @@ public class AppletsPayServiceImpl implements AppletsPayService {
     }
 
     /**
+     * @param: request
+     * @Description: 余额充值
+     * @Author: LxH
+     * @Date: 2020/6/30 17:31
+     */
+    @Override
+    public FormerResult balanceTopUp(HttpServletRequest request) {
+        Integer userId = Integer.valueOf(request.getParameter("userId"));
+        Integer rechargeType = Integer.valueOf(request.getParameter("rechargeType"));
+        /** 校验必须参数 **/
+        if (userId == 0||userId==null || rechargeType == 0||rechargeType==null) {
+            return new FormerResult("success", 1, "参数有误,请检查参数", null);
+        }
+        String orderNumber = "";
+        switch (rechargeType){
+            //充值100 送20%余额
+            case 1:
+                orderNumber = "a"+RandomUtil.generateRandomNumberString(13);
+                return appletsPay(request,orderNumber,100.00,userId);
+            //充值300 送25%余额
+            case 2:
+                orderNumber = "b"+RandomUtil.generateRandomNumberString(13);
+                return appletsPay(request,orderNumber,300.00,userId);
+            //充值500 送30%余额
+            case 3:
+                orderNumber = "c"+RandomUtil.generateRandomNumberString(13);
+                return appletsPay(request,orderNumber,500.00,userId);
+            //充值1000 送40%余额
+            case 4:
+                orderNumber = "d"+RandomUtil.generateRandomNumberString(13);
+                return appletsPay(request,orderNumber,1000.00,userId);
+            //自定义充值   不送
+            case 5:
+                orderNumber = "e"+RandomUtil.generateRandomNumberString(13);
+                BigDecimal payMoney = new BigDecimal(request.getParameter("payMoney"));
+                return appletsPay(request,orderNumber,payMoney.doubleValue(),userId);
+            default:
+                return new FormerResult().setErrorCode(Fail_CODE).setErrorTip("rechargeType值不可用");
+        }
+    }
+
+    /**
      * @Description: 微信预支付
      * @Author: LxH
      * @Date: 2020/6/24 17:12
      */
-    private FormerResult appletsPay(HttpServletRequest request, double userBalance) {
+    private FormerResult appletsPay(HttpServletRequest request,String orderNumber, double userBalance,Integer userId) {
         Order reOrder = new Order();
         String value;
         String openId = "";
-        String orderNumber = request.getParameter("orderNumber");
+        //添加余额记录
+        if ("a".equals(orderNumber.substring(0,1)) ||
+                "b".equals(orderNumber)||"c".equals(orderNumber)||
+                "d".equals(orderNumber)||"e".equals(orderNumber)) {
+            addBalanceLog(orderNumber,userBalance,1,userId);
+        }
         Example example = new Example(Order.class);
         example.createCriteria().andEqualTo(ORDER_NUMBER,orderNumber);
         List<Order> orders = orderMapper.selectByExample(example);
@@ -220,7 +272,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         params.put("nonce_str", StringUtils.getRandomStringByLength(32));
         params.put("body", "懒人家-小程序订单");
         params.put("out_trade_no", orderNumber);
-        params.put("total_fee", value);
+        params.put("total_fee", "1");
         params.put("spbill_create_ip", IpUtils.getIpAddr(request)); //终端IP
         params.put("notify_url", PayConfig.notify_url);  //异步通知回调地址
         params.put("trade_type", PayConfig.TRADETYPE); //支付类型
@@ -261,4 +313,50 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         return new FormerResult(Constant.SUCCESS,Constant.NO,"预支付失败",PayConfig.getApp_appID());
     }
 
+    private void addBalanceLog(String orderNumber, double userBalance, Integer typepe, Integer userId) {
+        BalanceLog balanceLog = new BalanceLog();
+        switch (orderNumber.substring(0,1)) {
+            case "a":
+                balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
+                if (typepe == 1) {
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                } else if (typepe == 2) {
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.2)).setType("4");
+                }
+                balanceLogMapper.insertSelective(balanceLog);
+                break;
+            case "b":
+                balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
+                if (typepe == 1) {
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                } else if (typepe == 2) {
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.25)).setType("4");
+                }
+                balanceLogMapper.insertSelective(balanceLog);
+                break;
+            case "c":
+                balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
+                if (typepe == 1) {
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                } else if (typepe == 2) {
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.3)).setType("4");
+                }
+                balanceLogMapper.insertSelective(balanceLog);
+                break;
+            case "d":
+                balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
+                if (typepe == 1) {
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                } else if (typepe == 2) {
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.4)).setType("4");
+                }
+                balanceLogMapper.insertSelective(balanceLog);
+                break;
+            default:
+                if (typepe == 1) {
+                    balanceLog.setUserId(userId).setAmount(new BigDecimal(userBalance)).setType("1").setCreateTime(DateUtils.formatDate(new Date()));
+                    break;
+                }
+        }
+    }
 }

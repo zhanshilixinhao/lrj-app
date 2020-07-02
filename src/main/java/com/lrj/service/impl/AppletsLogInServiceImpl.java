@@ -178,7 +178,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
      * @Date: 2020/6/9 15:51
      */
     @Override
-    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age) {
+    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId) {
         // 判断s1是否存在
         String json = userCache.getCache(s1);
         log.info(json);
@@ -225,7 +225,10 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             User user = new User();
             if (superId!=null&&superId!=0) {
                 promoteLevel(superId);
-                user.setSuperId(superId);
+                user.setSuperId(superId).setSuperType(1);
+            }
+            if (merchantId!=null&&merchantId!=0) {
+                user.setSuperId(merchantId).setSuperType(2);
             }
                 try {
                     int i = RandomUtil.generateRandom(6);
@@ -252,6 +255,10 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         //更改上级用户等级
         UserLevel userLevel = userLevelMapper.selectByPrimaryKey(superId);
         int numNew = (userLevel.getInviteNum()) + 1;
+        if (numNew<=5) {
+            userLevel.setInviteNum(numNew);
+            userLevelMapper.updateByPrimaryKeySelective(userLevel);
+        }
         if (numNew>5&&numNew<=15) {
             int leveIdNew = userLevel.getLevelId() + 1;
             userLevel.setInviteNum(numNew).setLevelId(leveIdNew);
