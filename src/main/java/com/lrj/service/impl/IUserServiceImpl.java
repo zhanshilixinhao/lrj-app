@@ -1,25 +1,20 @@
 package com.lrj.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lrj.VO.*;
-import com.lrj.dto.RequestDTO;
-import com.lrj.mapper.IItemMapper;
-import com.lrj.mapper.IUserMapper;
 import com.lrj.mapper.UserMapper;
 import com.lrj.pojo.Balance;
+import com.lrj.pojo.BalanceRecord;
 import com.lrj.pojo.User;
 import com.lrj.service.IUserService;
 import com.lrj.util.DateUtils;
 import com.lrj.util.RandomUtil;
-import jdk.internal.util.xml.impl.Input;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -140,5 +135,20 @@ public class IUserServiceImpl implements IUserService {
     @Override
     public List<UserInfoVo> getMyInvitePeople(Integer userId) {
         return userMapper.getMyInvitePeople(userId);
+    }
+
+    @Override
+    public Integer addUserAliAccount(UserInfoVo userInfoVo) {
+        return userMapper.addUserAliAccount(userInfoVo);
+    }
+
+    @Override
+    public Integer userWithdraw(UserRebateVo userRebateVo) {
+        return userMapper.userWithdraw(userRebateVo);
+    }
+
+    @Override
+    public List<BalanceRecord> getUserBalanceRecordList(Integer userId) {
+        return userMapper.getUserBalanceRecordList(userId);
     }
 }

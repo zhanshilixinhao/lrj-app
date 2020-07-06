@@ -9,6 +9,9 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.lrj.VO.*;
 import com.lrj.config.PayConfig;
+import com.lrj.mapper.ReservationMapper;
+import com.lrj.pojo.BalanceRecord;
+import com.lrj.pojo.PayOperation;
 import com.lrj.service.*;
 import com.lrj.pojo.Balance;
 import com.lrj.service.IBalanceService;
@@ -31,11 +34,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -52,13 +58,11 @@ public class PayController {
     @Resource
     private IOrderService orderService;
     @Resource
-    private IUserService userService;
-    @Resource
-    private TeamLaundryService teamLaundryService;
-    @Resource
     private IBalanceService balanceService;
-
+    @Resource
     private RebateService rebateService;
+    @Resource
+    private ReservationMapper reservationMapper;
 
     public PayController(RebateService rebateService) {
         this.rebateService = rebateService;
@@ -73,12 +77,23 @@ public class PayController {
         if (userId == null || userId == 0 || payType==null || payType==0 || rechargeType==null || rechargeType==0) {
             return new FormerResult("success", 1, "参数有误,请检查参数", null);
         }
-        String orderNumber = "00000000000000";
+        String orderNumber = "";
+        //增加余额充值记录
+        BalanceRecord balanceRecord = new BalanceRecord();
+        balanceRecord.setCreateTime(DateUtils.getNowDateTime());
+        balanceRecord.setType(2);
+        balanceRecord.setUserId(userId);
+        balanceRecord.setStatus(0);
         switch (rechargeType){
             //充值100 送20%余额
             case 1:
+                // 生成订单号
+                orderNumber = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6)+"A";
+                balanceRecord.setRechargeOrderNumber(orderNumber);
+                balanceRecord.setAmount(new BigDecimal(100.00));
+                payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){
-                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 100.00);
+                    FormerResult formerResult = appWXPay(request, orderNumber, 100.00);
                     return formerResult;
                     //支付宝支付
                 }else if(payType == 2){
@@ -88,8 +103,13 @@ public class PayController {
                 break;
             //充值300 送25%余额
             case 2:
+                // 生成订单号
+                orderNumber = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6)+"B";
+                balanceRecord.setRechargeOrderNumber(orderNumber);
+                balanceRecord.setAmount(new BigDecimal(300.00));
+                payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){
-                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 300.00);
+                    FormerResult formerResult = appWXPay(request, orderNumber, 300.00);
                     return formerResult;
                     //支付宝支付
                 }else if(payType == 2){
@@ -99,8 +119,13 @@ public class PayController {
                 break;
             //充值500 送30%余额
             case 3:
+                // 生成订单号
+                orderNumber = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6)+"C";
+                balanceRecord.setRechargeOrderNumber(orderNumber);
+                balanceRecord.setAmount(new BigDecimal(500.00));
+                payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){
-                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 500.00);
+                    FormerResult formerResult = appWXPay(request, orderNumber, 500.00);
                     return formerResult;
                     //支付宝支付
                 }else if(payType == 2){
@@ -110,8 +135,13 @@ public class PayController {
                 break;
             //充值1000 送40%余额
             case 4:
+                // 生成订单号
+                orderNumber = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6)+"D";
+                balanceRecord.setRechargeOrderNumber(orderNumber);
+                balanceRecord.setAmount(new BigDecimal(1000.00));
+                payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){
-                    FormerResult formerResult = appWXPayNotify(request, orderNumber, 1000.00);
+                    FormerResult formerResult = appWXPay(request, orderNumber, 1000.00);
                     return formerResult;
                     //支付宝支付
                 }else if(payType == 2){
@@ -121,13 +151,18 @@ public class PayController {
                 break;
             //自定义充值   不送
             case 5:
-                BigDecimal payMoney = new BigDecimal(request.getParameter("payMoney"));
+                // 生成订单号
+                orderNumber = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6)+"E";
+                balanceRecord.setRechargeOrderNumber(orderNumber);
+                BigDecimal rechargeMoney = new BigDecimal(request.getParameter("rechargeMoney"));
+                balanceRecord.setAmount(rechargeMoney);
+                payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){
-                    FormerResult formerResult = appWXPayNotify(request, orderNumber, payMoney.doubleValue());
+                    FormerResult formerResult = appWXPay(request, orderNumber, rechargeMoney.doubleValue());
                     return formerResult;
                     //支付宝支付
                 }else if(payType == 2){
-                    FormerResult formerResult = appAliPay(request, orderNumber, payMoney.doubleValue());
+                    FormerResult formerResult = appAliPay(request, orderNumber, rechargeMoney.doubleValue());
                     return formerResult;
                 }
                 break;
@@ -159,7 +194,7 @@ public class PayController {
                 return new FormerResult("success", 1, "参数有误,请检查参数", null);
             //微信支付
             }else if(payType == 1){
-                FormerResult formerResult = appWXPayNotify(request, orderNumber, 0.00);
+                FormerResult formerResult = appWXPay(request, orderNumber, 0.00);
                 return formerResult;
             //支付宝支付
             }else if(payType == 2){
@@ -174,39 +209,30 @@ public class PayController {
             balance.setBalance(new BigDecimal(100));
             //如果余额金额大于等于支付金额
             if (balance.getBalance().doubleValue() >= orderVo.getTotalPrice().doubleValue()) {
-                //增加支付流水 记录
-                Map<String, Object> flowRecordMap = new HashMap<String, Object>();
-                flowRecordMap.put("trade_type", "1");
-                flowRecordMap.put("bank_type", "");
-                flowRecordMap.put("total_fee", orderVo.getTotalPrice().doubleValue());
-                flowRecordMap.put("transaction_id", "");
-                flowRecordMap.put("out_trade_no", orderVo.getOrderNumber());
-                flowRecordMap.put("time_end", DateUtils.getNowDateTime());
-                flowRecordMap.put("user_id", orderVo.getUserId());
-                flowRecordMap.put("trade_source", "余额支付");
-                payService.payFlowRecord(flowRecordMap);
                 double balanceMoney = balance.getBalance().doubleValue() - orderVo.getTotalPrice().doubleValue();
                 //修改余额
                 balanceService.updateUserBalance(balanceMoney,userId);
+                //增加余额变动记录
+                BalanceRecord balanceRecord = new BalanceRecord();
+                balanceRecord.setAmount(orderVo.getTotalPrice());
+                balanceRecord.setCreateTime(DateUtils.getNowDateTime());
+                balanceRecord.setType(2);
+                balanceRecord.setUserId(orderVo.getUserId());
+                payService.addUserBalanceRecord(balanceRecord);
                 new FormerResult("success", 1, "请求支付完成", null);
             } else {
                 double payMoney = orderVo.getTotalPrice().doubleValue() - balance.getBalance().doubleValue();
-                //增加支付流水 记录
-                Map<String, Object> flowRecordMap = new HashMap<String, Object>();
-                flowRecordMap.put("trade_type", "2");
-                flowRecordMap.put("bank_type", "");
-                flowRecordMap.put("total_fee", balance.getBalance());
-                flowRecordMap.put("cash_fee", "");
-                flowRecordMap.put("transaction_id", "");
-                flowRecordMap.put("out_trade_no", orderVo.getOrderNumber());
-                flowRecordMap.put("time_end", DateUtils.getNowDateTime());
-                flowRecordMap.put("user_id", orderVo.getUserId());
-                flowRecordMap.put("trade_source", "部分余额支付");
-                payService.payFlowRecord(flowRecordMap);
                 //修改余额(余额清零)
                 balanceService.updateUserBalance(0.00,userId);
+                //增加余额变动记录
+                BalanceRecord balanceRecord = new BalanceRecord();
+                balanceRecord.setAmount(balance.getBalance());
+                balanceRecord.setCreateTime(DateUtils.getNowDateTime());
+                balanceRecord.setType(2);
+                balanceRecord.setUserId(orderVo.getUserId());
+                payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){   //微信支付
-                    appWXPayNotify(request, orderNumber, payMoney);
+                    appWXPay(request, orderNumber, payMoney);
                 }else if(payType == 2){   //支付宝支付
                     appAliPay(request, orderNumber, payMoney);
                 }
@@ -221,7 +247,7 @@ public class PayController {
     /**
      * 微信支付 统一下单 生成预支付交易单
      */
-    public FormerResult appWXPayNotify(HttpServletRequest request,String orderNumber,double payMoney) throws Exception {
+    public FormerResult appWXPay(HttpServletRequest request,String orderNumber,double payMoney) throws Exception {
 
         //查询该交易订单
         OrderVo orderVo = orderService.findOrderByOrderNumber(orderNumber);
@@ -246,11 +272,12 @@ public class PayController {
         InetAddress localAddr = InetAddress.getLocalHost();
         String localIp = localAddr.getHostAddress().toString();
         params.put("spbill_create_ip", localIp); //终端IP
-        params.put("notify_url", "http://cwj1.ngrok2.xiaomiqiu.cn/WXPayNotifyUrl");  //异步通知回调地址
+        params.put("notify_url", "https://cwj1.ngrok2.xiaomiqiu.cn/WXPayNotifyUrl");  //异步通知回调地址
         params.put("trade_type", "APP"); //支付类型
         //将非空参数进行签名运算(排序，MD5加密)
         String sign = WXPayUtil.getSign(params,PayConfig.getApp_key());
         params.put("sign", sign);
+        System.out.println("我支付发送的签名："+sign);
         //将请求参数转化为微信支付要求的xml格式文件
         String xml = WXPayUtil.mapToXml1(params);
 
@@ -301,6 +328,7 @@ public class PayController {
                     payMap.put("timestamp", DateUtils.getCurrentDateToNum());
                     payMap.put("package", "Sign=WXPay");
                     String paySign = WXPayUtil.getSign((HashMap<String, String>) payMap,PayConfig.getApp_key());
+                    System.out.println("生成预付单以后的签名："+paySign);
                     ((HashMap<String, String>) payMap).put("sign", paySign);
                     return new FormerResult("success", 0, "预支付成功",payMap);
                 }
@@ -314,73 +342,144 @@ public class PayController {
     }
 
     @RequestMapping(value = "/WXPayNotifyUrl",method = {RequestMethod.GET,RequestMethod.POST})
-    public String MyWXPayNotifyUrl(HttpServletRequest request){
-        Map<String,String> notifyMap = null;
+    public String MyWXPayNotifyUrl(HttpServletRequest request) throws Exception {
+        Map<String, String> notifyMap = null;
         try {
             request.setCharacterEncoding("utf-8");
             String resString = WXPayUtil.parseRequst(request);
-
+            System.out.println("微信返回通知的xml:"+resString);
             notifyMap = WXPayUtil.xmlToMap(resString);
+            System.out.println("微信返回通知的Map："+notifyMap);
+            //取出所有参数
+            String appid = notifyMap.get("appid"); //微信分配的小程序ID
+            String mch_id = notifyMap.get("mch_id");
+            String nonce_str = notifyMap.get("nonce_str");
+            String result_code = notifyMap.get("result_code");
+            String openid = notifyMap.get("openid"); //用户在商户appid下的唯一标识
+            String is_subscribe = notifyMap.get("is_subscribe"); //用户是否关注公众账号，Y-关注，N-未关注
+            String trade_type = notifyMap.get("trade_type"); //交易类型
+            String bank_type = notifyMap.get("bank_type"); //付款银行
+            String total_fee = notifyMap.get("total_fee");
+            String cash_fee = notifyMap.get("cash_fee"); //现金支付金额
+            String transaction_id = notifyMap.get("transaction_id"); //微信支付订单号
+            String out_trade_no = notifyMap.get("out_trade_no");
+            String time_end = notifyMap.get("time_end");  //支付完成时间
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         } catch (Exception e) {
             e.printStackTrace();
         }
         //异步通知结果
-        if(notifyMap.get("return_code").equals("SUCCESS")){
-            //查询该交易订单
-            OrderVo orderVo = orderService.findOrderByOrderNumber(notifyMap.get("out_trade_no"));
-            //通知防重
-            if(orderVo.getPayStatus() == 1){
-                Map<String, String> syncMap = new HashMap<String, String>();
-                syncMap.put("return_code","SUCCESS");
-                syncMap.put("return_msg", "OK");
-                String syncXml = WXPayUtil.mapToXml1(syncMap);
-                return syncXml;
-            }else {
-                synchronized (lock) {
-                    //验签
-                    String resultSign = notifyMap.get("sign");
-                    String mySign = "";
-                    if(resultSign.equals(mySign)){
-                        //取出所有参数
-                        String appid = notifyMap.get("appid"); //微信分配的小程序ID
-                        String mch_id = notifyMap.get("mch_id");
-                        String nonce_str = notifyMap.get("nonce_str");
-                        String result_code = notifyMap.get("result_code");
-                        String openid = notifyMap.get("openid"); //用户在商户appid下的唯一标识
-                        String is_subscribe = notifyMap.get("is_subscribe"); //用户是否关注公众账号，Y-关注，N-未关注
-                        String trade_type = notifyMap.get("trade_type"); //交易类型
-                        String bank_type = notifyMap.get("bank_type"); //付款银行
-                        String total_fee = notifyMap.get("total_fee");
-                        String cash_fee = notifyMap.get("cash_fee"); //现金支付金额
-                        String transaction_id = notifyMap.get("transaction_id"); //微信支付订单号
-                        String out_trade_no = notifyMap.get("out_trade_no");
-                        String time_end = notifyMap.get("time_end");  //支付完成时间
-                        //验金额
-                        String totalFee = String.valueOf(BigDecimalUtil.multiply(orderVo.getTotalPrice().doubleValue(),100));
-                        if(notifyMap.get("total_fee").equals(totalFee)){
-                            //增加支付流水 记录
-                            Map<String, Object> flowRecordMap = new HashMap<String, Object>();
-                            flowRecordMap.put("trade_type", trade_type);
-                            flowRecordMap.put("bank_type", bank_type);
-                            flowRecordMap.put("total_fee", total_fee);
-                            flowRecordMap.put("cash_fee", cash_fee);
-                            flowRecordMap.put("transaction_id", transaction_id);
-                            flowRecordMap.put("out_trade_no", out_trade_no);
-                            flowRecordMap.put("time_end", time_end);
-                            flowRecordMap.put("user_id", orderVo.getUserId());
-                            flowRecordMap.put("trade_source", "微信APP交易");
-                            payService.payFlowRecord(flowRecordMap);
+        if (notifyMap.get("return_code").equals("SUCCESS")) {
+            //判断是充值订单
+            if (notifyMap.get("out_trade_no").contains("A") || notifyMap.get("out_trade_no").contains("B") || notifyMap.get("out_trade_no").contains("C") || notifyMap.get("out_trade_no").contains("D") || notifyMap.get("out_trade_no").contains("E")) {
+                //通知防重
+                //查询该笔充值交易 是否已完成
+                BalanceRecord balanceRecord = balanceService.findBalanceByRechargeOrderNumber(notifyMap.get("out_trade_no"));
+                if (balanceRecord.getStatus() == 1) {
+                    String syncXml = "<xml> \n" +
+                            "  <return_code><![CDATA[SUCCESS]]></return_code>\n" +
+                            "</xml>";
+                    return syncXml;
+                } else if (balanceRecord.getStatus() == 0) {
+                    synchronized (lock) {
+                        //验签
+                        if (WXPayUtil.isSignatureValid(notifyMap, PayConfig.getApp_key())) {
+                            //增加用户资金流水(不赠送+赠送)
+                            String out_trade_no = notifyMap.get("out_trade_no");
+                            String total_fee = notifyMap.get("total_fee");
+                            if (out_trade_no.contains("E")) {
+                                //完成充值单
+                                payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
+                            } else if (out_trade_no.contains("A") || out_trade_no.contains("B") || out_trade_no.contains("C") || out_trade_no.contains("D")) {
+                                payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
+                                //完成 赠送余额 记录
+                                BalanceRecord balanceRecord2 = new BalanceRecord();
+                                balanceRecord2.setCreateTime(DateUtils.getNowDateTime());
+                                balanceRecord2.setUserId(balanceRecord.getUserId());
+                                BigDecimal amount = null;
+                                //不同充值，不同赠送
+                                if (out_trade_no.contains("A")) {
+                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.2).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                } else if (out_trade_no.contains("B")) {
+                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.25).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                } else if (out_trade_no.contains("C")) {
+                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.3).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                } else if (out_trade_no.contains("D")) {
+                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.4).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                }
+                                balanceRecord2.setAmount(amount);
+                                balanceRecord2.setType(4);
+                                balanceRecord2.setStatus(1);
+                                payService.addUserBalanceRecord(balanceRecord2);
+                                //增加支付流水 记录
+                                PayOperation payOperation = new PayOperation();
+                                payOperation.setTradeSource(2);
+                                payOperation.setTradeType(1);
+                                payOperation.setBankType(notifyMap.get("bank_type"));
+                                payOperation.setTotalFee(new BigDecimal(total_fee).setScale(2, BigDecimal.ROUND_HALF_UP));
+                                payOperation.setTransactionId(notifyMap.get("transaction_id"));
+                                payOperation.setOutTradeNo(out_trade_no);
+                                payOperation.setCreateTime(DateUtils.getNowTime("yyyy-MM-DD HH:mm:ss"));
+                                payOperation.setUserId(balanceRecord.getUserId());
+                                payOperation.setUserPhone("");
+                                payService.payFlowRecord(payOperation);
+                            }
                         }
-                        //向上级返利
-                         rebateService.rebate(orderVo);
-
-                        //更改订单 支付状态
-                        Integer status = 1;
-                        orderService.updateOrderPayStatus(orderVo.getOrderNumber());
-                        //根据订单号 加入懒人家助手 预约
-
+                    }
+                }
+             //判断是正常下单订单
+            } else {
+                //查询该交易订单
+                OrderVo orderVo = orderService.findOrderByOrderNumber(notifyMap.get("out_trade_no"));
+                //通知防重
+                if (orderVo.getPayStatus() == 1) {
+                    Map<String, String> syncMap = new HashMap<String, String>();
+                    syncMap.put("return_code", "SUCCESS");
+                    String syncXml = WXPayUtil.mapToXml1(syncMap);
+                    return syncXml;
+                } else {
+                    synchronized (lock) {
+                        //验签
+                        if (WXPayUtil.isSignatureValid(notifyMap, PayConfig.getApp_key())) {
+                            //取出所有参数
+                            String appid = notifyMap.get("appid"); //微信分配的小程序ID
+                            String mch_id = notifyMap.get("mch_id");
+                            String nonce_str = notifyMap.get("nonce_str");
+                            String result_code = notifyMap.get("result_code");
+                            String openid = notifyMap.get("openid"); //用户在商户appid下的唯一标识
+                            String is_subscribe = notifyMap.get("is_subscribe"); //用户是否关注公众账号，Y-关注，N-未关注
+                            String trade_type = notifyMap.get("trade_type"); //交易类型
+                            String bank_type = notifyMap.get("bank_type"); //付款银行
+                            String total_fee = notifyMap.get("total_fee");
+                            String cash_fee = notifyMap.get("cash_fee"); //现金支付金额
+                            String transaction_id = notifyMap.get("transaction_id"); //微信支付订单号
+                            String out_trade_no = notifyMap.get("out_trade_no");
+                            String time_end = notifyMap.get("time_end");  //支付完成时间
+                            //增加支付流水 记录
+                            PayOperation payOperation = new PayOperation();
+                            payOperation.setTradeSource(2);
+                            payOperation.setTradeType(1);
+                            payOperation.setBankType(bank_type);
+                            payOperation.setTotalFee(new BigDecimal(total_fee).setScale(2, BigDecimal.ROUND_HALF_UP));
+                            payOperation.setTransactionId(transaction_id);
+                            payOperation.setOutTradeNo(out_trade_no);
+                            payOperation.setCreateTime(DateUtils.getNowTime("yyyy-MM-DD HH:mm:ss"));
+                            payOperation.setUserId(orderVo.getUserId());
+                            payOperation.setUserPhone(orderVo.getUserPhone());
+                            payService.payFlowRecord(payOperation);
+                            //向上级返利
+                           /* rebateService.rebate(orderVo);*/
+                            //更改订单 支付状态
+                            orderService.updateOrderPayStatus(orderVo.getOrderNumber());
+                            //如果是单项洗衣或单项家政（更改预约单 状态）
+                            if (orderVo.getOrderType() == 1 || orderVo.getOrderType() == 3) {
+                                Map<String, Object> params = new HashMap<>();
+                                params.put("orderNumber", orderVo.getOrderNumber());
+                                params.put("status", 3);
+                                Integer updateNum = reservationMapper.updateReservationStatus(params);
+                            }
+                        }
                     }
                 }
             }
@@ -405,7 +504,7 @@ public class PayController {
         String sign = "";
         String timestamp = DateUtils.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
         String version = "1.0";
-        String notify_url = "http://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";
+        String notify_url = "https://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";
         //业务参数封装
         String biz_content = "";
         //构建请求：业务参数
@@ -429,16 +528,16 @@ public class PayController {
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         AlipayTradeAppPayRequest payRequest = new AlipayTradeAppPayRequest();
         payRequest.setBizContent(biz_content);
-        payRequest.setNotifyUrl("http://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl");
+        payRequest.setNotifyUrl("https://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl");
         try {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);
             System.out.println(response.getBody());//就是orderString 可以直接给客户端请求，无需再做处理。
             if(response.isSuccess()){
-                System.out.println("调用成功");
+                System.out.println("支付宝支付调用成功");
                 return new FormerResult("SUCCESS", 0, "支付订单构建成功", response.getBody());
             } else {
-                System.out.println("调用失败");
+                System.out.println("支付宝支付调用失败");
                 return new FormerResult("SUCCESS", 1, "支付订单构建失败",null);
             }
         } catch (AlipayApiException e) {
@@ -448,7 +547,7 @@ public class PayController {
     }
 
     @RequestMapping(value = "/AliPayNotifyUrl",method = {RequestMethod.GET,RequestMethod.POST})
-    public String AliPayNotifyUrl(HttpServletRequest request){
+    public String AliPayNotifyUrl(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //获取支付宝POST过来反馈信息
         Map<String,String> params = new HashMap<String,String>();
         Map requestParams = request.getParameterMap();
@@ -464,12 +563,91 @@ public class PayController {
             //valueStr = new String(valueStr.getBytes("ISO-8859-1"), "utf-8");
             params.put(name, valueStr);
         }
-        //切记alipaypublickey是支付宝的公钥，请去open.alipay.com对应应用下查看。
-        //boolean AlipaySignature.rsaCheckV1(Map<String, String> params, String publicKey, String charset, String sign_type)
-        try {
-            boolean flag = AlipaySignature.rsaCheckV1(params, PayConfig.getAlipayPublicKey(), PayConfig.getAlipayCharset(),"RSA2");
-        } catch (AlipayApiException e) {
-            e.printStackTrace();
+        System.out.println("支付宝返回参数："+params);
+
+        //异步通知结果
+        if (params.get("trade_status").equals("TRADE_SUCCESS")) {
+            //判断是充值订单
+            if (params.get("out_trade_no").contains("A") || params.get("out_trade_no").contains("B") || params.get("out_trade_no").contains("C") || params.get("out_trade_no").contains("D") || params.get("out_trade_no").contains("E")) {
+                //通知防重
+                //查询该笔充值交易 是否已完成
+                BalanceRecord balanceRecord = balanceService.findBalanceByRechargeOrderNumber(params.get("out_trade_no"));
+                if (balanceRecord.getStatus() == 1) {
+                     response.getWriter().write("success");
+                } else if (balanceRecord.getStatus() == 0) {
+                    synchronized (lock) {
+                        //验签
+                        //在此代码行。。。。验证不通过。。需咨询支付宝公司
+                        //切记alipaypublickey是支付宝的公钥，请去open.alipay.com对应应用下查看。
+                        //boolean AlipaySignature.rsaCheckV1(Map<String, String> params, String publicKey, String charset, String sign_type)
+                            //增加用户资金流水(不赠送+赠送)
+                            String out_trade_no = params.get("out_trade_no");
+                            String total_amount = params.get("total_amount");
+                            if (out_trade_no.contains("E")) {
+                                //完成充值单
+                                payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
+                            } else if (out_trade_no.contains("A") || out_trade_no.contains("B") || out_trade_no.contains("C") || out_trade_no.contains("D")) {
+                                payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
+                                //完成 赠送余额 记录
+                                BalanceRecord balanceRecord2 = new BalanceRecord();
+                                balanceRecord2.setCreateTime(DateUtils.getNowDateTime());
+                                balanceRecord2.setUserId(balanceRecord.getUserId());
+                                BigDecimal amount = null;
+                                //不同充值，不同赠送
+                                if (out_trade_no.contains("A")) {
+                                    amount = new BigDecimal(new BigDecimal(total_amount).doubleValue() * 0.2).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                } else if (out_trade_no.contains("B")) {
+                                    amount = new BigDecimal(new BigDecimal(total_amount).doubleValue() * 0.25).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                } else if (out_trade_no.contains("C")) {
+                                    amount = new BigDecimal(new BigDecimal(total_amount).doubleValue() * 0.3).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                } else if (out_trade_no.contains("D")) {
+                                    amount = new BigDecimal(new BigDecimal(total_amount).doubleValue() * 0.4).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                }
+                                balanceRecord2.setAmount(amount);
+                                balanceRecord2.setType(4);
+                                balanceRecord2.setStatus(1);
+                                payService.addUserBalanceRecord(balanceRecord2);
+                                //增加支付流水 记录
+                                PayOperation payOperation = new PayOperation();
+                                payOperation.setTradeSource(3);
+                                payOperation.setTradeType(1);
+                                payOperation.setTotalFee(new BigDecimal(params.get("total_amount")));
+                                payOperation.setTransactionId(params.get("trade_no"));
+                                payOperation.setOutTradeNo(params.get("out_trade_no"));
+                                payOperation.setCreateTime(DateUtils.getNowTime("yyyy-MM-DD HH:mm:ss"));
+                                payOperation.setUserId(balanceRecord.getUserId());
+                                payOperation.setUserPhone("");
+                                payService.payFlowRecord(payOperation);
+                            }
+                    }
+                }
+             //判断是正常下单订单
+            }else{
+                //查询该交易订单
+                OrderVo orderVo = orderService.findOrderByOrderNumber(params.get("out_trade_no"));
+                //增加支付流水 记录
+                PayOperation payOperation = new PayOperation();
+                payOperation.setTradeSource(3);
+                payOperation.setTradeType(1);
+                payOperation.setTotalFee(new BigDecimal(params.get("total_amount")));
+                payOperation.setTransactionId(params.get("trade_no"));
+                payOperation.setOutTradeNo(params.get("out_trade_no"));
+                payOperation.setCreateTime(DateUtils.getNowTime("yyyy-MM-DD HH:mm:ss"));
+                payOperation.setUserId(orderVo.getUserId());
+                payOperation.setUserPhone(orderVo.getUserPhone());
+                payService.payFlowRecord(payOperation);
+                //向上级返利
+                /*rebateService.rebate(orderVo);*/
+                //更改订单 支付状态
+                orderService.updateOrderPayStatus(orderVo.getOrderNumber());
+                //如果是单项洗衣或单项家政（更改预约单 状态）
+                if (orderVo.getOrderType() == 1 || orderVo.getOrderType() == 3) {
+                    Map<String, Object> param = new HashMap<>();
+                    param.put("orderNumber", orderVo.getOrderNumber());
+                    param.put("status", 3);
+                    Integer updateNum = reservationMapper.updateReservationStatus(param);
+                }
+            }
         }
         return null;
     }

@@ -12,33 +12,34 @@
 	house_service_type AS type,
 	item_name AS houseName,
 	commodity_explain AS include,
-	accept_norm AS acceptNnorm,
+	accept_norm AS acceptNorm,
 	price AS price,
 	house_service_note AS serviceNote,
-	picture AS img
+	picture AS picture,
+	house_service_time AS serviceTime
 	FROM
 	app_item
 	WHERE
 	item_category_id = #{itemCategoryId}
 	AND
-	active = 1
+	is_show = 1
     </select>
 	<!--通过家政ID 查询对应家政信息-->
 	<select id="getHouseServiceByItemId" parameterType="java.lang.Integer" resultType="com.lrj.VO.HouseServiceVo">
 		SELECT
-		id AS id,
-		pid AS pid,
-		service_type AS type,
-		service_name AS houseName,
-		service_include AS include,
+		app_item_id AS id,
+	  	item_category_id AS itemCategoryId,
+		house_service_type AS type,
+		item_name AS houseName,
+		item_unit AS itemUnit,
 		accept_norm AS acceptNnorm,
-		service_price AS price,
-		service_note AS serviceNote,
-		image_url AS img
+		price AS price,
+		house_service_note AS serviceNote,
+		picture AS img
 		FROM
-		houseservice_type
+		app_item
 		WHERE
-		id = #{houseServiceId}
+		app_item_id = #{houseServiceId}
 		AND
 		active = 1
 	</select>
@@ -60,15 +61,16 @@
 	house_service_type AS type,
 	item_name AS houseName,
 	commodity_explain AS include,
-	accept_norm AS acceptNnorm,
+	accept_norm AS acceptNorm,
 	price AS price,
 	house_service_note AS serviceNote,
-	picture AS img
+	picture AS picture,
+	house_service_time AS serviceTime
 	FROM
 	app_item
 	WHERE
 	house_service_type =2
 	AND
-	active = 1
+	is_show = 1
 	</select>
 </mapper>

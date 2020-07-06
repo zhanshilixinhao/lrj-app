@@ -44,7 +44,7 @@ public class HouseServiceController {
         /** 拼接可访问图片地址 **/
         for (HouseServiceVo houseServiceVo : houseServiceVoList) {
             /** 图片地址 **/
-            houseServiceVo.setImg(tempContextUrl + directory + houseServiceVo.getImg());
+            houseServiceVo.setPicture(tempContextUrl + directory + houseServiceVo.getPicture());
         }
         return new ResultVo("success", 0, "查询成功", houseServiceVoList);
     }
@@ -55,6 +55,7 @@ public class HouseServiceController {
         return new ResultVo("SUCCESS", 0, "查询成功！", houserServicePidVoList);
     }
 
+    //定制家政服务
     @RequestMapping(value = "/getCustomHouseService",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo getCustomHouseService(){
         List<HouseServiceVo> customHouseServiceList = houseService.findCustomHouseService();

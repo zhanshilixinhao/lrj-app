@@ -29,4 +29,6 @@ public class UserInfoVo {
         private Integer superId;  //上级ID
         private String checkTime = "";
         private Integer isYearsService;
+        private String aliAccount; //支付宝账号
+        private String realityName;//真实名字
 }

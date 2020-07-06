@@ -2,6 +2,8 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.AliPayVo;
 import com.lrj.mapper.IPayMapper;
+import com.lrj.pojo.BalanceRecord;
+import com.lrj.pojo.PayOperation;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IPayService;
 
@@ -40,8 +42,24 @@ public class PayServiceImpl implements IPayService {
         return null;
     }
 
-    public void payFlowRecord(Map<String, Object> flowRecordMap) {
-        payMapper.payFlowRecord(flowRecordMap);
+    @Override
+    public void payFlowRecord(PayOperation payOperation) {
+        payMapper.payFlowRecord(payOperation);
+    }
+
+    @Override
+    public Integer userWithdrawApply(PayOperation payOperation) {
+        return payMapper.userWithdrawApply(payOperation);
+    }
+
+    @Override
+    public void addUserBalanceRecord(BalanceRecord balanceRecord) {
+         payMapper.addUserBalanceRecord(balanceRecord);
+    }
+
+    @Override
+    public void updateUserBalanceRecord(String rechargeOrderNumber) {
+        payMapper.updateUserBalanceRecord(rechargeOrderNumber);
     }
 
     public void WXPayFlowRecord(Map<String, Object> flowRecordMap) {

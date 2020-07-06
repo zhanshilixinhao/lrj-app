@@ -3,6 +3,7 @@ package com.lrj.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.lrj.VO.*;
 import com.lrj.pojo.Balance;
+import com.lrj.pojo.BalanceRecord;
 import com.lrj.pojo.User;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
@@ -42,4 +43,10 @@ public interface UserMapper extends Mapper<User>, MySqlMapper<User>, BaseMapper<
     List<UserRebateVo> getUserRebate(Integer userId);
 
     List<UserInfoVo> getMyInvitePeople(Integer userId);
+
+    Integer addUserAliAccount(UserInfoVo userInfoVo);
+
+    Integer userWithdraw(UserRebateVo userRebateVo);
+
+    List<BalanceRecord> getUserBalanceRecordList(Integer userId);
 }

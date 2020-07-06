@@ -4,6 +4,8 @@ import com.lrj.VO.OrderVo;
 import com.lrj.VO.Order_custom_houseServiceVo;
 import com.lrj.VO.Order_houseServiceVo;
 import com.lrj.VO.Order_washingVo;
+import com.lrj.pojo.BalanceRecord;
+import com.lrj.pojo.PayOperation;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
@@ -24,7 +26,26 @@ public interface IPayMapper {
 
     /**
      * 支付流水
-     * @param flowRecordMap
+     * @param payOperation
      */
-    void payFlowRecord(Map<String, Object> flowRecordMap);
+    void payFlowRecord(PayOperation payOperation);
+
+    /**
+     * 提现申请
+     * @param payOperation
+     * @return
+     */
+    Integer userWithdrawApply(PayOperation payOperation);
+
+    /**
+     * 增加用户余额 变动记录
+     * @param balanceRecord
+     */
+    void addUserBalanceRecord(BalanceRecord balanceRecord);
+
+    /**
+     * 更新用户 余额记录 状态
+     * @param rechargeOrderNumber
+     */
+    void updateUserBalanceRecord(String rechargeOrderNumber);
 }

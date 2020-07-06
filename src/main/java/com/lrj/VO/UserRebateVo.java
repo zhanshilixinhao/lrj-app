@@ -26,4 +26,5 @@ public class UserRebateVo {
     private String createTime;
     private Integer userType;  //1.用户 2.商家
     private String source; //资金来源
+    private String orderNumber; //与返利有关的订单号
 }

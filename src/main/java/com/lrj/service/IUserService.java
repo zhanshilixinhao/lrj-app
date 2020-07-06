@@ -3,6 +3,7 @@ package com.lrj.service;
 import com.lrj.VO.*;
 import com.lrj.dto.RequestDTO;
 import com.lrj.pojo.Balance;
+import com.lrj.pojo.BalanceRecord;
 import com.lrj.pojo.User;
 import org.omg.PortableInterceptor.INACTIVE;
 
@@ -43,4 +44,10 @@ public interface IUserService {
    User getAppUserByParam(User user);
 
     List<UserInfoVo> getMyInvitePeople(Integer userId);
+
+    Integer addUserAliAccount(UserInfoVo userInfoVo);
+
+    Integer userWithdraw( UserRebateVo userRebateVo);
+
+    List<BalanceRecord> getUserBalanceRecordList(Integer userId);
 }

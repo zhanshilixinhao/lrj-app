@@ -6,6 +6,7 @@ import com.lrj.mapper.BalanceMapper;
 import com.lrj.mapper.GivenBalanceMapper;
 import com.lrj.mapper.UserCouponMapper;
 import com.lrj.pojo.Balance;
+import com.lrj.pojo.BalanceRecord;
 import com.lrj.pojo.GivenBalance;
 import com.lrj.service.IBalanceService;
 import com.lrj.util.CommonUtil;
@@ -31,7 +32,7 @@ public class BalanceServiceImpl implements IBalanceService {
     @Resource
     private UserCouponMapper userCouponMapper;
 
-    public UserMoneyInfo findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
+   /* public UserMoneyInfo findBalanceByUserId(Integer userId, FormerResult result, HttpServletRequest request) {
 
         Balance balance = balanceMapper.selectByPrimaryKey(userId);
         BigDecimal reBalance = balance.getBalance();
@@ -80,15 +81,20 @@ public class BalanceServiceImpl implements IBalanceService {
             }
             umf.setDays(days);
         }
-        /** 去实体对象中的null值 **/
+        *//** 去实体对象中的null值 **//*
         CommonUtil.beanToRemoveNull(umf);
         return umf;
-    }
+    }*/
 
     public void updateUserBalance(double balanceMoney,Integer userId) {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("balanceMoney", balanceMoney);
         params.put("userId", userId);
         balanceMapper.updateUserBalance(params);
+    }
+
+    @Override
+    public BalanceRecord findBalanceByRechargeOrderNumber(String rechargeOrderNumber) {
+        return balanceMapper.findBalanceByRechargeOrderNumber(rechargeOrderNumber);
     }
 }

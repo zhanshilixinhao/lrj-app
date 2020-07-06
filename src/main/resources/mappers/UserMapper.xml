@@ -119,13 +119,16 @@
 
 	<!--查询用户的返利记录（收益记录）-->
 	<select id="getUserRebate" parameterType="java.lang.Integer" resultType="com.lrj.VO.UserRebateVo">
-		SELECT app_feed_back_id AS id,
+		SELECT id AS id,
 				user_id AS userId,
 				low_id AS lowId,
 				back_money AS backMoney,
 				create_time AS createTime,
 				`type` AS userType,
-				source AS source
+				source AS source,
+				order_number AS orderNumber
+				FROM app_rebate
+				WHERE user_id=#{userId}
 	</select>
 
 	<!--通过superId 查询用户的所有下线-->
@@ -136,6 +139,21 @@
 		app_user
 		WHERE
 		super_id = #{userId}
+	</select>
+
+	<!--添加用户支付宝账号-->
+	<update id="addUserAliAccount" parameterType="com.lrj.VO.UserInfoVo" useGeneratedKeys="true" keyProperty="appUserId">
+		UPDATE app_user SET reality_name=#{realityName},ali_account=#{aliAccount}
+		WHERE app_user_id=#{appUserId}
+	</update>
+
+	<insert id="userWithdraw" parameterType="com.lrj.VO.UserRebateVo" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO app_rebate (user_id,back_money,create_time,type,source)
+		VALUES  (#{userId},#{backMoney},#{createTime},#{userType},#{source})
+	</insert>
+	
+	<select id="getUserBalanceRecordList" parameterType="java.lang.Integer" resultType="com.lrj.pojo.BalanceRecord">
+		select * from balance_log WHERE user_id=#{userId};
 	</select>
 	<!--留着以后用  -->
 </mapper>

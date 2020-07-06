@@ -2,6 +2,9 @@ package com.lrj.controller;
 
 import com.lrj.VO.*;
 import com.lrj.pojo.Balance;
+import com.lrj.pojo.BalanceRecord;
+import com.lrj.pojo.PayOperation;
+import com.lrj.service.IPayService;
 import com.lrj.service.IUserService;
 
 import com.lrj.util.DateUtils;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 
 import static com.lrj.util.jiGuangOauthLoginPost.doPostForJpush;
@@ -29,6 +33,8 @@ public class UserController {
 
     @Resource
     private IUserService userService;
+    @Resource
+    private IPayService payService;
 
     //定义全局变量 codeMap 存放用户手机验证ma
     Map<String, Object> codeMap = new HashMap<String, Object>();
@@ -165,6 +171,19 @@ public class UserController {
     }
 
     /**
+     * 获取用户消费流水记录
+     */
+    @RequestMapping(value = "/getUserBalanceRecordList",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getUserBalanceRecordList(Integer userId){
+        /** 校验必须参数 **/
+        if (userId == null) {
+            return new ResultVo("success", 1, "参数有误,请检查参数",null);
+        }
+        List<BalanceRecord> balanceRecordList = userService.getUserBalanceRecordList(userId);
+        return new ResultVo("SUCCESS", 0, "查询成功", balanceRecordList);
+    }
+
+    /**
      * 获取用户收益流水记录
      */
     @RequestMapping(value = "/getUserRebate",method = {RequestMethod.GET,RequestMethod.POST})
@@ -209,5 +228,60 @@ public class UserController {
         }
         List<UserInfoVo> userInfoVoList = userService.getMyInvitePeople(userId);
         return new ResultVo("SUCCESS", 0, "查询完成", userInfoVoList);
+    }
+
+    /**
+     * 添加支付宝账号
+     */
+    @RequestMapping(value = "/addUserAliAccount",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult addUserAliAccount(Integer userId,String realityName,String aliAccount){
+        /** 校验必须参数 **/
+        if (userId == null || userId ==0 || realityName.equals("") || realityName==null || aliAccount.equals("") || aliAccount==null) {
+            return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        UserInfoVo userInfoVo = userService.findUserInfoByUserId(userId);
+        userInfoVo.setRealityName(realityName);
+        userInfoVo.setAliAccount(aliAccount);
+        Integer updateNum = userService.addUserAliAccount(userInfoVo);
+        if(updateNum==1){
+            return new FormerResult("SUCCESS", 0, "添加完成", null);
+        }
+        return null;
+    }
+
+    /**
+     * 用户提现
+     */
+    @RequestMapping(value = "/userWithdraw",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult userWithdraw(Integer userId,String money){
+        /** 校验必须参数 **/
+        if (userId == null || userId ==0 || money.equals("") || money==null || money.equals("0")) {
+            return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        //用户提现申请
+        UserRebateVo userRebateVo = new UserRebateVo();
+        userRebateVo.setUserId(userId);
+        userRebateVo.setBackMoney(new BigDecimal(money));
+        userRebateVo.setCreateTime(DateUtils.getNowTime("YYYY-MM-DD hh:mm:ss"));
+        userRebateVo.setUserType(1);
+        userRebateVo.setSource("提现");
+        Integer insertNum = userService.userWithdraw(userRebateVo);
+        if(insertNum ==1){
+            //提交平台审核
+            PayOperation payOperation = new PayOperation();
+            payOperation.setTradeSource(-1);
+            payOperation.setTotalFee(new BigDecimal(money));
+            payOperation.setUserId(userId);
+            payOperation.setCheckStatus(0);
+            payOperation.setCreateTime(DateUtils.getNowTime("yyyy-MM-dd HH:mm:ss"));
+            Integer addNum = payService.userWithdrawApply(payOperation);
+            if(addNum == 1){
+                return new FormerResult("SUCCESS", 0, "提现发起失败，请联系客服或技术人员", null);
+            }else {
+                return new FormerResult("SUCCESS", 0, "提现发起失败，请联系客服或技术人员", null);
+            }
+        }else {
+            return new FormerResult("SUCCESS", 0, "提现发起失败，请联系客服或技术人员", null);
+        }
     }
 }

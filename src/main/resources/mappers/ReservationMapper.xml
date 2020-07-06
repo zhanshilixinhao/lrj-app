@@ -6,7 +6,11 @@
 	<!--留着以后用  -->
 	<!--查询用户的所有服务-->
 	<select id="getReservationListByUserId" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE user_id=#{userId}
+		SELECT * FROM reservation WHERE user_id=#{userId} AND status IN (0,1,3,4)
+	</select>
+	<!--根据预约单Id 查询该预约单-->
+	<select id="getReservationByReservationId" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Reservation">
+		SELECT * FROM reservation WHERE reservation_id=#{reservationId}
 	</select>
 	<select id="getWashingOrderList" resultType="com.lrj.pojo.Reservation">
 		SELECT * FROM reservation WHERE status=0 AND order_type IN (1,2)
@@ -24,8 +28,12 @@
 		UPDATE reservation SET status=1,grab_order_id=#{staffId} WHERE order_number=#{orderNumber} AND status=0
 	</update>
 	<!--更新预约订单的追踪状态-->
-	<update id="updateReservationStatus" parameterType="java.util.HashMap">
-		UPDATE reservation SET status=#{traceStatus} WHERE order_number=#{order_number} AND grab_order_id=#{staffId}
+	<update id="updateReservationTrackingStatus" parameterType="java.util.HashMap">
+		UPDATE reservation SET tracking_status=#{traceStatus} WHERE order_number=#{orderNumber} AND grab_order_id=#{staffId}
+	</update>
+	<!--更新预约订单的状态-->
+	<update id="updateReservationStatus" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="reservationId">
+		UPDATE reservation SET status=#{status} WHERE order_number=#{orderNumber}
 	</update>
 	<!--根据状态和账号 查询对应预约单-->
 	<select id="getReservationList" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Reservation">

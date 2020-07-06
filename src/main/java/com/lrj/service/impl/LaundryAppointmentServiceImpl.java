@@ -74,7 +74,11 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         reservation.setIsEnd(0);
 
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
-        reservation.setStatus(orderVo.getPayStatus());
+        if(orderVo.getPayStatus()==0){
+            reservation.setStatus(2);
+        }else if(orderVo.getPayStatus()==1){
+            reservation.setStatus(3);
+        }
         reservation.setCreateTime(DateUtils.getNowDateTime());
         reservation.setUpdateTime(DateUtils.getNowDateTime());
         reservation.setUserId(Integer.parseInt(reservationMap.get("userId").toString()));
@@ -111,7 +115,11 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         reservation.setGrabOrderId(null);
         reservation.setIsEnd(0);
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
-        reservation.setStatus(orderVo.getPayStatus());
+        if(orderVo.getPayStatus()==0){
+            reservation.setStatus(2);
+        }else if(orderVo.getPayStatus()==1){
+            reservation.setStatus(3);
+        }
         reservation.setCreateTime(DateUtils.getNowDateTime());
         reservation.setUpdateTime(DateUtils.getNowDateTime());
         reservation.setUserId(Integer.parseInt(reservationMap.get("userId").toString()));

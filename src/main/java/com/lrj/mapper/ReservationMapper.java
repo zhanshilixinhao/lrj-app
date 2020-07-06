@@ -21,6 +21,12 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
      */
      List<Reservation> getReservationListByUserId(Integer userId);
     /**
+     * 根据预约单Id  查询预约单
+     * @param reservationId
+     * @return
+     */
+    Reservation getReservationByReservationId(Integer reservationId);
+    /**
      * 保存预约 单
      * @param reservation
      */
@@ -43,11 +49,16 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
     Integer lockReservation(String orderNumber,Integer staffId);
 
     /**
-     * 更新预约订单 状态
+     * 更新预约订单 追踪状态
      * @param params
      * @return
      */
-    Integer updateReservationStatus(Map<String, Object> params);
+    Integer updateReservationTrackingStatus(Map<String, Object> params);
+
+    /**
+     * 更新预约单 状态
+     */
+    Integer  updateReservationStatus(Map<String, Object> params);
 
     /**
      * 根据 预约单状态和员工账号 查询预约单
@@ -63,4 +74,6 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
      * @return
      */
     List<HouseServiceWorkTimeVo> getHouseServiceWorkTime(Integer staffId);
+
+
 }

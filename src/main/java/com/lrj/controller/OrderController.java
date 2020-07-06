@@ -10,6 +10,7 @@ import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
 import com.lrj.util.DateUtils;
+import com.lrj.util.MessagesUtil;
 import com.lrj.util.RandomUtil;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
@@ -118,34 +119,136 @@ public class OrderController {
     }
 
     /**
-     * 查询订单(预约服务)
+     * 查询订单(预约服务：简单列表)
      */
-    @RequestMapping(value = "/findUserReservation",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo findUserOrder(Integer userId){
+    @RequestMapping(value = "/findUserReservationList",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo findUserReservationList(Integer userId,HttpServletRequest request){
         /** 校验必须参数 **/
         if (userId == null || userId == 0) {
             return new ResultVo("success", 1, "参数有误,请检查参数", null);
         }
         List<Reservation> reservationList =reservationMapper.getReservationListByUserId(userId);
-        String reservationJson = "";
+        //将预约详细列表 变成 简单列表
+        List<ReservationListVo> reservationListVoList = new ArrayList<>();
         for(Reservation reservation : reservationList){
+            ReservationListVo reservationListVo = new ReservationListVo();
+            reservationListVo.setOrderNumber(reservation.getOrderNumber());
+            reservationListVo.setReserVationId(reservation.getReservationId());
+            reservationListVo.setStatus(reservation.getStatus());
+            reservationListVo.setTotalPrice(reservation.getTotalPrice());
+            //转化json 为JSONArray 用于计算
+            JSONArray reservationJsonArray = JSONArray.fromObject(reservation.getReservationJson());
+            reservationListVo.setCount(reservationJsonArray.size());
+            //局部变量
+            Integer itemId = null;
+            AppItemVo appItemVo = null;
+            String tempContextUrl = null;
+            StringBuffer url = null;
             switch (reservation.getOrderType()){
                 case 1:
-                    reservationJson = reservation.getReservationJson();
+                    itemId = Integer.parseInt(reservationJsonArray.getJSONObject(0).get("itemId").toString());
+                    appItemVo= itemMapper.getItemInfoByItemId(itemId);
+                    url = new StringBuffer();
+                    url.append("http://www.51lrj.com/findUserReservationList");
+                    /** 拼接 **/
+                    tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+                    /** 获取虚拟目录 **/
+                    String directory = MessagesUtil.getString("virtual_directory") + "/";
+                    /** 图片地址 **/
+                    reservationListVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+                    reservationListVo.setUnit("件");
+                    reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
                 case 2:
-                     reservationJson = reservation.getReservationJson();
+                    reservationListVo.setPicture("");
+                    reservationListVo.setUnit("件");
+                    reservationListVo.setTotalPrice(new BigDecimal(0.00).setScale(2));
                     break;
                 case 3:
-                     reservationJson = reservation.getReservationJson();
+                    itemId = Integer.parseInt(reservationJsonArray.getJSONObject(0).get("itemId").toString());
+                    appItemVo = itemMapper.getItemInfoByItemId(itemId);
+                    url= new StringBuffer();
+                    url.append("http://www.51lrj.com/findUserReservationList");
+                    /** 拼接 **/
+                    tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+                    /** 获取虚拟目录 **/
+                    directory = MessagesUtil.getString("virtual_directory") + "/";
+                    /** 图片地址 **/
+                    reservationListVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+                    reservationListVo.setUnit("次");
+                    reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
                 case 4:
-                     reservationJson = reservation.getReservationJson();
+                    reservationListVo.setPicture("");
+                    reservationListVo.setUnit("次");
+                    reservationListVo.setTotalPrice(new BigDecimal(0.00).setScale(2));
                     break;
             }
+            reservationListVoList.add(reservationListVo);
+        }
+        return new ResultVo("SUCCESS", 0, "查询成功", reservationListVoList);
+    }
+
+    /**
+     * 查询订单(预约服务：详情)
+     */
+    @RequestMapping(value = "/findUserReservationDetail",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult findUserReservationDetail(Integer reservationId,HttpServletRequest request){
+        /** 校验必须参数 **/
+        if (reservationId == null || reservationId == 0) {
+            return new FormerResult("success", 1, "参数有误,请检查参数", null);
+        }
+        Reservation reservation = reservationMapper.getReservationByReservationId(reservationId);
+        //拼接原价
+        OrderVo orderVo = orderMapper.getOrderByOrderNumber(reservation.getOrderNumber());
+        reservation.setOriginalPrice(orderVo.getOriginalPrice());
+        //转化json 为JSONArray 用于计算
+        JSONArray reservationJsonArray = JSONArray.fromObject(reservation.getReservationJson());
+        if(reservation.getOrderType()==1 || reservation.getOrderType()==2){
+            //拼接商品信息
+            for(int i=0;i<reservationJsonArray.size();i++){
+                Integer itemId = Integer.parseInt(reservationJsonArray.getJSONObject(i).get("itemId").toString());
+                AppItemVo appItemVo = itemMapper.getItemInfoByItemId(itemId);
+                /** 获取请求地址 **/ //request.getRequestURL();
+                StringBuffer url = new StringBuffer();
+                url.append("http://www.51lrj.com/findUserReservationDetail");
+                /** 拼接 **/
+                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+                /** 获取虚拟目录 **/
+                String directory = MessagesUtil.getString("virtual_directory") + "/";
+                /** 拼接可访问图片地址 **/
+                /** 图片地址 **/
+                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + directory + appItemVo.getPicture());
+                reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
+                reservationJsonArray.getJSONObject(i).element("defect", "无瑕疵");
+                reservationJsonArray.getJSONObject(i).element("washingPicture", "http://cwj1.hhhh.com");
+            }
+            //清空json,换为jsonArray
+            reservation.setReservationJson(null);
+            reservation.setReservationJSONArray(reservationJsonArray);
+        }else {
+            //拼接商品信息
+            for(int i=0;i<reservationJsonArray.size();i++){
+                Integer itemId = Integer.parseInt(reservationJsonArray.getJSONObject(i).get("itemId").toString());
+                AppItemVo appItemVo = itemMapper.getItemInfoByItemId(itemId);
+                /** 获取请求地址 **/ //request.getRequestURL();
+                StringBuffer url = new StringBuffer();
+                url.append("http://www.51lrj.com/getItemList");
+                /** 拼接 **/
+                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+                /** 获取虚拟目录 **/
+                String directory = MessagesUtil.getString("virtual_directory") + "/";
+                /** 拼接可访问图片地址 **/
+                /** 图片地址 **/
+                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + directory + appItemVo.getPicture());
+                reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
+            }
+            //清空json,换为jsonArray
+            reservation.setReservationJson(null);
+            reservation.setReservationJSONArray(reservationJsonArray);
         }
 
-        return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
+        return new FormerResult("SUCCESS", 0, "查询成功", reservation);
     }
 
     /**
@@ -212,7 +315,7 @@ public class OrderController {
         if(type==1){
             Order_custom_houseServiceVo customHouseServiceVo = orderMapper.getCustomHouseServiceOrderByUserId(userId);
             if(customHouseServiceVo == null || customHouseServiceVo.equals("")){
-                return new FormerResult("SUCCESS", 0, "查询完成", customHouseServiceVo);
+                return new FormerResult("SUCCESS", 0, "查询完成", null);
             }else {
                 //转化json 为JSONArray  供前端使用
                 JSONArray individualServiceJSONArray= JSONArray.fromObject(customHouseServiceVo.getIndividualServiceJson());

@@ -5,8 +5,25 @@
                 >
 <mapper namespace="com.lrj.mapper.IPayMapper">
     <!--增加支付交易流水-->
-    <insert id="payFlowRecord" parameterType="java.util.HashMap">
-	INSERT INTO pay_operatin (trade_source,trade_type,bank_type,total_fee,transaction_id,out_trade_no,time_end,user_id)
-		VALUES  (#{trade_source},#{trade_type},#{bank_type},#{total_fee},#{transaction_id},#{out_trade_no},#{time_end},#{user_id})
+    <insert id="payFlowRecord" parameterType="com.lrj.pojo.PayOperation">
+	 INSERT INTO pay_operation (trade_source,trade_type,bank_type,total_fee,transaction_id,out_trade_no,create_time,user_id,reason,check_status,user_phone)
+		VALUES  (#{tradeSource},#{tradeType},#{bankType},#{totalFee},#{transactionId},#{outTradeNo},#{createTime},#{userId},#{reason},#{checkStatus},#{userPhone})
     </insert>
+
+    <!--增加用户提现记录-->
+    <insert id="userWithdrawApply" parameterType="com.lrj.pojo.PayOperation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO pay_operation (trade_source,total_fee,user_id,check_status,create_time)
+		VALUES  (#{tradeSource},#{totalFee},#{userId},#{checkStatus},#{createTime})
+    </insert>
+
+    <!--增加用户 余额变动记录-->
+    <insert id="addUserBalanceRecord" parameterType="com.lrj.pojo.BalanceRecord" useGeneratedKeys="true" keyProperty="balanceLogId">
+        INSERT INTO balance_log (user_id,`type`,amount,create_time,status,recharge_order_number)
+		VALUES  (#{userId},#{type},#{amount},#{createTime},#{status},#{rechargeOrderNumber})
+    </insert>
+
+    <!-- 更新用户 余额记录 状态-->
+    <update id="updateUserBalanceRecord" parameterType="java.lang.String">
+        UPDATE balance_log SET status=1 WHERE recharge_order_number=#{rechargeOrderNumber}
+    </update>
 </mapper>

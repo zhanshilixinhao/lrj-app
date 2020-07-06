@@ -20,10 +20,12 @@ public class HouseServiceVo {
     private Integer itemCategoryId; //导航栏Id
     private Integer type;  //类型：1：基础服务  2：个性服务
     private String houseName; //名称
+    private String itemUnit;//单位
     private String include; //服务包含项目
     private Double price;  //价格
     private String serviceNote; //服务说明
-    private String img; //图片路径
+    private String picture; //图片路径
     private Integer active; //状态 0：下架 1：上架
-    private String acceptNnorm; //服务标准
+    private String acceptNorm; //服务标准
+    private String serviceTime;//服务时长
 }

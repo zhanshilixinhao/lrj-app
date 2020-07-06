@@ -8,4 +8,9 @@
 	<update id="updateUserBalance" parameterType="java.util.HashMap">
 		UPDATE balance SET balance=#{balanceMoney} WHERE user_id=#{userId}
 	</update>
+
+	<!--通过充值订单流水号查询 用户该笔交易-->
+	<select id="findBalanceByRechargeOrderNumber" parameterType="java.lang.String" resultType="com.lrj.pojo.BalanceRecord">
+		select * from balance_log WHERE recharge_order_number=#{rechargeOrderNumber};
+	</select>
 </mapper>
