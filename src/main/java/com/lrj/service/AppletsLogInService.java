@@ -36,5 +36,5 @@ public interface AppletsLogInService {
      * @Author: LxH
      * @Date: 2020/6/9 15:51
      */
-    FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age);
+    FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId);
 }

@@ -18,6 +18,8 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.lrj.pojo.Order.ORDER_NUMBER;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -43,12 +45,18 @@ public class LrjAppApplicationTests {
     private IOrderMapper orderMapper;
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private PayOperationMapper payOperationMapper;
     @Test
     public void contextLoads() {
-        List<Balance> balances = balanceMapper.selectAll();
-        for (Balance balance : balances) {
-            System.out.println(balance.toString());
+        Order reorder = new Order();
+        Example example = new Example(Order.class);
+        example.createCriteria().andEqualTo(ORDER_NUMBER,"20200618389571");
+        List<Order> orders = orderMapper.selectByExample(example);
+        for (Order order : orders) {
+            reorder=order;
         }
+        System.out.println(reorder.toString());
         /*WxUserInfo wxUserInfo = new WxUserInfo();
         wxUserInfo.setCity("螺蛳湾").setSex(2);
         int i = wxUserInfoMapper.insertSelective(wxUserInfo);

@@ -31,6 +31,83 @@ public class WXPayUtil {
 
     private static final Random RANDOM = new SecureRandom();
 
+    /**
+          * @param content
+          * @param charset
+          * @return
+          * @throws SignatureException
+          * @throws UnsupportedEncodingException
+          */
+    public static byte[] getContentBytes(String content, String charset) {
+        if (charset == null || "".equals(charset)) {
+            return content.getBytes();
+        }
+        try {
+            return content.getBytes(charset);
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("MD5签名过程中出现错误,指定的编码集不对,您目前指定的编码集是:" + charset);
+        }
+    }
+
+
+    /**
+          * 签名字符串
+          * @param text 需要签名的字符串
+          * @param key 密钥
+          * @param input_charset 编码格式
+          * @return 签名结果
+          */
+    public static String sign(String text, String key, String input_charset) {
+        text = text + "&key=" + key;
+        return DigestUtils.md5Hex(getContentBytes(text, input_charset));
+    }
+
+
+    /**
+          * 把数组所有元素排序，并按照“参数=参数值”的模式用“&”字符拼接成字符串
+          * @param params 需要排序并参与字符拼接的参数组
+          * @return 拼接后字符串
+          */
+    public static String createLinkString(Map<String, String> params) {
+        List<String> keys = new ArrayList<String>(params.keySet());
+        Collections.sort(keys);
+        String prestr = "";
+        for (int i = 0; i < keys.size(); i++) {
+            String key = keys.get(i);
+            String value = params.get(key);
+            if (i == keys.size() - 1) {// 拼接时，不包括最后一个&字符
+                prestr = prestr + key + "=" + value;
+            } else {
+                prestr = prestr + key + "=" + value + "&";
+            }
+        }
+        return prestr;
+    }
+
+
+    /**
+          * 除去数组中的空值和签名参数
+          * @param sArray 签名参数组
+          * @return 去掉空值与签名参数后的新签名参数组
+          */
+    public static Map<String, String> paraFilter(Map<String, String> sArray) {
+        Map<String, String> result = new HashMap<String, String>();
+        if (sArray == null || sArray.size() <= 0) {
+            return result;
+        }
+        for (String key : sArray.keySet()) {
+            String value = sArray.get(key);
+            if (value == null || value.equals("") || key.equalsIgnoreCase("sign")
+                    || key.equalsIgnoreCase("sign_type")) {
+                continue;
+            }
+            result.put(key, value);
+        }
+        return result;
+    }
+
+
+
 
     public enum SignType {
         MD5, HMACSHA256
@@ -102,7 +179,7 @@ public class WXPayUtil {
      * @return XML格式的字符串
      * @throws Exception
      */
-    public static String mapToXml(Map<String, String> data) throws Exception {
+    public static String mapToXml(Map<String, Object> data) throws Exception {
         org.w3c.dom.Document document = WXPayXmlUtil.newDocument();
         org.w3c.dom.Element root = document.createElement("xml");
         document.appendChild(root);
@@ -177,17 +254,19 @@ public class WXPayUtil {
         return body;
     }
 
-/**
+/*
+    *//**
      * 生成带有 sign 的 XML 格式字符串
      *
      * @param data Map类型数据
      * @param key API密钥
      * @return 含有sign字段的XML
+     *//*
     public static String generateSignedXml(final Map<String, String> data, String key) throws Exception {
         return generateSignedXml(data, key, WXPayConstants.SignType.MD5);
-    }*/
+    }
 
- /**
+    *//**
      * 生成带有 sign 的 XML 格式字符串
      *
      * @param data Map类型数据
@@ -209,30 +288,29 @@ public class WXPayUtil {
      * @param key API密钥
      * @return 签名是否正确
      * @throws Exception
-     */
-
-    /*public static boolean isSignatureValid(String xmlStr, String key) throws Exception {
+     *//*
+    public static boolean isSignatureValid(String xmlStr, String key) throws Exception {
         Map<String, String> data = xmlToMap(xmlStr);
         if (!data.containsKey(WXPayConstants.FIELD_SIGN) ) {
             return false;
         }
         String sign = data.get(WXPayConstants.FIELD_SIGN);
         return generateSignature(data, key).equals(sign);
-    }*/
+    }
 
-    /**
+    *//**
      * 判断签名是否正确，必须包含sign字段，否则返回false。使用MD5签名。
      *
      * @param data Map类型数据
      * @param key API密钥
      * @return 签名是否正确
      * @throws Exception
-     */
+     *//*
     public static boolean isSignatureValid(Map<String, String> data, String key) throws Exception {
-        return isSignatureValid(data, key,SignType.MD5);
+        return isSignatureValid(data, key, WXPayConstants.SignType.MD5);
     }
 
-    /**
+    *//**
      * 判断签名是否正确，必须包含sign字段，否则返回false。
      *
      * @param data Map类型数据
@@ -240,57 +318,57 @@ public class WXPayUtil {
      * @param signType 签名方式
      * @return 签名是否正确
      * @throws Exception
-     */
-    public static boolean isSignatureValid(Map<String, String> data, String key, SignType signType) throws Exception {
-        if (!data.containsKey(FIELD_SIGN) ) {
+     *//*
+    public static boolean isSignatureValid(Map<String, String> data, String key, WXPayConstants.SignType signType) throws Exception {
+        if (!data.containsKey(WXPayConstants.FIELD_SIGN) ) {
             return false;
         }
-        String sign = data.get(FIELD_SIGN);
+        String sign = data.get(WXPayConstants.FIELD_SIGN);
         return generateSignature(data, key, signType).equals(sign);
     }
 
-    /**
+    *//**
      * 生成签名
      *
      * @param data 待签名数据
      * @param key API密钥
      * @return 签名
-     */
+     *//*
     public static String generateSignature(final Map<String, String> data, String key) throws Exception {
-        return generateSignature(data, key, SignType.MD5);
+        return generateSignature(data, key, WXPayConstants.SignType.MD5);
     }
 
-    /**
+    *//**
      * 生成签名. 注意，若含有sign_type字段，必须和signType参数保持一致。
      *
      * @param data 待签名数据
      * @param key API密钥
      * @param signType 签名方式
      * @return 签名
-     */
-    public static String generateSignature(final Map<String, String> data, String key, SignType signType) throws Exception {
+     *//*
+    public static String generateSignature(final Map<String, String> data, String key, WXPayConstants.SignType signType) throws Exception {
         Set<String> keySet = data.keySet();
         String[] keyArray = keySet.toArray(new String[keySet.size()]);
         Arrays.sort(keyArray);
         StringBuilder sb = new StringBuilder();
         for (String k : keyArray) {
-            if (k.equals(FIELD_SIGN)) {
+            if (k.equals(WXPayConstants.FIELD_SIGN)) {
                 continue;
             }
             if (data.get(k).trim().length() > 0) // 参数值为空，则不参与签名
                 sb.append(k).append("=").append(data.get(k).trim()).append("&");
         }
         sb.append("key=").append(key);
-        if (SignType.MD5.equals(signType)) {
+        if (WXPayConstants.SignType.MD5.equals(signType)) {
             return MD5(sb.toString()).toUpperCase();
         }
-        else if (SignType.HMACSHA256.equals(signType)) {
+        else if (WXPayConstants.SignType.HMACSHA256.equals(signType)) {
             return HMACSHA256(sb.toString(), key);
         }
         else {
             throw new Exception(String.format("Invalid sign_type: %s", signType));
         }
-    }
+    }*/
 
 
     /**
