@@ -8,6 +8,7 @@ import net.sf.json.JSONArray;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 
 /**
@@ -45,7 +46,9 @@ public class Reservation{
     private String sendBackTime;
     private String isShare;  //是否是分享单
     private Integer isEnd;
+    @Transient
     private String picture;//图片拼接
+    @Transient
     private String unit;//单位
     private BigDecimal originalPrice;//商品原价
 }
