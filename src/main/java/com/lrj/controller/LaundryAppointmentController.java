@@ -6,14 +6,17 @@ import com.lrj.mapper.IOrderMapper;
 import com.lrj.service.IOrderService;
 import com.lrj.service.LaundryAppointmentService;
 
+import com.lrj.util.BigDecimalUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,6 +25,7 @@ import java.util.Map;
  * @date 2020/4/17 16:43
  */
 @RestController
+@Transactional
 public class LaundryAppointmentController {
     @Resource
     private LaundryAppointmentService laundryAppointmentService;
@@ -36,8 +40,7 @@ public class LaundryAppointmentController {
      * @return
      */
     @RequestMapping(value = "/createWashingAppoint",method = {RequestMethod.GET,RequestMethod.POST})
-    public FormerResult createWashingAppoint(HttpServletRequest request) {
-        Integer userId = Integer.parseInt(request.getParameter("userId"));
+    public FormerResult createWashingAppoint(HttpServletRequest request) { Integer userId = Integer.parseInt(request.getParameter("userId"));
         String userName = request.getParameter("userName");
         Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
         String reservationJson = request.getParameter("reservationJson");
@@ -81,7 +84,7 @@ public class LaundryAppointmentController {
                            int num1 =  Integer.parseInt(D.get("count").toString());
                             int num2 = Integer.parseInt(d.get("quantity").toString());
                             int end = num1-num2;
-                            D.element("count", end);
+                            D.put("count", end);
                         }
                     }
                 }
@@ -91,7 +94,7 @@ public class LaundryAppointmentController {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }
         }
-        return null;
+        return new FormerResult("SUCCESS", 0, "本次预约已成功！请等待小哥收件", null);
     }
 
     /**
@@ -145,7 +148,7 @@ public class LaundryAppointmentController {
                             int num1 =  Integer.parseInt(D.get("quantity").toString());
                             int num2 = Integer.parseInt(d.get("quantity").toString());
                             int end = num1-num2;
-                            D.element("quantity", end);
+                            D.put("quantity", end);
                         }
                     }
                 }
@@ -155,7 +158,7 @@ public class LaundryAppointmentController {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }
         }
-        return null;
+        return new FormerResult("SUCCESS", 0, "本次预约已成功！请等待家政人员上门服务", null);
     }
 
     /**

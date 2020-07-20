@@ -151,4 +151,14 @@ public class IUserServiceImpl implements IUserService {
     public List<BalanceRecord> getUserBalanceRecordList(Integer userId) {
         return userMapper.getUserBalanceRecordList(userId);
     }
+
+    @Override
+    public void addUserLeaveMessage(Map<String, Object> params) {
+        userMapper.addUserLeaveMessage(params);
+    }
+
+    @Override
+    public void selfHelpClaims(Map<String, Object> params) {
+        userMapper.selfHelpClaims(params);
+    }
 }

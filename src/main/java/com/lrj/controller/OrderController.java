@@ -3,6 +3,7 @@ package com.lrj.controller;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
 import com.lrj.mapper.*;
+import com.lrj.pojo.MerchantOrder;
 import com.lrj.pojo.MonthCard;
 import com.lrj.pojo.Order;
 import com.lrj.pojo.Reservation;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.ConsoleHandler;
@@ -61,44 +63,155 @@ public class OrderController {
     @RequestMapping(value = "/createOrder",method = {RequestMethod.GET,RequestMethod.POST})
     public FormerResult createOrder(HttpServletRequest request){
         Integer userId = Integer.parseInt(request.getParameter("userId"));
-        BigDecimal totalPrice = new BigDecimal(request.getParameter("totalPrice")).setScale(2, RoundingMode.FLOOR); //实际支付金
-        BigDecimal originalPrice = new BigDecimal(request.getParameter("originalPrice")); //原价金额
-        BigDecimal activityPrice = null; //活动减免金额
-        Integer orderType = Integer.parseInt(request.getParameter("orderType"));
-        Integer activityId = Integer.parseInt(request.getParameter("activityId"));
+        Integer merchantId = Integer.parseInt(request.getParameter("merchantId"));
+        Integer couponIdInt = 0;
 
         OrderVo orderVo = new OrderVo();
-        //是否参与活动
-        if(activityId !=null && activityId !=0){
-            //
-            orderVo.setActivity(activityId);
-            orderVo.setActivityPrice(activityPrice);
-        }else {
-            totalPrice = totalPrice;
-            orderVo.setActivity(0);
-            orderVo.setActivityPrice(new BigDecimal(0));
-        }
         // 生成订单号
         String orderNum = DateUtils.getNewdateBygs("yyyyMMdd") + RandomUtil.generateOrder(6);
-        // 处理订单
+        // 处理订单(共同参数)
         orderVo.setOrderNumber(orderNum);
         orderVo.setUserId(userId);
-        orderVo.setOrderType(orderType);
-        orderVo.setStatus(Constant.ORDER_STATUS_UNPAY);
-        orderVo.setPayStatus(Constant.ORDER_PAYSTATUS_NOPAY);
         orderVo.setCreateTime(DateUtils.getNowtime());
-        orderVo.setOriginalPrice(originalPrice);
-        String couponId = request.getParameter("couponId");
-        Integer couponIdInt = 0;
-        //是否使用红包
-        if(couponId.equals("") || couponId==null || couponId.equals("0")){
+        //建立不同类型订单，不同参数Map
+        Map<String, Object> typeParams = new HashMap<>();
+        //如果是销售商家订单，替换order数据来源（不同参数）
+        if(merchantId !=null && merchantId!=0){
+            orderVo.setMerchantId(merchantId);
+            //指定创建的订单数据源
+            Integer merchantOrderId = Integer.parseInt(request.getParameter("merchantOrderId"));
+            Integer takeConsigneeId = null;//单项洗衣和单项家政才有
+            MerchantOrder merchantOrder = orderMapper.getMerchantOrderById(merchantOrderId);
+            orderVo.setActivity(0);
+            orderVo.setActivityPrice(merchantOrder.getActivityPrice());
+            orderVo.setOrderType(merchantOrder.getOrderType());
+            orderVo.setStatus(Constant.ORDER_STATUS_PAY);
+            orderVo.setPayStatus(1);
             orderVo.setUserCouponId(couponIdInt);
+            orderVo.setOriginalPrice(merchantOrder.getOriginalPrice());
+            orderVo.setUserCouponId(couponIdInt);
+            orderVo.setTotalPrice(merchantOrder.getTotalPrice());
+            switch (merchantOrder.getOrderType()){
+                case 1:
+                    BigDecimal levelPrice = new BigDecimal("0.00"); //等级减免金额
+                    String takeTime = request.getParameter("takeTime");
+                    BigDecimal urgentPrice = new BigDecimal("0.00");
+                    BigDecimal servicePrice = new BigDecimal("0.00");
+                    takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
+                    Integer sendConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
+                    typeParams.put("levelPrice", levelPrice);
+                    typeParams.put("takeTime", takeTime);
+                    typeParams.put("takeConsigneeId", takeConsigneeId);
+                    typeParams.put("sendConsigneeId", sendConsigneeId);
+                    typeParams.put("urgentPrice", urgentPrice);
+                    typeParams.put("servicePrice", servicePrice);
+                    typeParams.put("detailJson", merchantOrder.getDetailJson());
+                    break;
+                case 2:
+                    Integer monthCardId = merchantOrder.getMonthCardId();
+                    typeParams.put("monthCardId", monthCardId);
+                    break;
+                case 3:
+                    takeConsigneeId =Integer.parseInt(request.getParameter("takeConsigneeId"));
+                    String houseServiceJson = merchantOrder.getDetailJson();
+                    typeParams.put("takeConsigneeId", takeConsigneeId);
+                    typeParams.put("houseServiceJson", houseServiceJson);
+                    break;
+                case 4:
+                    Integer serviceCycle = merchantOrder.getServiceCycle();
+                    Integer baseServiceCount = merchantOrder.getBaseServiceCount();
+                    Integer workTime = merchantOrder.getWorkTime();
+                    String houseArea = merchantOrder.getHouseArea();
+                    BigDecimal baseServicePrice = merchantOrder.getBaseServicePrice();
+                    String individualServiceJson = merchantOrder.getDetailJson();
+                    typeParams.put("serviceCycle", serviceCycle);
+                    typeParams.put("baseServiceCount", baseServiceCount);
+                    typeParams.put("workTime", workTime);
+                    typeParams.put("houseArea", houseArea);
+                    typeParams.put("baseServicePrice", baseServicePrice);
+                    typeParams.put("individualServiceJson", individualServiceJson);
+                    break;
+            }
+        //用户正常下单
         }else {
-            couponIdInt = Integer.parseInt(couponId);
-            orderVo.setUserCouponId(Integer.parseInt(couponId));
+            String couponId = request.getParameter("couponId");
+            BigDecimal totalPrice = new BigDecimal(request.getParameter("totalPrice")).setScale(2, RoundingMode.FLOOR); //实际支付金
+            BigDecimal originalPrice = new BigDecimal(request.getParameter("originalPrice")); //原价金额
+            BigDecimal activityPrice = null; //活动减免金额
+
+            //是否参与活动
+            Integer activityId = Integer.parseInt(request.getParameter("activityId"));
+            if(activityId !=null && activityId !=0){
+                //
+                orderVo.setActivity(activityId);
+                orderVo.setActivityPrice(activityPrice);
+            }else {
+                totalPrice = totalPrice;
+                orderVo.setActivity(0);
+                orderVo.setActivityPrice(new BigDecimal(0));
+            }
+            //是否使用红包
+            if(couponId.equals("") || couponId==null || couponId.equals("0")){
+                orderVo.setUserCouponId(couponIdInt);
+            }else {
+                couponIdInt = Integer.parseInt(couponId);
+                orderVo.setUserCouponId(Integer.parseInt(couponId));
+            }
+            Integer orderType = Integer.parseInt(request.getParameter("orderType"));
+            Integer takeConsigneeId = null;
+            switch (orderType){
+                case 1:
+                    BigDecimal levelPrice = new BigDecimal(request.getParameter("levelPrice")); //等级减免金额
+                    String takeTime = request.getParameter("takeTime");
+                    takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
+                    Integer sendConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
+                    BigDecimal urgentPrice = new BigDecimal(request.getParameter("urgentPrice"));
+                    BigDecimal servicePrice = new BigDecimal(request.getParameter("servicePrice"));
+                    typeParams.put("levelPrice", levelPrice);
+                    typeParams.put("takeTime", takeTime);
+                    typeParams.put("takeConsigneeId", takeConsigneeId);
+                    typeParams.put("sendConsigneeId", sendConsigneeId);
+                    typeParams.put("urgentPrice", urgentPrice);
+                    typeParams.put("servicePrice", servicePrice);
+                    break;
+                case 2:
+                    Integer monthCardId = Integer.parseInt(request.getParameter("monthCardId"));
+                    typeParams.put("monthCardId", monthCardId);
+                    break;
+                case 3:
+                    takeConsigneeId =Integer.parseInt(request.getParameter("takeConsigneeId"));
+                    Integer houseServiceId = Integer.parseInt(request.getParameter("houseServiceId"));
+                    JSONObject houseServiceJson = new JSONObject();
+                    houseServiceJson.element("itemId", houseServiceId);
+                    AppItemVo appItemVo= itemMapper.getItemInfoByItemId(houseServiceId);
+                    houseServiceJson.element("itmeName",appItemVo.getItemName());
+                    houseServiceJson.element("count", 1);
+                    typeParams.put("takeConsigneeId", takeConsigneeId);
+                    typeParams.put("houseServiceJson", houseServiceJson.toString());
+                    break;
+                case 4:
+                    Integer serviceCycle = Integer.parseInt(request.getParameter("serviceCycle"));
+                    Integer baseServiceCount = Integer.parseInt(request.getParameter("baseServiceCount"));
+                    Integer workTime = Integer.parseInt(request.getParameter("workTime"));
+                    String houseArea = request.getParameter("houseArea");
+                    BigDecimal baseServicePrice = new BigDecimal(request.getParameter("baseServicePrice"));
+                    String individualServiceJson = request.getParameter("individualServiceJson");
+                    typeParams.put("serviceCycle", serviceCycle);
+                    typeParams.put("baseServiceCount", baseServiceCount);
+                    typeParams.put("workTime", workTime);
+                    typeParams.put("houseArea", houseArea);
+                    typeParams.put("baseServicePrice", baseServicePrice);
+                    typeParams.put("individualServiceJson", individualServiceJson);
+                    break;
+            }
+            orderVo.setOrderType(orderType);
+            orderVo.setStatus(Constant.ORDER_STATUS_UNPAY);
+            orderVo.setPayStatus(Constant.ORDER_PAYSTATUS_NOPAY);
+            orderVo.setOriginalPrice(originalPrice);
+
+            orderVo.setTotalPrice(totalPrice);
         }
-        orderVo.setTotalPrice(totalPrice);
-        Integer createNum = orderService.createOrder(orderVo,request);
+        Integer createNum = orderService.createOrder(orderVo,request,typeParams);
         //订单创建成功后处理业务
         if(createNum ==1){
             //更新红包
@@ -221,6 +334,7 @@ public class OrderController {
                 reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + directory + appItemVo.getPicture());
                 reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
                 reservationJsonArray.getJSONObject(i).element("defect", "无瑕疵");
+                reservationJsonArray.getJSONObject(i).element("price", appItemVo.getPrice());
                 reservationJsonArray.getJSONObject(i).element("washingPicture", "http://cwj1.hhhh.com");
             }
             //清空json,换为jsonArray

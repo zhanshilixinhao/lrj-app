@@ -19,7 +19,7 @@ public interface IOrderService {
     /**
      * 创建订单
      */
-    Integer createOrder(OrderVo orderVo, HttpServletRequest request);
+    Integer createOrder(OrderVo orderVo, HttpServletRequest request,Map<String,Object> typeParams);
 
     /**
      * 通过订单号 唯一订单

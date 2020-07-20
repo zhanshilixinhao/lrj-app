@@ -1,6 +1,7 @@
 package com.lrj.mapper;
 
 import com.lrj.VO.*;
+import com.lrj.pojo.MerchantOrder;
 import com.lrj.pojo.Order;
 import org.springframework.stereotype.Repository;
 import tk.mybatis.mapper.common.Mapper;
@@ -147,10 +148,9 @@ public interface IOrderMapper extends Mapper<Order>, MySqlMapper<Order> {
 
     /**
      * 更新定制家政使用剩余具体信息
-     * @param individualServiceJson
-     * @param orderNumber
+     * @param params
      */
-    void updateIndividualServiceJson(String individualServiceJson, String orderNumber);
+    void updateIndividualServiceJson(Map<String,String> params);
 
     /**
      * 添加订单备注
@@ -163,4 +163,11 @@ public interface IOrderMapper extends Mapper<Order>, MySqlMapper<Order> {
      * @param orderNumber
      */
     void deleteOrderRemark(String orderNumber);
+
+    /**
+     * 查询后台系统定制的订单模板
+     * @param merchantId
+     * @return
+     */
+    MerchantOrder getMerchantOrderById(Integer merchantId);
 }

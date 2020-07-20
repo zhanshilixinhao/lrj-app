@@ -39,4 +39,13 @@ public class ItemServiceImpl implements IItemService{
     public Integer getItemCategoryByItemId(Integer itemId) {
         return itemMapper.getItemCategoryByItemId(itemId);
     }
+
+    /**
+     * 查询限时特价商品
+     * @return
+     */
+    @Override
+    public List<AppItemVo> getSpecialItem() {
+        return itemMapper.getSpecialItem();
+    }
 }

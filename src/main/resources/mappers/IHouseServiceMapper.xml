@@ -65,7 +65,8 @@
 	price AS price,
 	house_service_note AS serviceNote,
 	picture AS picture,
-	house_service_time AS serviceTime
+	house_service_time AS serviceTime,
+	item_unit AS itemUnit
 	FROM
 	app_item
 	WHERE

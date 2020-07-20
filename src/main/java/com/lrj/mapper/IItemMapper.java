@@ -37,4 +37,10 @@ public interface IItemMapper {
      * 通过 itemCategory 查询商品类别的信息
      */
     ItemCategoryVo getItemCategoryInfoByCategoryId(Integer itemCategoryId);
+
+    /**
+     * 查询限时特价商品
+     * @return
+     */
+    List<AppItemVo> getSpecialItem();
 }

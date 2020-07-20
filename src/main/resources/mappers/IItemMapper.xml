@@ -65,4 +65,19 @@
         FROM app_item_category
         WHERE app_item_category_id=#{itemCategoryId}
     </select>
+
+    <!--查询限时特价商品-->
+    <select id="getSpecialItem" resultType="com.lrj.VO.AppItemVo">
+        SELECT app_item_id AS itemId,
+                item_name AS itemName,
+                item_unit AS itemUnit,
+                price AS price,
+                picture AS picture,
+                promotion_original_cost AS promotionOriginalCost,
+                commodity_explain AS commodityExplain,
+                duration AS duration,
+                promotion_end_date AS promotionEndDate
+        FROM app_item
+        WHERE bargain_type='TIME_LIMIT_SALE'
+    </select>
 </mapper>

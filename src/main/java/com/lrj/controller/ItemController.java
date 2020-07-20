@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,5 +58,30 @@ public class ItemController {
             appItemVo.setOriginalPrice(appItemVo.getPrice());
         }
         return new ResultVo("success",0,"查询成功",appItemVoList);
+    }
+
+    /**
+     *  查询限时特价 商品
+     * @return
+     */
+    @RequestMapping(value = "/getSpecialItem",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getSpecialItem(HttpServletRequest request){
+        List<AppItemVo> specialItemList = new ArrayList<>();
+        specialItemList = itemService.getSpecialItem();
+        /** 获取请求地址 **/ //request.getRequestURL();
+        StringBuffer url = new StringBuffer();
+        url.append("http://www.51lrj.com/getItemList");
+        /** 拼接 **/
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+        /** 获取虚拟目录 **/
+        String directory = MessagesUtil.getString("virtual_directory") + "/";
+        /** 拼接可访问图片地址 **/
+        for (AppItemVo appItemVo : specialItemList) {
+            /** 图片地址 **/
+            appItemVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+            /**截止时间**/
+            appItemVo.setPromotionEndDateLong(appItemVo.getPromotionEndDate().getTime());
+        }
+        return new ResultVo("SUCCESS", 0, "查询成功！", specialItemList);
     }
 }

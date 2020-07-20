@@ -188,7 +188,7 @@
 		UPDATE order_custom_house_service SET base_service_count=#{houseServiceBaseServiceCount} WHERE order_number=#{orderNumber}
 	</update>
 	<!--更改定制家政订单 剩余可服务内容-->
-	<update id="updateIndividualServiceJson" parameterType="java.lang.String">
+	<update id="updateIndividualServiceJson" parameterType="java.util.Map">
 		UPDATE order_custom_house_service SET individual_service_json=#{individualServiceJson} WHERE order_number=#{orderNumber}
 	</update>
 	<!--锁定单项洗衣订单-->
@@ -205,4 +205,8 @@
 	<delete id="deleteOrderRemark" parameterType="java.lang.String">
 		DELETE FROM sms_template WHERE order_number =#{orderNumber}
 	</delete>
+	<!--查询后台系统制定的订单-->
+	<select id="getMerchantOrderById" parameterType="java.lang.Integer" resultType="com.lrj.pojo.MerchantOrder">
+		SELECT * FROM merchant_order WHERE merchant_order_id=#{merchantId}
+	</select>
 </mapper>

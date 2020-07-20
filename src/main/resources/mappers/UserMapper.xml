@@ -113,7 +113,7 @@
 
 	<!--分享订单后获得红包（需分享用户下单后生效）-->
 	<insert id="sendRandomCoupon" parameterType="com.lrj.VO.UserCouponVo">
-		INSERT INTO user_coupon (user_id,create_time,limit_time,active,denomination,source,coupon_type,useInstructions,order_number)
+		INSERT INTO user_coupon (user_id,create_time,limit_time,active,denomination,source,coupon_type,use_instructions,order_number)
 		VALUES  (#{userId},#{createTime},#{limitTime},#{active},#{denomination},#{source},#{couponType},#{useInstructions},#{orderNumber})
 	</insert>
 
@@ -153,7 +153,15 @@
 	</insert>
 	
 	<select id="getUserBalanceRecordList" parameterType="java.lang.Integer" resultType="com.lrj.pojo.BalanceRecord">
-		select * from balance_log WHERE user_id=#{userId};
+		select * from balance_log WHERE user_id=#{userId}
 	</select>
+
+	<insert id="addUserLeaveMessage" parameterType="java.util.HashMap">
+		insert into user_leave_message (user_id,user_phone,context,create_time) values (#{userId},#{userPhone},#{context},#{createTime});
+	</insert>
+
+	<insert id="selfHelpClaims" parameterType="java.util.HashMap">
+		INSERT INTO user_self_help_claims (user_id,user_phone,order_number,context,img) VALUES (#{userId},#{userPhone},#{orderNumber},#{context},#{img})
+	</insert>
 	<!--留着以后用  -->
 </mapper>

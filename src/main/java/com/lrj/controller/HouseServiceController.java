@@ -1,19 +1,14 @@
 package com.lrj.controller;
 
-import com.lrj.VO.AppItemVo;
-import com.lrj.VO.HouseServiceVo;
-import com.lrj.VO.HouserServicePidVo;
-import com.lrj.VO.ResultVo;
+import com.lrj.VO.*;
+import com.lrj.service.IAreaManagementService;
 import com.lrj.service.IHouseService;
-import com.lrj.util.MessagesUtil;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.text.Format;
 import java.util.List;
 
 /**
@@ -25,6 +20,8 @@ import java.util.List;
 public class HouseServiceController {
     @Resource
     private IHouseService houseService;
+    @Resource
+    private IAreaManagementService areaManagementService;
 
     @RequestMapping(value = "/getHouseService",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo getHouseService(Integer itemCategoryId,HttpServletRequest request){
@@ -60,5 +57,16 @@ public class HouseServiceController {
     public ResultVo getCustomHouseService(){
         List<HouseServiceVo> customHouseServiceList = houseService.findCustomHouseService();
         return new ResultVo("SUCCESS", 0, "查询成功！", customHouseServiceList);
+    }
+
+    /**
+     * @Description: 获取基础面积-价格
+     * @Author: LxH
+     * @Date: 2020/5/28 10:12
+     */
+    @RequestMapping(value = "/findBasisArea",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo  findBasisArea(){
+        List<AreaManagement> areaManagementList = areaManagementService.findBasisArea();
+        return new ResultVo("SUCCESS", 0, "面积列表查询成功！", areaManagementList);
     }
 }

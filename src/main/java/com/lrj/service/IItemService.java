@@ -2,6 +2,7 @@ package com.lrj.service;
 
 import com.lrj.VO.AppItemVo;
 import com.lrj.VO.BannerVo;
+import com.lrj.VO.ResultVo;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,4 +28,10 @@ public interface IItemService {
      * @return
      */
     Integer getItemCategoryByItemId(Integer itemId);
+
+    /**
+     * 查询限时特价商品
+     * @return
+     */
+    List<AppItemVo> getSpecialItem();
 }

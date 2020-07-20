@@ -50,13 +50,13 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
             reservation.setOrderType(orderVo.getOrderType());
             reservation.setReservationJson(washingOrderVo.getShoppingJson());
             //服务费判断
-            if(washingOrderVo.getServicePrice().equals("8")){
+            if(washingOrderVo.getServicePrice().equals("8.00")){
                 reservation.setIsService(1);
             }else {
                 reservation.setIsService(0);
             }
             //加急费判断
-            if(washingOrderVo.getServicePrice().equals("50")){
+            if(washingOrderVo.getServicePrice().equals("50.00")){
                 reservation.setIsUrgent(1);
             }else {
                 reservation.setIsUrgent(0);
@@ -67,6 +67,7 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         }else if(orderVo.getOrderType() ==2){
             reservation.setOrderType(orderVo.getOrderType());
             reservation.setReservationJson(reservationMap.get("reservationJson").toString());
+            reservation.setTotalPrice(new BigDecimal(0.00));
         }
 
         //其他信息
@@ -105,11 +106,14 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
             reservation.setOrderType(orderVo.getOrderType());
             reservation.setReservationJson(houseServiceOrderVo.getHouseServiceJson());
             reservation.setStatus(houseServiceOrderVo.getPayStatus());
+            reservation.setTotalPrice(orderVo.getTotalPrice());
         //定制家政预约
         }else if(orderVo.getOrderType() ==4){
             reservation.setOrderType(orderVo.getOrderType());
             reservation.setReservationJson(reservationMap.get("reservationJson").toString());
             reservation.setStatus(1);
+            reservation.setTotalPrice(orderVo.getTotalPrice());
+            reservation.setGetClothesTime((String) reservationMap.get("visitTime"));
         }
         //其他信息
         reservation.setGrabOrderId(null);

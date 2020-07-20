@@ -35,6 +35,9 @@ public class OrderVo {
     private Integer orderType;       //订单类型  1.洗衣订单 2.洗衣月卡订单  3.单项家政服务  4.定制家政服务
     private String userPhone; //用户电话
 
+    //销售商家信息
+    private Integer merchantId;//商家Id
+
     public static final int WASHING = 1;
     public static final int MONTH_WASHING = 2;
     public static final int HOUSE = 3;

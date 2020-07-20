@@ -3,22 +3,24 @@ package com.lrj.controller;
 import com.lrj.VO.*;
 import com.lrj.pojo.Balance;
 import com.lrj.pojo.BalanceRecord;
+import com.lrj.pojo.Merchant;
 import com.lrj.pojo.PayOperation;
+import com.lrj.service.IMerchantService;
 import com.lrj.service.IPayService;
 import com.lrj.service.IUserService;
 
-import com.lrj.util.DateUtils;
-import com.lrj.util.MessagesUtil;
-import com.lrj.util.RandomUtil;
-import com.lrj.util.SmsApi;
+import com.lrj.util.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static com.lrj.util.jiGuangOauthLoginPost.doPostForJpush;
@@ -35,6 +37,8 @@ public class UserController {
     private IUserService userService;
     @Resource
     private IPayService payService;
+    @Resource
+    private IMerchantService merchantService;
 
     //定义全局变量 codeMap 存放用户手机验证ma
     Map<String, Object> codeMap = new HashMap<String, Object>();
@@ -283,5 +287,110 @@ public class UserController {
         }else {
             return new FormerResult("SUCCESS", 0, "提现发起失败，请联系客服或技术人员", null);
         }
+    }
+
+    /**
+     * 用户扫描商家二维码，生成凭证码(订单兑换码)
+     */
+    @RequestMapping(value = "/creatVoucherCode",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult creatVoucherCode(HttpServletRequest request) throws ParseException {
+        Integer merchantId = Integer.parseInt(request.getParameter("merchantId"));
+        Integer userId = 11111;
+        /** 校验必须参数 **/
+        if (merchantId == null || merchantId ==0) {
+            //return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        Merchant merchant = merchantService.findMerchantInfoById(merchantId);
+        if(merchant.getSaleCount()>0){
+            System.out.println("当前系统时间："+new Date().getTime());
+            System.out.println("销售截止时间："+new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(merchant.getSaleEndTime()).getTime());
+            if(new Date().getTime() <= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").parse(merchant.getSaleEndTime()).getTime()){
+                //生成凭证码
+                Map<String, Object> params = new HashMap<>();
+                params.put("merchantId", merchantId);
+                params.put("mercshantOrderId", merchant.getMerchantOrderId());
+                StringBuffer url  = request.getRequestURL();
+                /** 拼接 **/
+                String path = "/usr/local/project/images/voucherCode";
+                String fileName = new SimpleDateFormat("yyyy-MM-dd").format(new Date())+"-"+userId+".jpg";
+                QRCodeUtil.createQrCode("192.168.0.110:8080/createOrder",params,path,fileName);
+                //商家销售信息更新
+                merchantService.updateSaleCount(merchant.getSaleCount()-1,merchantId);
+                //返回结果
+                Map<String, Object> paramsReturn = new HashMap<>();
+                paramsReturn.put("myVoucherCode", "192.168.0.110:8081"+path+"/"+fileName);
+                paramsReturn.put("merchantId", merchantId);
+                paramsReturn.put("merchantOrderId", merchant.getMerchantOrderId());
+                return new FormerResult("SUCCESS", 0, "凭证码已生成，请截图保存！退出后无效！！", paramsReturn);
+            }else {
+                return new FormerResult("SUCCESS", 1, "该商家二维码已过销售日期，请重新购买", null);
+            }
+        }else {
+            return new FormerResult("SUCCESS", 1, "该商家二维码使用次数已达上限，请重新购买", null);
+        }
+    }
+
+    /**
+     * 用户留言
+     */
+    @RequestMapping(value = "/addUserLeaveMessage",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo addUserLeaveMessage(HttpServletRequest request){
+        String userPhone = request.getParameter("userPhone");
+        String orderNumber = request.getParameter("orderNumber");
+        String context = request.getParameter("context");
+        String userId = request.getParameter("userId");
+        /** 校验必须参数 **/
+        if (userPhone == null || orderNumber ==null || context==null || userId==null) {
+            return new ResultVo("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        Map<String, Object> params = new HashMap<>();
+        params.put("userPhone", userPhone);
+        params.put("context", context);
+        params.put("userId", userId);
+        params.put("createTime", DateUtils.getNowtime());
+        userService.addUserLeaveMessage(params);
+        return new ResultVo("SUCCESS", 0, "留言成功", null);
+    }
+    /**
+     * 自助理赔
+     */
+    @RequestMapping(value = "/selfHelpClaims",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo selfHelpClaims(HttpServletRequest request,MultipartFile uploadFile){
+        String userPhone = request.getParameter("userPhone");
+        String orderNumber = request.getParameter("orderNumber");
+        String context = request.getParameter("context");
+        String userId = request.getParameter("userId");
+        Map<String, Object> params = new HashMap<>();
+        params.put("userPhone", userPhone);
+        params.put("context", context);
+        params.put("userId", userId);
+        params.put("orderNumber",orderNumber);
+        params.put("createTime", DateUtils.getNowtime());
+        params.put("img", "http........");
+        userService.selfHelpClaims(params);
+        return new ResultVo("SUCCESS", 0, "留言成功", null);
+    }
+
+    /**
+     * 用户退款申请
+     */
+    @RequestMapping(value = "/userRefundApply",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult userRefundApply(HttpServletRequest request){
+        Integer userId = Integer.parseInt(request.getParameter("userId"));
+        BigDecimal refundMoney = new BigDecimal(request.getParameter("refundMoney"));
+        String refundReason = request.getParameter("refundReason");
+        //增加退款 记录
+        PayOperation payOperation = new PayOperation();
+        payOperation.setTradeSource(2);
+        payOperation.setTradeType(-1);
+        payOperation.setBankType(null);
+        payOperation.setTotalFee(refundMoney);
+        payOperation.setTransactionId(null);
+        payOperation.setOutTradeNo(null);
+        payOperation.setCreateTime(DateUtils.getNowTime("yyyy-MM-DD HH:mm:ss"));
+        payOperation.setUserId(userId);
+        payOperation.setUserPhone("");
+        payService.payFlowRecord(payOperation);
+        return new FormerResult("SUCCESS",0,"你的提现申请",null);
     }
 }

@@ -50,4 +50,8 @@ public interface IUserService {
     Integer userWithdraw( UserRebateVo userRebateVo);
 
     List<BalanceRecord> getUserBalanceRecordList(Integer userId);
+
+    void addUserLeaveMessage(Map<String, Object> params);
+
+    void selfHelpClaims(Map<String, Object> params);
 }
