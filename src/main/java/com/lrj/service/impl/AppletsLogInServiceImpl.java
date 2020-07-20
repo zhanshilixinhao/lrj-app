@@ -166,7 +166,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         //SmsApi.sendSms(apiKey, text, phone);
         String str = JavaSmsApi.sendSms(apiKey, text, phone);
         System.out.println(str);
-        return CommonUtil.SUCCESS(formerResult,null,verificationCode);
+        return CommonUtil.SUCCESS(formerResult,null,"验证码:"+verificationCode+"云片ip:"+str);
     }
 
     /**
@@ -254,7 +254,12 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
     private void promoteLevel(Integer superId) {
         //更改上级用户等级
         UserLevel userLevel = userLevelMapper.selectByPrimaryKey(superId);
-        int numNew = (userLevel.getInviteNum()) + 1;
+        int numNew;
+        if (userLevel.getInviteNum()==null) {
+            numNew=1;
+        }else {
+            numNew = (userLevel.getInviteNum()) + 1;
+        }
         if (numNew<=5) {
             userLevel.setInviteNum(numNew);
             userLevelMapper.updateByPrimaryKeySelective(userLevel);

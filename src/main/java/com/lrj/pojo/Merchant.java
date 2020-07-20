@@ -5,12 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.math.BigDecimal;
@@ -43,8 +40,6 @@ public class Merchant extends Base {
     /**提成比例*/
     private BigDecimal commissionRatio;
     private Byte active;
-    private Date createTime;
-    private Date updateTime;
     /**二维码*/
     private String qrCode;
     /**二维码 剩余可销售次数*/

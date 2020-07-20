@@ -7,6 +7,15 @@ import com.lrj.mapper.*;
 import com.lrj.pojo.*;
 import com.lrj.service.AppletsPayService;
 import com.lrj.util.*;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,10 +26,9 @@ import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.math.BigDecimal;
+import java.net.InetAddress;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +72,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
     private AppRebateMapper appRebateMapper;
 
     @Resource
-    private MerchantMapper merchantMapper;
+    private IMerchantMapper merchantMapper;
 
     @Resource
     private ReservationMapper reservationMapper;
@@ -95,15 +103,18 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         }
         for (Order order : orders) {
             //不使用余额支付
-            if (isBalance == 0&&order.getOrderType()==2||order.getOrderType()==4) {
+            if (isBalance == 0) {
                 return appletsPay(request,order.getOrderNumber(),userBalance,order.getUserId());
-            } else if (isBalance == 1&&order.getOrderType()== 1 || order.getOrderType()==3) {
+            } else if (isBalance == 1&&order.getOrderType()== 2 || order.getOrderType()==4){
+                return new FormerResult("",Fail_CODE,"余额支付只支持单项洗衣，单项家政",null);
+            }else if (isBalance == 1&&order.getOrderType()== 1 || order.getOrderType()==3) {
                 BalanceLog balanceLog = new BalanceLog();
                 Balance balance = balanceMapper.selectByPrimaryKey(order.getUserId());
                 //使用余额支付
                 if (balance.getBalance().doubleValue() >= order.getTotalPrice().doubleValue()) {
                     userBalance =  balance.getBalance().doubleValue() - order.getTotalPrice().doubleValue();
-                    balance.setBalance(new BigDecimal(userBalance));
+                    double v = balance.getExpendAmount().doubleValue() + order.getTotalPrice().doubleValue();
+                    balance.setBalance(new BigDecimal(userBalance)).setExpendAmount(new BigDecimal(v)).setLastModifyTime(DateUtils.formatDate(new Date()));
                     //更新用户余额
                     balanceMapper.updateByPrimaryKeySelective(balance);
                     //添加流水记录
@@ -122,11 +133,18 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                     //用户余额小于订单总价
                     userBalance =  order.getTotalPrice().doubleValue() - balance.getBalance().doubleValue();
                     //更新用户余额
-                    balance.setBalance(new BigDecimal("0.00"));
+                    double v = balance.getExpendAmount().doubleValue() + balance.getBalance().doubleValue();
+                    balance.setBalance(new BigDecimal("0.00")).setExpendAmount(new BigDecimal(v)).setLastModifyTime(DateUtils.formatDate(new Date()));
                     balanceMapper.updateByPrimaryKeySelective(balance);
                     balanceLog.setUserId(order.getUserId()).setType("2").setAmount(balance.getBalance()).
                             setCreateTime(DateUtils.formatDate(new Date()));
                     balanceLogMapper.insertSelective(balanceLog);
+                    //添加流水记录
+                    PayOperation payOperation = new PayOperation();
+                    payOperation.setUserId(order.getUserId()).setTotalFee(balance.getBalance()).setOutTradeNo(orderNumber).
+                            setUserPhone(order.getUserPhone()).setTradeSource(1).setTradeType(1).setTransactionId("余额支付+微信支付").
+                            setCreateTime(DateUtils.formatDate(new Date()));
+                    payOperationMapper.insertSelective(payOperation);
                     //剩余价格微信支付
                     return appletsPay(request, orderNumber,userBalance,order.getUserId());
                 }
@@ -167,7 +185,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
             // 因为微信回调会有八次之多,所以当第一次回调成功了,那么我们就不再执行逻辑了
 
             //根据微信官网的介绍，此处不仅对回调的参数进行验签，还需要对返回的金额与系统订单的金额进行比对等
-            if(sign.equals(map.get("sign"))){
+            if(PayConfig.getApplet_appID().equals(map.get("appid"))){
                 //添加流水记录
                 Example example = new Example(Order.class);
                 example.createCriteria().andEqualTo(ORDER_NUMBER,map.get("out_trade_no"));
@@ -180,12 +198,12 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                 PayOperation payOperation = new PayOperation();
                 payOperation.setTradeSource(2).setOutTradeNo(reOrder.getOrderNumber()).setUserPhone(reOrder.getUserPhone()).
                         setTransactionId(String.valueOf(map.get("transaction_id"))).setTotalFee(new BigDecimal(String.valueOf(map.get("total_fee")))).
-                        setTradeType(1).setBankType(String.valueOf(map.get("bank_type")));
+                        setTradeType(1).setBankType(String.valueOf(map.get("bank_type"))).setUserId(reOrder.getUserId()).setCreateTime(DateUtils.formatDate(new Date()));
                 int i = payOperationMapper.insertSelective(payOperation);
                 System.out.println("添加成功"+i);
                 User user = userMapper.selectByPrimaryKey(reOrder.getUserId());
                 //上级用户返利
-                if (user.getSuperType()!=null&&user.getSuperType()==1&&reOrder.getOrderType()!=2&&reOrder.getOrderType()!=4) {
+                if (user.getSuperType()==1&&reOrder.getOrderType()!=2&&reOrder.getOrderType()!=4) {
                     UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getSuperId());
                     if (userLevel.getLevelId()!=1) {
                         AppRebate appRebate = new AppRebate();
@@ -208,7 +226,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                     }
                 }
                 //商家返利
-                if (user.getSuperType()!=null&&user.getSuperType()==2) {
+                if (user.getSuperType()==2) {
                     Merchant merchant = merchantMapper.selectByPrimaryKey(user.getSuperId());
                     AppRebate appRebate = new AppRebate();
                     appRebate.setUserId(merchant.getMerchantId()).setLowId(user.getAppUserId()).setOrderNumber(reOrder.getOrderNumber()).setType(2).
@@ -302,9 +320,10 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         String openId = "";
         //添加余额记录
         if ("a".equals(orderNumber.substring(0,1)) ||
-                "b".equals(orderNumber)||"c".equals(orderNumber)||
-                "d".equals(orderNumber)||"e".equals(orderNumber)) {
+                "b".equals(orderNumber.substring(0,1))||"c".equals(orderNumber.substring(0,1))||
+                "d".equals(orderNumber.substring(0,1))||"e".equals(orderNumber.substring(0,1))) {
             addBalanceLog(orderNumber,userBalance,1,userId);
+            addBalanceLog(orderNumber,userBalance,2,userId);
         }
         Example example = new Example(Order.class);
         example.createCriteria().andEqualTo(ORDER_NUMBER,orderNumber);
@@ -327,45 +346,84 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         }
         //调用接口必须参数
         String url = PayConfig.UNIFIEDORDER;
-        HashMap<String, String> params = new HashMap<String, String>();
-        params.put("appid",PayConfig.getApp_appID());
-        params.put("mch_id",PayConfig.getApp_mchID());
-        params.put("nonce_str", StringUtils.getRandomStringByLength(32));
-        params.put("body", "懒人家-小程序订单");
+        HashMap<String, String> params = new HashMap<>();
+        params.put("appid",PayConfig.getApplet_appID());
+        params.put("attach","cheshi");
+        params.put("mch_id",PayConfig.getMin_certPassword());
+        params.put("nonce_str", StringUtils.generateNonceStr());
+        params.put("body", "lrjcheshi");
         params.put("out_trade_no", orderNumber);
         params.put("total_fee", "1");
-        params.put("spbill_create_ip", IpUtils.getIpAddr(request)); //终端IP
+        try {
+            InetAddress localAddr = InetAddress.getLocalHost();
+            String localIp = localAddr.getHostAddress().toString();
+            params.put("spbill_create_ip", localIp); //终端IP
+        }catch (Exception e1){
+            System.out.println(e1.getMessage());
+        }
+        //params.put("spbill_create_ip", IpUtils.getIpAddr(request)); //终端IP
         params.put("notify_url", PayConfig.notify_url);  //异步通知回调地址
         params.put("trade_type", PayConfig.TRADETYPE); //支付类型
+        params.put("sign_type","MD5");
         params.put("openid",openId);
         //将非空参数进行签名运算(排序，MD5加密)
 
-        String sign = WXPayUtil.getSign(params,PayConfig.getApp_key());
-        System.out.println("第一次签名"+sign);
-        log.info(sign);
-        params.put("sign", sign);
-        //将请求参数转化为微信支付要求的xml格式文件
-        String xml = WXPayUtil.mapToXml1(params);
-        String result = HttpClientTool.doPostByXml(url, xml);
+        //String result = HttpClientTool.doPostByXml(url, xml);
+        //调用对方demo请求下单
+        CloseableHttpResponse response = null;
+        CloseableHttpClient httpClient = null;
+        String responseContent = "";
+        try {
+            String sign = WXPayUtil.generateSignature(params,PayConfig.getApi_key(), WXPayUtil.SignType.MD5);
+            System.out.println("第一次签名"+sign);
+            log.info(sign);
+            params.put("sign", sign);
+            //将请求参数转化为微信支付要求的xml格式文件
+            String xml = WXPayUtil.mapToXml1(params);
+            System.out.println(xml);
+            httpClient = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setEntity(new StringEntity(xml,"UTF-8"));
+            response = httpClient.execute(httpPost);
+            HttpEntity entity = response.getEntity();
+            responseContent = EntityUtils.toString(entity, "UTF-8");
+            System.out.println(responseContent);
+            response.close();
+            httpClient.close();
+
+        } catch (ClientProtocolException e2) {
+            System.out.println(e2);
+            new FormerResult("success", 1, "网络请求异常，请稍后重试或联系客服！", null);
+        } catch (IOException e3) {
+            System.out.println(e3);
+            new FormerResult("success", 1, "网络请求异常，请稍后重试或联系客服！", null);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            close(response, httpClient);
+        }
+
         //将String转化成map
         try {
-            Map resultMap = WXPayUtil.xmlToMap(result);
-            System.out.println(resultMap);
+            Map resultMap = WXPayUtil.xmlToMap(responseContent);
+            System.out.println(resultMap.toString());
             //请求返回结果的处理
             String returnCode = (String) resultMap.get("return_code");
             String resultCode = (String)resultMap.get("result_code");
             if ("SUCCESS".equals(returnCode) && returnCode.equals(resultCode)){
                 HashMap<String, String> map = new HashMap<>();
-                map.put("appId", PayConfig.getApp_appID());
-                map.put("timeStamp", String.valueOf(System.currentTimeMillis()));
+                map.put("appId", PayConfig.getApplet_appID());
+                map.put("timeStamp", String.valueOf(System.currentTimeMillis() / 1000));
                 //这边的随机字符串必须是第一次生成sign时，微信返回的随机字符串，不然小程序支付时会报签名错误
                 map.put("nonceStr", String.valueOf(resultMap.get("nonce_str")));
                 map.put("package", "prepay_id=" + resultMap.get("prepay_id"));
                 map.put("signType", PayConfig.SIGNTYPE);
-                String paySign = WXPayUtil.getSign(map, PayConfig.getApp_key());
+                //String paySign = WXPayUtil.getSign(map, PayConfig.getApi_key());
+                String paySign=WXPayUtil.generateSignature(map,PayConfig.getApi_key(), WXPayUtil.SignType.MD5);
                 System.out.println("第二次签名"+paySign);
                 log.info(paySign);
                 map.put("paySign",paySign);
+                System.out.println(map.toString());
                 return new FormerResult(Constant.SUCCESS,Constant.YES,"用户预支付成功",map);
             }
         } catch (Exception e1){
@@ -376,48 +434,95 @@ public class AppletsPayServiceImpl implements AppletsPayService {
 
     private void addBalanceLog(String orderNumber, double userBalance, Integer typepe, Integer userId) {
         BalanceLog balanceLog = new BalanceLog();
+        Balance balance = balanceMapper.selectByPrimaryKey(userId);
         switch (orderNumber.substring(0,1)) {
             case "a":
                 balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
                 if (typepe == 1) {
-                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1").setStatus(1).setRechargeOrderNumber(orderNumber);
+                    double v = balance.getBalance().doubleValue() + userBalance;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
                 } else if (typepe == 2) {
-                    balanceLog.setAmount(new BigDecimal(userBalance * 0.2)).setType("4");
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.2)).setType("4").setStatus(1).setRechargeOrderNumber(orderNumber);
+                    double v = balance.getBalance().doubleValue() + userBalance*0.2;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance*0.2;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
                 }
+                balanceMapper.updateByPrimaryKeySelective(balance);
                 balanceLogMapper.insertSelective(balanceLog);
                 break;
             case "b":
                 balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
                 if (typepe == 1) {
-                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                    double v = balance.getBalance().doubleValue() + userBalance;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1").setStatus(1).setRechargeOrderNumber(orderNumber);
                 } else if (typepe == 2) {
-                    balanceLog.setAmount(new BigDecimal(userBalance * 0.25)).setType("4");
+                    double v = balance.getBalance().doubleValue() + userBalance*0.25;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance*0.25;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.25)).setType("4").setStatus(1).setRechargeOrderNumber(orderNumber);
                 }
+                balanceMapper.updateByPrimaryKeySelective(balance);
                 balanceLogMapper.insertSelective(balanceLog);
                 break;
             case "c":
                 balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
                 if (typepe == 1) {
-                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                    double v = balance.getBalance().doubleValue() + userBalance;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1").setStatus(1).setRechargeOrderNumber(orderNumber);
                 } else if (typepe == 2) {
-                    balanceLog.setAmount(new BigDecimal(userBalance * 0.3)).setType("4");
+                    double v = balance.getBalance().doubleValue() + userBalance*0.3;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance*0.3;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.3)).setType("4").setStatus(1).setRechargeOrderNumber(orderNumber);
                 }
+                balanceMapper.updateByPrimaryKeySelective(balance);
                 balanceLogMapper.insertSelective(balanceLog);
                 break;
             case "d":
                 balanceLog.setUserId(userId).setCreateTime(DateUtils.formatDate(new Date()));
                 if (typepe == 1) {
-                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1");
+                    double v = balance.getBalance().doubleValue() + userBalance;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setAmount(new BigDecimal(userBalance)).setType("1").setStatus(1).setRechargeOrderNumber(orderNumber);
                 } else if (typepe == 2) {
-                    balanceLog.setAmount(new BigDecimal(userBalance * 0.4)).setType("4");
+                    double v = balance.getBalance().doubleValue() + userBalance*0.4;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance*0.4;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setAmount(new BigDecimal(userBalance * 0.4)).setType("4").setStatus(1).setRechargeOrderNumber(orderNumber);
                 }
+                balanceMapper.updateByPrimaryKeySelective(balance);
                 balanceLogMapper.insertSelective(balanceLog);
                 break;
             default:
                 if (typepe == 1&& "e".equals(orderNumber.substring(0, 1))) {
-                    balanceLog.setUserId(userId).setAmount(new BigDecimal(userBalance)).setType("1").setCreateTime(DateUtils.formatDate(new Date()));
+                    double v = balance.getBalance().doubleValue() + userBalance;
+                    double v1 = balance.getTopUpAmount().doubleValue() + userBalance;
+                    balance.setBalance(new BigDecimal(v)).setTopUpAmount(new BigDecimal(v1)).setLastModifyTime(DateUtils.formatDate(new Date()));
+                    balanceLog.setUserId(userId).setAmount(new BigDecimal(userBalance)).setType("1").setStatus(1).setRechargeOrderNumber(orderNumber).setCreateTime(DateUtils.formatDate(new Date()));
+                    balanceMapper.updateByPrimaryKeySelective(balance);
+                    balanceLogMapper.insertSelective(balanceLog);
                     break;
                 }
+        }
+    }
+    private static void close(Closeable... closeables) {
+        if (closeables != null && closeables.length > 0) {
+            try {
+                for (Closeable closeable : closeables) {
+                    if (closeable != null) {
+                        closeable.close();
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            }
         }
     }
 }

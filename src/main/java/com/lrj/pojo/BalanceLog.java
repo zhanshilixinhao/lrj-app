@@ -26,4 +26,6 @@ public class BalanceLog extends Base{
     private Integer userId;
     private String type;
     private BigDecimal amount;
+    private Integer status;
+    private String rechargeOrderNumber;
 }

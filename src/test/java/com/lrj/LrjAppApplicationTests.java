@@ -4,9 +4,11 @@ package com.lrj;
 
 import com.lrj.VO.UserMonthCardVo;
 import com.lrj.VO.WxUserInfo;
+import com.lrj.dto.ReturnUpLoad;
 import com.lrj.mapper.*;
 
 import com.lrj.pojo.*;
+import com.lrj.util.RandomUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -47,16 +49,19 @@ public class LrjAppApplicationTests {
     private UserMapper userMapper;
     @Resource
     private PayOperationMapper payOperationMapper;
+    @Resource
+    private AppRebateMapper appRebateMapper;
+    @Resource
+    private IMerchantMapper merchantMapper;
+
     @Test
-    public void contextLoads() {
-        Order reorder = new Order();
-        Example example = new Example(Order.class);
-        example.createCriteria().andEqualTo(ORDER_NUMBER,"20200618389571");
-        List<Order> orders = orderMapper.selectByExample(example);
-        for (Order order : orders) {
-            reorder=order;
+    public void contextLoads() throws Exception {
+
+        List<Merchant> merchants = merchantMapper.selectAll();
+        for (Merchant merchant : merchants) {
+            System.out.println(merchant.toString());
         }
-        System.out.println(reorder.toString());
+        //System.out.println(returnUpLoad.getLocalDir());
         /*WxUserInfo wxUserInfo = new WxUserInfo();
         wxUserInfo.setCity("螺蛳湾").setSex(2);
         int i = wxUserInfoMapper.insertSelective(wxUserInfo);

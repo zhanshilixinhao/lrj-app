@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.AlipayClient;
 import com.alipay.api.DefaultAlipayClient;
-import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.lrj.VO.*;
@@ -19,6 +18,7 @@ import com.lrj.service.IOrderService;
 import com.lrj.service.IPayService;
 
 import com.lrj.util.*;
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -27,7 +27,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,9 +38,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.*;
 
 /**
@@ -275,6 +272,14 @@ public class PayController {
         params.put("notify_url", "https://cwj1.ngrok2.xiaomiqiu.cn/WXPayNotifyUrl");  //异步通知回调地址
         params.put("trade_type", "APP"); //支付类型
         //将非空参数进行签名运算(排序，MD5加密)
+        /*Map<String, String> params2 = null;
+        for (String key: params.keySet()) {
+            String value = (String) params.get(key);
+            if (value == null) {
+                value = "";
+            }
+            params2.put(key, value);
+        }*/
         String sign = WXPayUtil.getSign(params,PayConfig.getApp_key());
         params.put("sign", sign);
         System.out.println("我支付发送的签名："+sign);

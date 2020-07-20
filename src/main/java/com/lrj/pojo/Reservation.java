@@ -36,6 +36,7 @@ public class Reservation{
     private String longitude; //经度
     private String latitude; //纬度
     private String  reservationJson; // 预约的具体内容
+    @Transient
     private JSONArray reservationJSONArray;//将具体内容从json转为List 供给前端
     private Integer isUrgent; //是否加急
     private Integer isService; //是否收取服务费
@@ -50,5 +51,6 @@ public class Reservation{
     private String picture;//图片拼接
     @Transient
     private String unit;//单位
+    @Transient
     private BigDecimal originalPrice;//商品原价
 }

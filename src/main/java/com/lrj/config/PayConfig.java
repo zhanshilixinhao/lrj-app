@@ -1,6 +1,7 @@
 package com.lrj.config;
 
 import com.lrj.VO.AliPayVo;
+import lombok.AllArgsConstructor;
 
 import java.util.Map;
 
@@ -9,6 +10,7 @@ import java.util.Map;
  * @describe : 商户在微信支付平台的参数
  * @date : 2020-4-10
  */
+@AllArgsConstructor
 public class PayConfig {
     //支付成功后的服务器回调url
     public static final String notify_url = "http://lxh.ngrok2.xiaomiqiu.cn/appletsPayNotify";
@@ -21,8 +23,10 @@ public class PayConfig {
     // 收到API的返回的时候也要用这个key来对返回的数据算下签名，跟API的Sign数据进行比较，如果值不一致，有可能数据被第三方给篡改
     /*****************************小程序提交参数***********************************/
     private static String min_key = "2rSy2j3XMsCebEDa9hUZKuPi1UWbxm5R";
+    private static String api_key = "ckh8tv9Ne5ad5GvGSwfqvk1DpCQDA2sJ";
     // 微信分配的公众号ID（开通公众号之后可以获取到）
     private static String min_appID = "wxa560d266e8d31842";
+    private static String applet_appID="wxc31f3dd8ecfe95a8";
     // 微信支付分配的商户号ID（开通公众号的微信支付功能之后可以获取到）
     private static String min_mchID = "1325631701";
     // 接口密钥
@@ -47,6 +51,7 @@ public class PayConfig {
     private static String app_appID = "wxcbdfe89e9cef31d9";
     //微信支付分配的商户号ID（开通公众号的微信支付功能之后可以获取到）
     private static String app_mchID = "1300635601";
+    //private static String app_mchID="1325631701";
     //受理模式下给子商户分配的子商户号
     private static String app_subMchID = "";
     //HTTPS证书的本地路径
@@ -61,6 +66,7 @@ public class PayConfig {
     //以下是几个API的公共路径：
     /** 统一下单接口 **/
     public static String UNIFIEDORDER = "https://api.mch.weixin.qq.com/pay/unifiedorder";
+                                         //https://api.mch.weixin.qq.com/pay/unifiedorder
     /** 获取成员信息 **/
     public static String GETUSERINFOR = "https://qyapi.weixin.qq.com/cgi-bin/user/getuserinfo";
     /** 获取网页授权token **/
@@ -103,6 +109,10 @@ public class PayConfig {
 
     public static String getMin_key() {
         return min_key;
+    }
+
+    public static String getApi_key(){
+        return api_key;
     }
 
     public static void setMin_key(String min_key) {
@@ -159,6 +169,9 @@ public class PayConfig {
 
     public static String getMin_certPassword() {
         return min_certPassword;
+    }
+    public static String getApplet_appID(){
+        return applet_appID;
     }
 
     public static void setMin_certPassword(String min_certPassword) {
