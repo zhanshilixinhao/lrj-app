@@ -54,6 +54,21 @@ public class AppletsPayServiceImpl implements AppletsPayService {
     @Resource
     private BalanceLogMapper balanceLogMapper;
 
+    @Resource
+    private UserMapper userMapper;
+
+    @Resource
+    private UserLevelMapper userLevelMapper;
+
+    @Resource
+    private AppRebateMapper appRebateMapper;
+
+    @Resource
+    private MerchantMapper merchantMapper;
+
+    @Resource
+    private ReservationMapper reservationMapper;
+
     private static final Logger log = LoggerFactory.getLogger(AppletsPayServiceImpl.class);
 
     /**
@@ -168,7 +183,53 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                         setTradeType(1).setBankType(String.valueOf(map.get("bank_type")));
                 int i = payOperationMapper.insertSelective(payOperation);
                 System.out.println("添加成功"+i);
-
+                User user = userMapper.selectByPrimaryKey(reOrder.getUserId());
+                //上级用户返利
+                if (user.getSuperType()!=null&&user.getSuperType()==1&&reOrder.getOrderType()!=2&&reOrder.getOrderType()!=4) {
+                    UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getSuperId());
+                    if (userLevel.getLevelId()!=1) {
+                        AppRebate appRebate = new AppRebate();
+                        appRebate.setUserId(user.getSuperId()).setLowId(user.getAppUserId()).setOrderNumber(reOrder.getOrderNumber()).setType(1).
+                                setSource("下级返利").setCreateTime(DateUtils.formatDate(new Date()));
+                        switch (userLevel.getLevelId()){
+                            case 2:
+                                appRebate.setBackMoney(BigDecimal.valueOf(reOrder.getTotalPrice().doubleValue() * 0.01));
+                                appRebateMapper.insertSelective(appRebate);
+                                break;
+                            case 3:
+                                appRebate.setBackMoney(BigDecimal.valueOf(reOrder.getTotalPrice().doubleValue() * 0.05));
+                                appRebateMapper.insertSelective(appRebate);
+                                break;
+                            default:
+                                appRebate.setBackMoney(BigDecimal.valueOf(reOrder.getTotalPrice().doubleValue() * 0.1));
+                                appRebateMapper.insertSelective(appRebate);
+                                break;
+                        }
+                    }
+                }
+                //商家返利
+                if (user.getSuperType()!=null&&user.getSuperType()==2) {
+                    Merchant merchant = merchantMapper.selectByPrimaryKey(user.getSuperId());
+                    AppRebate appRebate = new AppRebate();
+                    appRebate.setUserId(merchant.getMerchantId()).setLowId(user.getAppUserId()).setOrderNumber(reOrder.getOrderNumber()).setType(2).
+                            setCreateTime(DateUtils.formatDate(new Date()));
+                    if (reOrder.getOrderType()==1||reOrder.getOrderType()==3) {
+                        appRebate.setBackMoney(BigDecimal.valueOf(reOrder.getTotalPrice().doubleValue() * merchant.getDistributionRatio().doubleValue()));
+                    }else if (reOrder.getOrderType()==2||reOrder.getOrderType()==4){
+                        appRebate.setBackMoney(BigDecimal.valueOf(reOrder.getTotalPrice().doubleValue() * 0.05));
+                    }
+                    appRebateMapper.insertSelective(appRebate);
+                }
+                //更新预约表
+                Example example1 = new Example(Reservation.class);
+                example1.createCriteria().andEqualTo("orderNumber",reOrder.getOrderNumber());
+                List<Reservation> reservations = reservationMapper.selectByExample(example1);
+                if (reservations!=null||reservations.size()!=0) {
+                    for (Reservation reservation : reservations) {
+                        reservation.setStatus(3);
+                        reservationMapper.updateByPrimaryKeySelective(reservation);
+                    }
+                }
                 //通知微信服务器已经支付成功
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
                         + "<return_msg><![CDATA[OK]]></return_msg>" + "</xml> ";
@@ -353,7 +414,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                 balanceLogMapper.insertSelective(balanceLog);
                 break;
             default:
-                if (typepe == 1) {
+                if (typepe == 1&& "e".equals(orderNumber.substring(0, 1))) {
                     balanceLog.setUserId(userId).setAmount(new BigDecimal(userBalance)).setType("1").setCreateTime(DateUtils.formatDate(new Date()));
                     break;
                 }
