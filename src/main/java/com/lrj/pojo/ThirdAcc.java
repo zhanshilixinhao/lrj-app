@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author linqin
@@ -22,6 +23,7 @@ public class ThirdAcc extends Base{
     @Id
     private Integer id;
     private String phone;
+
     private String openId;
     private Byte accType;
 
