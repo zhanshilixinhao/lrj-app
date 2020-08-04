@@ -353,7 +353,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         params.put("nonce_str", StringUtils.generateNonceStr());
         params.put("body", "lrjcheshi");
         params.put("out_trade_no", orderNumber);
-        params.put("total_fee", value);
+        params.put("total_fee", "1");
         try {
             InetAddress localAddr = InetAddress.getLocalHost();
             String localIp = localAddr.getHostAddress().toString();
@@ -391,11 +391,8 @@ public class AppletsPayServiceImpl implements AppletsPayService {
             response.close();
             httpClient.close();
 
-        } catch (ClientProtocolException e2) {
-            System.out.println(e2);
-            new FormerResult("success", 1, "网络请求异常，请稍后重试或联系客服！", null);
-        } catch (IOException e3) {
-            System.out.println(e3);
+        } catch (IOException e2) {
+            System.out.println(e2.getMessage());
             new FormerResult("success", 1, "网络请求异常，请稍后重试或联系客服！", null);
         } catch (Exception ex) {
             ex.printStackTrace();

@@ -87,6 +87,7 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         return new FormerResult("SUCCESS", 0, "预约成功！", null);
     }
 
+    @Override
     public FormerResult createHouseServiceAppoint(Map<String, Object> reservationMap) {
         //创建预约信息
         Reservation reservation = new Reservation();
