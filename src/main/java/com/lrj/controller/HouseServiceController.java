@@ -25,23 +25,20 @@ public class HouseServiceController {
 
     @RequestMapping(value = "/getHouseService",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo getHouseService(Integer itemCategoryId,HttpServletRequest request){
+        Integer areaType = Integer.parseInt(request.getParameter("areaType"));
         /** 校验必须参数 **/
-        if (itemCategoryId == 0 || itemCategoryId==null) {
+        if (itemCategoryId == 0 || itemCategoryId==null ||areaType==0 || areaType==null) {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
-        List<HouseServiceVo> houseServiceVoList = houseService.findHouseService(itemCategoryId);
-        /** 获取请求地址 **/ //request.getRequestURL();
-        StringBuffer url = new StringBuffer();
-        url.append("http://192.168.0.103:8080/getHouseService");
+        List<HouseServiceVo> houseServiceVoList = houseService.findHouseService(itemCategoryId,areaType);
+        /** 获取请求地址 **/
+        StringBuffer url = request.getRequestURL();
         /** 拼接 **/
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-        /** 获取虚拟目录 **/
-       /* String directory = MessagesUtil.getString("virtual_directory") + "/";*/
-       String directory = "F:\\java\\swkjProject\\myfile";
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
         /** 拼接可访问图片地址 **/
         for (HouseServiceVo houseServiceVo : houseServiceVoList) {
             /** 图片地址 **/
-            houseServiceVo.setPicture(tempContextUrl + directory + houseServiceVo.getPicture());
+            houseServiceVo.setPicture(tempContextUrl + houseServiceVo.getPicture());
         }
         return new ResultVo("success", 0, "查询成功", houseServiceVoList);
     }
@@ -52,10 +49,18 @@ public class HouseServiceController {
         return new ResultVo("SUCCESS", 0, "查询成功！", houserServicePidVoList);
     }
 
-    //定制家政服务
+    /**
+     *  定制家政服务
+     */
+
     @RequestMapping(value = "/getCustomHouseService",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getCustomHouseService(){
-        List<HouseServiceVo> customHouseServiceList = houseService.findCustomHouseService();
+    public ResultVo getCustomHouseService(HttpServletRequest request){
+        Integer areaType = Integer.parseInt(request.getParameter("areaType"));
+        /** 校验必须参数 **/
+        if (areaType == 0 || areaType==null) {
+            return new ResultVo("success", 1, "参数有误,请检查参数",null);
+        }
+        List<HouseServiceVo> customHouseServiceList = houseService.findCustomHouseService(areaType);
         return new ResultVo("SUCCESS", 0, "查询成功！", customHouseServiceList);
     }
 

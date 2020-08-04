@@ -8,11 +8,14 @@ import com.lrj.mapper.IHouseServiceMapper;
 import com.lrj.mapper.IUserMapper;
 import com.lrj.service.IHouseService;
 import com.lrj.service.IUserService;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : cwj
@@ -31,8 +34,11 @@ private IHouseServiceMapper houseServiceMapper;
      * @param itemCategoryId
      * @return
      */
-    public List<HouseServiceVo> findHouseService(Integer itemCategoryId) {
-        return houseServiceMapper.getHouseService(itemCategoryId);
+    public List<HouseServiceVo> findHouseService(Integer itemCategoryId,Integer areaType) {
+        Map<String, Integer> params = new HashMap<>();
+        params.put("itemCategoryId", itemCategoryId);
+        params.put("areaType", areaType);
+        return houseServiceMapper.getHouseService(params);
     }
 
     /**
@@ -47,7 +53,7 @@ private IHouseServiceMapper houseServiceMapper;
      * 查询家政个性服务
      * @return
      */
-    public List<HouseServiceVo> findCustomHouseService() {
-        return houseServiceMapper.getCustomHouseService();
+    public List<HouseServiceVo> findCustomHouseService(Integer areaType) {
+        return houseServiceMapper.getCustomHouseService(areaType);
     }
 }

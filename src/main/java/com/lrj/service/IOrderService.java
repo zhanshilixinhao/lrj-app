@@ -1,9 +1,7 @@
 package com.lrj.service;
 
-import com.lrj.VO.ConsigneeVo;
-import com.lrj.VO.OrderVo;
-import com.lrj.VO.SmsTemplateVo;
-import com.lrj.VO.UserInfoVo;
+import com.lrj.VO.*;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -50,11 +48,11 @@ public interface IOrderService {
     List<OrderVo> findOrderListByUserIdAndStatus(Integer userId,Integer status);
 
     /**
-     * 通过订单号 判断是哪种订单的状态（抢单）
-     * @param orderNumber
+     * 通过服务单号 判断是哪种订单的状态（抢单）
+     * @param reservationId
      * @return
      */
-    Boolean lockOrderDetailIsLock(String orderNumber,Integer staffId);
+    Boolean lockOrderDetailIsLock(String reservationId, Integer staffId);
 
     /**
      * 通过订单号 更新月卡使用次数
@@ -92,4 +90,10 @@ public interface IOrderService {
      * @param orderNumber
      */
     void deleteOrderRemark(String orderNumber);
+
+    /**
+     * 更新订单的分享状态
+     * @param isShare
+     */
+    void updateOrderIsShare(Integer isShare,String shareOrderNumber);
 }

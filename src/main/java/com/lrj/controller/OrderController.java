@@ -5,7 +5,6 @@ import com.lrj.constant.Constant;
 import com.lrj.mapper.*;
 import com.lrj.pojo.MerchantOrder;
 import com.lrj.pojo.MonthCard;
-import com.lrj.pojo.Order;
 import com.lrj.pojo.Reservation;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
@@ -13,10 +12,8 @@ import com.lrj.service.IUserService;
 import com.lrj.util.DateUtils;
 import com.lrj.util.MessagesUtil;
 import com.lrj.util.RandomUtil;
-import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -142,9 +139,58 @@ public class OrderController {
             //是否参与活动
             Integer activityId = Integer.parseInt(request.getParameter("activityId"));
             if(activityId !=null && activityId !=0){
-                //
+                //判断是分享者还是享受者
+                String shareOrderNumber = request.getParameter("shareOrderNumber");
+                //是享受者
+                if(shareOrderNumber !=null){
+                    //设置该分享单不可再领取
+                    orderService.updateOrderIsShare(1,shareOrderNumber);
+                        //判断是新用户还是老用户
+                        List<OrderVo> orderVoList=  orderService.findOrderListByUserId(userId);
+                        if(orderVoList.size()>0){ //老用户
+                            /** 获取购物车商品列表 **/
+                            List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(userId);
+                            /**获取分享单的商品列表**/
+                            Order_washingVo washingVo = orderMapper.getWashingOrderByOrderNumber(shareOrderNumber);
+                            String washinDetail = washingVo.getShoppingJson();
+                            //比对结果集
+                            List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+                            //比对商品减免价格
+                            for(ShoppingVo shoppingVo : shoppingVoList){
+                                //解析商品json
+                                JSONArray wahsingDetailJSONArray = JSONArray.fromObject(washinDetail);
+                                for (int i = 0; i < wahsingDetailJSONArray.size(); i++) {
+                                    JSONObject d = wahsingDetailJSONArray.getJSONObject(i);
+                                    //如果商品相同
+                                    if(shoppingVo.getItemId().equals(d.get("itemId"))){
+                                        //判断数量
+                                        if(shoppingVo.getQuantity().equals(d.get("quantity"))){ //等于
+                                            totalPrice = new BigDecimal(totalPrice.doubleValue()-new BigDecimal(d.get("quantity").toString()).doubleValue() * new BigDecimal(d.get("price").toString()).doubleValue());
+                                        }else if(shoppingVo.getQuantity() > Integer.parseInt(d.get("quantity").toString())){ //大于
+                                            totalPrice = new BigDecimal(totalPrice.doubleValue()-new BigDecimal(d.get("quantity").toString()).doubleValue() * new BigDecimal(d.get("price").toString()).doubleValue());
+                                        }else if(shoppingVo.getQuantity() < Integer.parseInt(d.get("quantity").toString())){
+                                            totalPrice = new BigDecimal(totalPrice.doubleValue() - new BigDecimal(shoppingVo.getQuantity().toString()).doubleValue() * shoppingVo.getPrice().doubleValue());
+                                        }
+                                    }else {
+                                        continue;
+                                    }
+                                }
+                            }
+                        }else if(orderVoList.size()==0){ //新用户
+                            BigDecimal shareTotalPrice = new BigDecimal(request.getParameter("shareTotalPrice"));
+                            if(totalPrice.doubleValue() <= shareTotalPrice.doubleValue()){
+                                totalPrice = new BigDecimal(0);//全免
+                            }else {
+                                totalPrice = new BigDecimal(totalPrice.doubleValue()-shareTotalPrice.doubleValue()); //减免分享单金额
+                            }
+                        }
+                //是分享者
+                }else {
+                    totalPrice = totalPrice;
+                }
                 orderVo.setActivity(activityId);
                 orderVo.setActivityPrice(activityPrice);
+                orderVo.setShareOrderNumber(shareOrderNumber);
             }else {
                 totalPrice = totalPrice;
                 orderVo.setActivity(0);
@@ -181,13 +227,16 @@ public class OrderController {
                 case 3:
                     takeConsigneeId =Integer.parseInt(request.getParameter("takeConsigneeId"));
                     Integer houseServiceId = Integer.parseInt(request.getParameter("houseServiceId"));
+                    //封装单项家政数据格式 一致
+                    JSONArray array = new JSONArray();
                     JSONObject houseServiceJson = new JSONObject();
-                    houseServiceJson.element("itemId", houseServiceId);
+                    houseServiceJson.put("itemId", houseServiceId);
                     AppItemVo appItemVo= itemMapper.getItemInfoByItemId(houseServiceId);
-                    houseServiceJson.element("itmeName",appItemVo.getItemName());
-                    houseServiceJson.element("count", 1);
+                    houseServiceJson.put("itmeName",appItemVo.getItemName());
+                    houseServiceJson.put("count", 1);
+                    array.add(houseServiceJson);
                     typeParams.put("takeConsigneeId", takeConsigneeId);
-                    typeParams.put("houseServiceJson", houseServiceJson.toString());
+                    typeParams.put("houseServiceJson", array.toString());
                     break;
                 case 4:
                     Integer serviceCycle = Integer.parseInt(request.getParameter("serviceCycle"));
@@ -322,16 +371,12 @@ public class OrderController {
             for(int i=0;i<reservationJsonArray.size();i++){
                 Integer itemId = Integer.parseInt(reservationJsonArray.getJSONObject(i).get("itemId").toString());
                 AppItemVo appItemVo = itemMapper.getItemInfoByItemId(itemId);
-                /** 获取请求地址 **/ //request.getRequestURL();
-                StringBuffer url = new StringBuffer();
-                url.append("http://www.51lrj.com/findUserReservationDetail");
+                /** 获取请求地址 **/
+                StringBuffer url = request.getRequestURL();
                 /** 拼接 **/
-                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-                /** 获取虚拟目录 **/
-                String directory = MessagesUtil.getString("virtual_directory") + "/";
+                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 /** 拼接可访问图片地址 **/
-                /** 图片地址 **/
-                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + directory + appItemVo.getPicture());
+                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl  + appItemVo.getPicture());
                 reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
                 reservationJsonArray.getJSONObject(i).element("defect", "无瑕疵");
                 reservationJsonArray.getJSONObject(i).element("price", appItemVo.getPrice());
@@ -345,16 +390,12 @@ public class OrderController {
             for(int i=0;i<reservationJsonArray.size();i++){
                 Integer itemId = Integer.parseInt(reservationJsonArray.getJSONObject(i).get("itemId").toString());
                 AppItemVo appItemVo = itemMapper.getItemInfoByItemId(itemId);
-                /** 获取请求地址 **/ //request.getRequestURL();
-                StringBuffer url = new StringBuffer();
-                url.append("http://www.51lrj.com/getItemList");
+                /** 获取请求地址 **/
+                StringBuffer url = request.getRequestURL();
                 /** 拼接 **/
-                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-                /** 获取虚拟目录 **/
-                String directory = MessagesUtil.getString("virtual_directory") + "/";
+                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 /** 拼接可访问图片地址 **/
-                /** 图片地址 **/
-                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + directory + appItemVo.getPicture());
+                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + appItemVo.getPicture());
                 reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
             }
             //清空json,换为jsonArray
@@ -469,5 +510,19 @@ public class OrderController {
             orderVoList = orderService.findOrderListByUserId(userId);
         }
         return new ResultVo("SUCCESS",0,"查询完成",orderVoList);
+    }
+
+    /**
+     * 查询是否具有分享订单资格
+     */
+    @RequestMapping(value = "/isCanShare",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult isCanShare(HttpServletRequest request){
+        String orderNumber = request.getParameter("orderNumber");
+        OrderVo orderVo = orderService.findOrderByOrderNumber(orderNumber);
+        if(orderVo.getShareOrderNumber() !="" && orderVo.getShareOrderNumber() !=null){
+            return new FormerResult("SUCCESS", 0, "不可以分享", null);
+        }else {
+            return new FormerResult("SUCCESS", 0, "可以分享", orderNumber);
+        }
     }
 }

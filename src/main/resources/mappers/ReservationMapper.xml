@@ -13,23 +13,27 @@
 		SELECT * FROM reservation WHERE reservation_id=#{reservationId}
 	</select>
 	<select id="getWashingOrderList" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE status=0 AND order_type IN (1,2)
+		SELECT * FROM reservation WHERE grab_order_id_take is NULL AND order_type IN (1,2)
 	</select>
 	<select id="getHouseServiceOrderList" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE status=0 AND order_type IN (3,4)
+		SELECT * FROM reservation WHERE grab_order_id_take is NULL AND order_type IN (3,4)
 	</select>
 	<!--保存预约单-->
 	<insert id="insertReservation" parameterType="com.lrj.pojo.Reservation" useGeneratedKeys="true" keyProperty="reservationId">
-			INSERT INTO reservation (status,tracking_status,order_type,grab_order_id,address,create_time,update_time,user_id,order_number,longitude,latitude,reservation_json,is_urgent,is_service,total_price,is_end,get_clothes_time)
-		VALUES  (#{status},#{trackingStatus},#{orderType},#{grabOrderId},#{address},#{createTime},#{updateTime},#{userId},#{orderNumber},#{longitude},#{latitude},#{reservationJson},#{isUrgent},#{isService},#{totalPrice},#{isEnd},#{getClothesTime})
+			INSERT INTO reservation (status,tracking_status,order_type,grab_order_id_take,address,create_time,update_time,user_id,order_number,longitude,latitude,reservation_json,is_urgent,is_service,total_price,is_end,get_clothes_time)
+		VALUES  (#{status},#{trackingStatus},#{orderType},#{grabOrderIdTake},#{address},#{createTime},#{updateTime},#{userId},#{orderNumber},#{longitude},#{latitude},#{reservationJson},#{isUrgent},#{isService},#{totalPrice},#{isEnd},#{getClothesTime})
 	</insert>
 	<!--锁定预约订单,并绑定锁单人-->
 	<update id="lockReservation" parameterType="java.lang.String" useGeneratedKeys="true" keyProperty="reservation_id">
-		UPDATE reservation SET status=1,grab_order_id=#{staffId} WHERE order_number=#{orderNumber} AND status=0
+		UPDATE reservation SET grab_order_id=#{staffId} WHERE reservation_id=#{reservationId} AND status=0
 	</update>
 	<!--更新预约订单的追踪状态-->
 	<update id="updateReservationTrackingStatus" parameterType="java.util.HashMap">
-		UPDATE reservation SET tracking_status=#{traceStatus} WHERE order_number=#{orderNumber} AND grab_order_id=#{staffId}
+		UPDATE reservation
+		<trim prefix="set" suffixOverrides=",">
+			<if test="status !=null">tracking_status=#{traceStatus}</if>
+		</trim>
+		  WHERE reservation_id=#{reservationId} AND grab_order_id_take=#{staffId}
 	</update>
 	<!--更新预约订单的状态-->
 	<update id="updateReservationStatus" parameterType="java.util.Map" useGeneratedKeys="true" keyProperty="reservationId">

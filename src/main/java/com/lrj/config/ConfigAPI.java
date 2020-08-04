@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class ConfigAPI {
-    public static String filePath = "D://wy/pic2020/";
+    public static String filePath = "/usr/local/project/";
 }

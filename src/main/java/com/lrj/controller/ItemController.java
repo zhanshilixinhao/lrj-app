@@ -43,17 +43,14 @@ public class ItemController {
         paramMap.put("userId", userId);
         /** 查询商品列表 **/
         List<AppItemVo> appItemVoList = itemService.getItemListByCategoryId(paramMap);
-        /** 获取请求地址 **/ //request.getRequestURL();
-        StringBuffer url = new StringBuffer();
-        url.append("http://www.51lrj.com/getItemList");
+        /** 获取请求地址 **/
+        StringBuffer url = request.getRequestURL();
         /** 拼接 **/
         String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-        /** 获取虚拟目录 **/
-        String directory = MessagesUtil.getString("virtual_directory") + "/";
         /** 拼接可访问图片地址 **/
         for (AppItemVo appItemVo : appItemVoList) {
             /** 图片地址 **/
-            appItemVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+            appItemVo.setPicture(tempContextUrl + appItemVo.getPicture());
             /** 原价 **/
             appItemVo.setOriginalPrice(appItemVo.getPrice());
         }
@@ -68,20 +65,33 @@ public class ItemController {
     public ResultVo getSpecialItem(HttpServletRequest request){
         List<AppItemVo> specialItemList = new ArrayList<>();
         specialItemList = itemService.getSpecialItem();
-        /** 获取请求地址 **/ //request.getRequestURL();
-        StringBuffer url = new StringBuffer();
-        url.append("http://www.51lrj.com/getItemList");
+        /** 获取请求地址 **/
+        StringBuffer url = request.getRequestURL();
         /** 拼接 **/
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-        /** 获取虚拟目录 **/
-        String directory = MessagesUtil.getString("virtual_directory") + "/";
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
         /** 拼接可访问图片地址 **/
         for (AppItemVo appItemVo : specialItemList) {
             /** 图片地址 **/
-            appItemVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+            appItemVo.setPicture(tempContextUrl + appItemVo.getPicture());
             /**截止时间**/
             appItemVo.setPromotionEndDateLong(appItemVo.getPromotionEndDate().getTime());
         }
         return new ResultVo("SUCCESS", 0, "查询成功！", specialItemList);
     }
+
+    /*@RequestMapping(value = "/updateImagesUrl",method = {RequestMethod.GET,RequestMethod.POST})
+    public void updateImagesUrl(){
+        *//** 参数MAP **//*
+        Map<String, Integer> paramMap = new HashMap<String, Integer>();
+        paramMap.put("start", 0); // 开始条数
+        paramMap.put("rows", 500); // 每页要显示多少条
+        paramMap.put("categoryId", 11); // 商品类表id
+        List<AppItemVo> appItemVoList = itemService.getItemList();
+        for (AppItemVo appItemVo : appItemVoList){
+            String picture = appItemVo.getPicture();
+            picture = picture.replaceAll("\\\\", "/");
+            itemService.updateImagesUrl(appItemVo.getAppItemId(),picture);
+        }
+    }*/
+
 }

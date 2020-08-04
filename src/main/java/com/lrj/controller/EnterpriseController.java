@@ -1,22 +1,40 @@
 package com.lrj.controller;
 
 import com.lrj.VO.*;
+import com.lrj.constant.Constant;
 import com.lrj.mapper.ReservationMapper;
+import com.lrj.pojo.DistributionStation;
 import com.lrj.pojo.Reservation;
+import com.lrj.service.IDistributionStationService;
 import com.lrj.service.IOrderCommentService;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IStaffService;
 import com.lrj.util.DateUtils;
+import com.lrj.util.OkHttpUtil;
+import com.lrj.util.RequestParams;
 import javafx.geometry.Pos;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+import okhttp3.Response;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.*;
 
 /**
  * @author : cwj
@@ -34,6 +52,8 @@ public class EnterpriseController {
    private IStaffService staffService;
    @Resource
    private IOrderCommentService orderCommentService;
+   @Resource
+   private IDistributionStationService distributionStationService;
 
 
     /**
@@ -63,41 +83,102 @@ public class EnterpriseController {
     }
     /**
      * 查询员工可以抢的单
-     * @param reservationType
      * @return
      */
     @RequestMapping(value = "/getStaffOrderList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getWashingOrderList(Integer reservationType){
+    public ResultVo getWashingOrderList(Integer staffType){
         /** 校验必须参数 **/
-        if (reservationType == null || reservationType == 0) {
+        if (staffType == null || staffType == 0) {
             return new ResultVo("success", 1, "参数有误,请检查参数", null);
         }
         List<Reservation> reservationList = null;
-        //洗衣（包含单项洗衣和月卡预约）
-        if(reservationType == 1){
-            reservationList = reservationMapper.getWashingOrderList();
-        //家政（包含单项家政和定制家政)
-        }else if(reservationType == 2){
-            reservationList = reservationMapper.getHouseServiceOrderList();
+        switch (staffType){
+            case 1:
+                //洗衣订单（所有）
+                reservationList = reservationMapper.getWashingOrderList();
+                break;
+            case 2:
+                break;
+            case 3:
+                //家政订单（所有)
+                reservationList = reservationMapper.getHouseServiceOrderList();
+                break;
+            case 4:break;
+
         }
+        //计算两个坐标之间的实际距离
+        String key = "81b5d90e4a546330f9e0672877299bc0"; //此key 为高德地图提供，使用API接口必传的key
+        String url = "https://restapi.amap.com/v3/distance"; //距离测量API url
+        for(Reservation reservation : reservationList){
+            Map<String, Integer> distribationMap = new HashMap<>();
+            //(初始地 坐标)
+            String origins = reservation.getLongitude() + "," + reservation.getLatitude();
+            //比对挑选最短距离的配送站 存储起来，防止因刷新导致高德地图API访问次数过大，超过了开发者访问限制次数
+            List<DistributionStation> distributionStationControllerList = distributionStationService.getDistriButionStationList();
+            for(DistributionStation distributionStation : distributionStationControllerList){
+                CloseableHttpResponse response = null;
+                CloseableHttpClient httpClient = null;
+                //(目的地 坐标)
+                String destination = distributionStation.getLongitude() + "," + distributionStation.getLatitude();
+                try {
+                    String responseContent = "";
+                    httpClient= HttpClients.createDefault();
+                    //创建URLBuilder
+                    URIBuilder uriBuilder= new URIBuilder(url);
+                    //设置参数
+                    uriBuilder.setParameter("origins",origins).setParameter("destination",destination).setParameter("key",key);
+                    HttpGet httpGet=new HttpGet(uriBuilder.build());
+                    response = httpClient.execute(httpGet);
+                    HttpEntity entity = response.getEntity();
+                    responseContent = EntityUtils.toString(entity, "UTF-8");
+                    JSONObject jsonObject = JSONObject.fromObject(responseContent);
+                    //获取距离
+                    Integer distance = Integer.parseInt(JSONObject.fromObject(JSONArray.fromObject(jsonObject.get("results")).get(0)).getString("distance"));
+                    //装入map  用来做比较
+                    distribationMap.put(distributionStation.getDistributionStationId().toString(), distance);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }finally {
+                    try {
+                        response.close();
+                        httpClient.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            //排序得到最小的值
+            List<Map.Entry<String, Integer>> list_Data = new ArrayList<Map.Entry<String, Integer>>(distribationMap.entrySet());
+            Collections.sort(list_Data, new Comparator<Map.Entry<String, Integer>>() {
+                public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                    //升序排列
+                    return (o1.getValue() - o2.getValue());
+                }
+            });
+            reservation.setBeeline(list_Data.get(0).getValue());
+        }
+
         return new ResultVo("SUCCESS", 0, "查询成功",reservationList);
     }
 
     /**
      * 抢单
      * @param staffId
-     * @param orderNumber
+     * @param reservationId
      * @param request
      * @return
      */
     @RequestMapping(value = "/robOrder",method = {RequestMethod.GET,RequestMethod.POST})
-    public synchronized FormerResult robOrder(Integer staffId, String orderNumber, HttpServletRequest request){
+    public synchronized FormerResult robOrder(Integer staffId, String reservationId, HttpServletRequest request){
         /** 校验必须参数 **/
-        if (staffId == null || orderNumber == null) {
+        if (staffId == null || reservationId == null) {
             return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
         }
         // 查杀该订单是否被抢
-        if(orderService.lockOrderDetailIsLock(orderNumber,staffId)){
+        if(orderService.lockOrderDetailIsLock(reservationId,staffId)){
             return new FormerResult("SUCCESS", 0, "抢单成功", null);
         }else {
             return new FormerResult("SUCCESS", 0, "抢单失败", null);
@@ -131,35 +212,30 @@ public class EnterpriseController {
      * 更改预约订单追踪状态
      */
     @RequestMapping(value = "/updateReservationStatus",method = {RequestMethod.GET,RequestMethod.POST})
-    public FormerResult updateReservationStatus(Integer staffId,String orderNumber,Integer traceStatus){
+    public FormerResult updateReservationStatus(Integer staffId,String reservationId,Integer traceStatus){
         /** 校验必须参数 **/
-        if (staffId == null || orderNumber == null || traceStatus == null) {
+        if (staffId == null || reservationId == null || traceStatus == null) {
             return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
         }
         //参数有多重类型，需封装
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("staffId",staffId);
-        params.put("orderNumber",orderNumber);
+        params.put("reservationId",reservationId);
         params.put("traceStatus",traceStatus);
-        Integer updateNumber = reservationMapper.updateReservationStatus(params);
+        //如果为家政服务状态，则记录服务时间
+        if(traceStatus == Constant.ORDER_TRANSSTATUS_HOUSESERVICE_BEGIN){
+            params.put("houseServiceBeginTime", DateUtils.getNowDateTime());
+            reservationMapper.updateReservationTrackingStatus(params);
+        }else if(traceStatus == Constant.ORDER_TRANSSTATUS_HOUSESERVICE_END){
+            params.put("houseServiceEndTime", DateUtils.getNowDateTime());
+            reservationMapper.updateReservationTrackingStatus(params);
+        }
+        Integer updateNumber = reservationMapper.updateReservationTrackingStatus(params);
         if(updateNumber ==1){
             return new FormerResult("SUCCESS", 0, "修改成功！", null);
         }else {
             return new FormerResult("SUCCESS", 1, "修改失败！", null);
         }
-    }
-
-    /**
-     * 根据订单状态和助手员工账号  查询预约单列表
-     */
-    @RequestMapping(value = "/getReservationList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getReservationList(Integer status,Integer staffId){
-        /** 校验必须参数 **/
-        if (staffId == null || status == null || status==0 || staffId ==0) {
-            return new ResultVo("SUCCESS", 1, "参数有误,请检查参数",null);
-        }
-        List<Reservation> reservationList = reservationMapper.getReservationList(status,staffId);
-        return new ResultVo("SUCCESS",0,"查询成功",reservationList);
     }
 
     /**

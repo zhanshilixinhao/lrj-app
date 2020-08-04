@@ -45,7 +45,7 @@ public class IStaffServiceImpl implements IStaffService {
             return null;
         }else {
             //效验密码
-            if(staffInfoVo.getAdminPassword().equals(parMap.get("staffPassword"))){
+            if(staffInfoVo.getStaffPassword().equals(parMap.get("staffPassword"))){
                 return staffInfoVo;
             }else {
                 return null;

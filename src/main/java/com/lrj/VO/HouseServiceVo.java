@@ -23,9 +23,10 @@ public class HouseServiceVo {
     private String itemUnit;//单位
     private String include; //服务包含项目
     private Double price;  //价格
-    private String serviceNote; //服务说明
+    private String serviceNote; //服务包含
     private String picture; //图片路径
     private Integer active; //状态 0：下架 1：上架
     private String acceptNorm; //服务标准
     private String serviceTime;//服务时长
+    private Integer areaType;//面积类型
 }

@@ -5,7 +5,7 @@
                 >
 <mapper namespace="com.lrj.mapper.IHouseServiceMapper">
 	<!--通过家政类型查询家政服务项目-->
-    <select id="getHouseService" parameterType="Integer" resultType="com.lrj.VO.HouseServiceVo">
+    <select id="getHouseService" parameterType="java.util.Map" resultType="com.lrj.VO.HouseServiceVo">
 	SELECT
 	app_item_id AS id,
 	item_category_id AS itemCategoryId,
@@ -20,7 +20,7 @@
 	FROM
 	app_item
 	WHERE
-	item_category_id = #{itemCategoryId}
+	item_category_id = #{itemCategoryId} AND area_type=#{areaType}
 	AND
 	is_show = 1
     </select>
@@ -51,7 +51,7 @@
 			pid AS pid,
 			is_show AS isShow
 			FROM app_item_category
-			WHERE pid=25
+			WHERE pid=17 AND is_show=1
 	</select>
 	<!--家政个性服务-->
 	<select id="getCustomHouseService" resultType="com.lrj.VO.HouseServiceVo">
@@ -73,5 +73,7 @@
 	house_service_type =2
 	AND
 	is_show = 1
+	AND
+	area_type=#{areaType}
 	</select>
 </mapper>

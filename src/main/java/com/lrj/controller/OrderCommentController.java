@@ -60,19 +60,4 @@ public class OrderCommentController {
         return new ResultVo("SUCCESS", 0, "评论成功", null);
     }
 
-    /**
-     * 图片上传
-     */
-    @RequestMapping("/fileUploadController")
-    public FormerResult fileUpload(MultipartFile filename){
-        System.out.println(filename.getOriginalFilename());
-        try {
-            filename.transferTo(new File("D:\\jav\\myproject\\"+filename.getOriginalFilename()));
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println(e.getMessage());
-        }
-        return new FormerResult("SUCCESS", 0, "图片上传成功", null);
-    }
-
 }

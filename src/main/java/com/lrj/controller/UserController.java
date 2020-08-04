@@ -1,14 +1,12 @@
 package com.lrj.controller;
 
 import com.lrj.VO.*;
-import com.lrj.pojo.Balance;
-import com.lrj.pojo.BalanceRecord;
-import com.lrj.pojo.Merchant;
-import com.lrj.pojo.PayOperation;
+import com.lrj.pojo.*;
 import com.lrj.service.IMerchantService;
 import com.lrj.service.IPayService;
 import com.lrj.service.IUserService;
 
+import com.lrj.service.LevelService;
 import com.lrj.util.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -39,6 +37,8 @@ public class UserController {
     private IPayService payService;
     @Resource
     private IMerchantService merchantService;
+    @Resource
+    private LevelService levelService;
 
     //定义全局变量 codeMap 存放用户手机验证ma
     Map<String, Object> codeMap = new HashMap<String, Object>();
@@ -145,6 +145,40 @@ public class UserController {
             return new FormerResult("success", 1, "参数有误,请检查参数",null);
         }
         UserLevelVo userLevelVo =userService.findUserLevelInfo(userId);
+        //下一等级
+        Level level = null;
+        switch (userLevelVo.getLevelId()){
+            case 1:
+                level = levelService.findLevelByLeaveId(userLevelVo.getLevelId()+1);
+                userLevelVo.setNextLeaveName(level.getLevelName());
+                userLevelVo.setUpNeedNum(6 - userLevelVo.getInviteNum());
+                userLevelVo.setNextPrivilegeDescription(level.getPrivilegeDescription());
+                break;
+            case 2:
+                //下一等级
+                level = levelService.findLevelByLeaveId(userLevelVo.getLevelId()+1);
+                userLevelVo.setNextLeaveName(level.getLevelName());
+                userLevelVo.setUpNeedNum(16 - userLevelVo.getInviteNum());
+                userLevelVo.setNextPrivilegeDescription(level.getPrivilegeDescription());
+                break;
+            case 3:
+                level = levelService.findLevelByLeaveId(userLevelVo.getLevelId()+1);
+                userLevelVo.setNextLeaveName(level.getLevelName());
+                userLevelVo.setUpNeedNum(31 - userLevelVo.getInviteNum());
+                userLevelVo.setNextPrivilegeDescription(level.getPrivilegeDescription());
+                break;
+            case 4:
+                level = levelService.findLevelByLeaveId(userLevelVo.getLevelId()+1);
+                userLevelVo.setNextLeaveName(level.getLevelName());
+                userLevelVo.setUpNeedNum(51 - userLevelVo.getInviteNum());
+                userLevelVo.setNextPrivilegeDescription(level.getPrivilegeDescription());
+                break;
+            case 5:
+                userLevelVo.setNextLeaveName(userLevelVo.getLevelName());
+                userLevelVo.setUpNeedNum(0);
+                userLevelVo.setNextPrivilegeDescription(userLevelVo.getPrivilegeDescription());
+                break;
+        }
         return new FormerResult("success",0,"查询成功",userLevelVo);
     }
 
@@ -211,11 +245,10 @@ public class UserController {
         }
         UserInfoVo userInfoVo = userService.findUserInfoByUserId(userId);
         if(userInfoVo.getHeadPhoto() ==null || userInfoVo.getHeadPhoto()==""){
-            /** 获取请求地址 **/ //request.getRequestURL();
-            StringBuffer url = new StringBuffer();
-            url = request.getRequestURL();
+            /** 获取请求地址 **/
+            StringBuffer url = request.getRequestURL();
             /** 拼接 **/
-            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
+            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
             userInfoVo.setHeadPhoto("http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEL6b1CZVfzd2nlfv843XZs017uLYAh3ztNibkLHsKa8rAWXu26RticfrSlAHORpWLic9pib0yS1GjSFicA/132");
         }
         return new FormerResult("SUCCESS",0,"查询成功！",userInfoVo);
@@ -336,11 +369,10 @@ public class UserController {
     @RequestMapping(value = "/addUserLeaveMessage",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo addUserLeaveMessage(HttpServletRequest request){
         String userPhone = request.getParameter("userPhone");
-        String orderNumber = request.getParameter("orderNumber");
         String context = request.getParameter("context");
         String userId = request.getParameter("userId");
         /** 校验必须参数 **/
-        if (userPhone == null || orderNumber ==null || context==null || userId==null) {
+        if (userPhone == null || context==null || userId==null) {
             return new ResultVo("SUCCESS", 1, "参数有误,请检查参数",null);
         }
         Map<String, Object> params = new HashMap<>();

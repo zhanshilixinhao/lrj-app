@@ -3,6 +3,7 @@ package com.lrj.service.impl;
 import com.lrj.VO.FormerResult;
 import com.lrj.mapper.LevelMapper;
 import com.lrj.mapper.UserLevelMapper;
+import com.lrj.pojo.Level;
 import com.lrj.pojo.UserLevel;
 import com.lrj.service.LevelService;
 import com.lrj.util.CommonUtil;
@@ -50,5 +51,10 @@ public class LevelServiceImpl implements LevelService {
         }
 */
         return null;
+    }
+
+    @Override
+    public Level findLevelByLeaveId(Integer levelId) {
+        return levelMapper.findLevelByLeaveId(levelId);
     }
 }

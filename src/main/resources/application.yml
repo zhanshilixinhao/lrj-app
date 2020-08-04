@@ -14,9 +14,9 @@ spring:
       maximum-pool-size: 20
       idle-timeout: 30000
   mvc:
-    static-path-pattern: /2020/**
+    static-path-pattern: /**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:D://wy/pic2020/
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/usr/local/project/images
 # mybatis����
 mybatis:
   mapper-locations: classpath:mappers/*.xml
@@ -28,3 +28,5 @@ mapper:
     - tk.mybatis.mapper.common.Mapper
 mybatis-plus:
   mapper-locations: classpath:mappers/*.xml
+
+

@@ -10,6 +10,7 @@ import com.lrj.mapper.IOrderMapper;
 import com.lrj.mapper.ReservationMapper;
 import com.lrj.pojo.MerchantOrder;
 import com.lrj.pojo.MonthCard;
+import com.lrj.pojo.Reservation;
 import com.lrj.service.*;
 import com.lrj.util.DateUtils;
 import org.springframework.stereotype.Service;
@@ -190,33 +191,20 @@ public class IOrderServiceImpl implements IOrderService{
         return orderMapper.getOrderListByUserIdAndStatus(params);
     }
 
-    public Boolean lockOrderDetailIsLock(String orderNumber,Integer staffId) {
-        //查找基础订单
-        OrderVo orderVo = orderMapper.getOrderByOrderNumber(orderNumber);
-        switch (orderVo.getOrderType()) {
-            case 1:
-                Order_washingVo washingOrder = orderMapper.getWashingOrderByOrderNumber(orderNumber);
-                if (washingOrder.getIsLock() != 0) {
-                    return false;
-                } else {
-                    //锁定洗衣订单 并绑定锁单人（供给后台管理系统查询使用,只有单项洗衣和家政有）
-                    orderMapper.lockWashingOrder(orderNumber);
-                    //锁定预约 并绑定锁单人
-                    Integer lockNumber = reservationMapper.lockReservation(orderNumber, staffId);
-                    if (lockNumber == 1) {
-                        return true;
-                    } else {
-                        return false;
-                    }
-                }
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
+    public Boolean lockOrderDetailIsLock(String reservationId,Integer staffId) {
+        //查找服务单
+        Reservation reservation = reservationMapper.getReservationByReservationId(Integer.parseInt(reservationId));
+        if (reservation.getGrabOrderIdTake() != 0 || reservation.getGrabOrderIdSend() !=0) {
+            return false;
+        } else {
+            //锁定服务单 并绑定锁单人
+            Integer lockNumber = reservationMapper.lockReservation(reservationId, staffId);
+            if (lockNumber == 1) {
+                return true;
+            } else {
+                return false;
+            }
         }
-        return null;
     }
 
     public void updateUserMonthCardCount(int monthCardCount, String orderNumber) {
@@ -266,5 +254,17 @@ public class IOrderServiceImpl implements IOrderService{
      */
     public void deleteOrderRemark(String orderNumber) {
         orderMapper.deleteOrderRemark(orderNumber);
+    }
+
+    /**
+     * 更新订单分享 状态
+     * @param isShare
+     */
+    @Override
+    public void updateOrderIsShare(Integer isShare,String shareOrderNumber) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("isShare", isShare);
+        params.put("shareOrderNumber", shareOrderNumber);
+        orderMapper.updateOrderIsShare(params);
     }
 }

@@ -34,4 +34,15 @@ public interface IItemService {
      * @return
      */
     List<AppItemVo> getSpecialItem();
+
+    /**
+     * 可删除
+     */
+    void updateImagesUrl(Integer itemId,String picture);
+
+    /**
+     * 可删除
+     * @return
+     */
+    List<AppItemVo> getItemList();
 }

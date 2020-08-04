@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -47,5 +48,23 @@ public class ItemServiceImpl implements IItemService{
     @Override
     public List<AppItemVo> getSpecialItem() {
         return itemMapper.getSpecialItem();
+    }
+
+    /**
+     * 可删除
+     * @param itemId
+     * @param picture
+     */
+    @Override
+    public void updateImagesUrl(Integer itemId, String picture) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("itemId", itemId);
+        params.put("picture", picture);
+        itemMapper.updateImagesUrl(params);
+    }
+
+    @Override
+    public List<AppItemVo> getItemList() {
+        return itemMapper.getItemList();
     }
 }

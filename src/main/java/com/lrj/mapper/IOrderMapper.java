@@ -170,4 +170,10 @@ public interface IOrderMapper extends Mapper<Order>, MySqlMapper<Order> {
      * @return
      */
     MerchantOrder getMerchantOrderById(Integer merchantId);
+
+    /**
+     * 更新订单分享 状态
+     * @param params
+     */
+    void updateOrderIsShare(Map<String,Object> params);
 }

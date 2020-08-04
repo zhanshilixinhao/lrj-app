@@ -163,5 +163,9 @@
 	<insert id="selfHelpClaims" parameterType="java.util.HashMap">
 		INSERT INTO user_self_help_claims (user_id,user_phone,order_number,context,img) VALUES (#{userId},#{userPhone},#{orderNumber},#{context},#{img})
 	</insert>
+
+	<update id="uploadUserHeadPhotos" parameterType="java.util.HashMap">
+		UPDATE app_user SET head_photo=#{photo} WHERE userId=#{userId}
+	</update>
 	<!--留着以后用  -->
 </mapper>

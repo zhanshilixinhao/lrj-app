@@ -102,17 +102,17 @@ public class RebateServiceImpl implements RebateService {
             } else {
                 //商家用户
                 StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(user1.getSuperId());
-                if (staffInfoVo != null && staffInfoVo.getBusinessDistributionRatio() != null && staffInfoVo.getBusinessDistributionRatio().compareTo(new Double(0)) > 0) {
+                /*if (staffInfoVo != null && staffInfoVo.getStaffId() != null && staffInfoVo.getStaffId().compareTo(1) {
                     if (orderVo.getOrderType() == OrderVo.CUSTOM_HOUSE || orderVo.getOrderType() == OrderVo.MONTH_WASHING) {
                         rebateAmount = orderVo.getTotalPrice().multiply(fixRatio);
                     } else {
-                        rebateAmount = orderVo.getTotalPrice().multiply(BigDecimal.valueOf(staffInfoVo.getBusinessDistributionRatio()));
+                        rebateAmount = orderVo.getTotalPrice().multiply(BigDecimal.valueOf(staffInfoVo.getStaffId()));
                     }
                     Rebate rebate = new Rebate();
-                    rebate.setBackMoney(rebateAmount).setUserId(staffInfoVo.getSysAdminId()).setLowId(orderVo.getUserId())
+                    rebate.setBackMoney(rebateAmount).setUserId(staffInfoVo.getStaffId()).setLowId(orderVo.getUserId())
                             .setCreateTime(LocalDateTime.now()).setType(Constant.SHOP_USER).setOrderNumber(orderVo.getOrderNumber());
                     return  this.add(rebate);
-                }
+                }*/
             }
         }
         return new ReturnData(Fail_CODE,"订单参数错误",false );

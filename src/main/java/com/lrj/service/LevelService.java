@@ -1,6 +1,7 @@
 package com.lrj.service;
 
 import com.lrj.VO.FormerResult;
+import com.lrj.pojo.Level;
 
 /**
  * @Description:
@@ -22,4 +23,10 @@ public interface LevelService {
      * @Date: 2020/5/26 12:11
      */
     FormerResult findLevelByUserId(Integer userId);
+
+    /**
+     * 根据id查询登记信息
+     * @return
+     */
+    Level findLevelByLeaveId(Integer levelId);
 }

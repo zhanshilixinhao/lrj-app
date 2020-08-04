@@ -7,6 +7,7 @@ import com.lrj.VO.UserInfoVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : cwj
@@ -18,7 +19,7 @@ public interface IHouseServiceMapper {
     /**
      * 通过家政类型查询家政服务项目
      */
-    List<HouseServiceVo> getHouseService(Integer itemCategoryId);
+    List<HouseServiceVo> getHouseService(Map<String,Integer> params);
 
     /**
      * 通过家政itemId 查询单独的家政服务
@@ -35,5 +36,5 @@ public interface IHouseServiceMapper {
      * 查询家政个性服务
      * @return
      */
-    List<HouseServiceVo> getCustomHouseService();
+    List<HouseServiceVo> getCustomHouseService(Integer areaType);
 }

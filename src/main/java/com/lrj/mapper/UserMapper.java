@@ -53,4 +53,10 @@ public interface UserMapper extends Mapper<User>, MySqlMapper<User>, BaseMapper<
     void addUserLeaveMessage(Map<String, Object> params);
 
     void selfHelpClaims(Map<String, Object> params);
+
+    /**
+     * 用户头像上传
+     * @param params
+     */
+    void uploadUserHeadPhotos(Map<String,Object> params);
 }

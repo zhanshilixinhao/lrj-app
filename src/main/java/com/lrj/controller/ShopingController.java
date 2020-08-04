@@ -7,6 +7,7 @@ import com.lrj.pojo.AppShoppingEntity;
 import com.lrj.service.IShoppingService;
 import com.lrj.util.DateUtils;
 import com.lrj.util.MessagesUtil;
+import net.sf.json.JSONArray;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -42,12 +43,10 @@ public class ShopingController {
         }
         /** 获取购物车商品列表 **/
         List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(userId);
-        /** 获取请求URL **/
-        StringBuffer url = new StringBuffer();
-        url.append("http://www.51lrj.com/getShoppingDetails");
+        /** 获取请求地址 **/
+        StringBuffer url = request.getRequestURL();
         /** 拼接 **/
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString()
-                + "/" + MessagesUtil.getString("virtual_directory") + "/";
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
         /** 获取当天日期 **/
         Date now = DateUtils.formatStringToDate(DateUtils.formateDateWithoutTime(new Date()), "yyyy-MM-dd");
         /** 图片地址拼接及价格计算 **/
@@ -167,6 +166,22 @@ public class ShopingController {
             return new ResultVo("success", 1, "参数有误,请检查参数",null);
         }
         shoppingService.deleteShoppingId(shoppingId);
+        return new ResultVo("success", 0, "成功",null);
+    }
+
+    /**
+     * 选择删除购物车
+     */
+    @RequestMapping(value = "/selectRemoveShoppingItem",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo selectRemoveShoppingItem(String shoppingIds){
+        if (shoppingIds == null) {
+            return new ResultVo("success", 1, "参数有误,请检查参数",null);
+        }
+        String[] shoppingIdArray = shoppingIds.split(",");
+        for(int i=0;i < shoppingIdArray.length;i++){
+            Integer shoppingId = Integer.parseInt(shoppingIdArray[i]);
+            removeShoppingItem(shoppingId);
+        }
         return new ResultVo("success", 0, "成功",null);
     }
 

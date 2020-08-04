@@ -209,4 +209,9 @@
 	<select id="getMerchantOrderById" parameterType="java.lang.Integer" resultType="com.lrj.pojo.MerchantOrder">
 		SELECT * FROM merchant_order WHERE merchant_order_id=#{merchantId}
 	</select>
+
+	<!--更新订单分享状态-->
+	<update id="updateOrderIsShare" parameterType="java.util.Map">
+		UPDATE `order` SET is_share=#{isShare} WHERE order_number=#{orderNumber}
+	</update>
 </mapper>

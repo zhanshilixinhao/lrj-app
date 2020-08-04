@@ -80,4 +80,12 @@
         FROM app_item
         WHERE bargain_type='TIME_LIMIT_SALE'
     </select>
+
+    <update id="updateImagesUrl" parameterType="java.util.Map">
+      UPDATE app_item SET picture=#{picture} WHERE app_item_id=#{itemId}
+    </update>
+
+    <select id="getItemList" resultType="com.lrj.VO.AppItemVo">
+        SELECT * FROM app_item;
+    </select>
 </mapper>

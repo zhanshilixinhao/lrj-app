@@ -6,14 +6,14 @@
 	<!--通过Id查询员工信息-->
 	<select id="getStaffInfoByStaffId" parameterType="java.lang.Integer" resultType="com.lrj.VO.StaffInfoVo">
 SELECT
-			  sys_admin_id as sysAdminId,
-			  admin_name AS adminName,
-			  admin_password AS adminPassword,
+			  app_staff_id as sysAdminId,
+			  staff_user AS adminName,
+			  staff_password AS adminPassword,
+			  real_name AS realName,
 			  active AS active,
 			  sys_admin_roles AS sysAdminRoles,
 			  sys_admin_role_type AS sysAdminRoles,
 			  create_time AS createTime,
-			  invitationCode AS invitationCode,
 			  sysType AS sysType,
 			  businessName AS businessName,
 			  businessAddress AS businessAddress,
@@ -21,29 +21,13 @@ SELECT
 			  businessContactPerson AS businessContactPerson,
 			  businessInfo AS businessInfo,
 			  businessDistributionRatio AS businessDistributionRatio
-		FROM sys_admin
+		FROM app_staff
 		WHERE sys_admin_id=#{staffId}
 		AND active=1
 	</select>
 	<!--通过登录名查询员工信息-->
 	<select id="findStaffInfoByLoginInfo" parameterType="java.lang.String" resultType="com.lrj.VO.StaffInfoVo">
-		SELECT
-		admin_name AS adminName,
-		admin_password AS adminPassword,
-		active AS active,
-		sys_admin_roles AS sysAdminRoles,
-		sys_admin_role_type AS sysAdminRoles,
-		create_time AS createTime,
-		invitationCode AS invitationCode,
-		sysType AS sysType,
-		businessName AS businessName,
-		businessAddress AS businessAddress,
-		businessPhone AS businessPhone,
-		businessContactPerson AS businessContactPerson,
-		businessInfo AS businessInfo,
-		businessDistributionRatio AS businessDistributionRatio
-		FROM sys_admin
-		WHERE admin_name=#{loginName}
+		SELECT * FROM app_staff WHERE staff_name=#{loginName}
 		AND active=1
 	</select>
 	<!--更改密码-->

@@ -60,7 +60,7 @@ public class Constant {
     /** 订单类型**/
     public static final int ORDER_TYPE_PUBLIC = 1; //普通订单
     public static final int ORDER_TYPE_MONTH = 2; //月卡订单
-    /**订单追踪状态:洗衣**/
+    /**服务单追踪状态:洗衣**/
     public static final int ORDER_TRANSSTATUS_LOCK = 0; //订单等待小哥接收
     public static final int ORDER_TRANSSTATUS_BINDING = 1;//订单绑定成功
     public static final int ORDER_TRANSSTATUS_TAKEING =2; //小哥上门收件中
@@ -74,8 +74,9 @@ public class Constant {
     public static final int ORDER_TRANSSTATUS_RECEIVEING = 10; //正在送回
     public static final int ORDER_TRANSSTATUS_RECEIVED = 11;//已送回
 
-    /**订单追踪状态:家政**/
-    public static final int ORDER_TRANSSTATUS_HOUSESERVICE_LOCK= 1;//已接单
+    /**服务单追踪状态:家政**/
+    public static final int ORDER_TRANSSTATUS_HOUSESERVICE_BEGIN= 33;//已开始服务
+    public static final int ORDER_TRANSSTATUS_HOUSESERVICE_END = 34;// 已结束服务
 
 
 /**--------------------------------------------------------------------------------------------------------------------------**/

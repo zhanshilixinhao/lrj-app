@@ -3,6 +3,9 @@ package com.lrj.service;
 import com.lrj.dto.ReturnUpLoad;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+
 /**
  * @Description:
  * @Author Lxh
@@ -15,5 +18,5 @@ public interface IUpLoadService {
      * @Author: LxH
      * @Date: 2020/5/13 14:26
      */
-    ReturnUpLoad fileUpload(MultipartFile uploadFile);
+    ReturnUpLoad fileUpload(Map<String, MultipartFile> fileMap, Integer uploadType, HttpServletRequest request);
 }

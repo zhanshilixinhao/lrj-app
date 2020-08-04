@@ -17,7 +17,7 @@ public interface IHouseService {
     /**
      * 通过家政类型查询家政服务项目
      */
-    List<HouseServiceVo> findHouseService(Integer itemCategoryId);
+    List<HouseServiceVo> findHouseService(Integer itemCategoryId,Integer areaType);
 
     /**
      * 查询家政导航栏
@@ -29,5 +29,5 @@ public interface IHouseService {
      *查询家政的个性服务
      * @return
      */
-    List<HouseServiceVo> findCustomHouseService();
+    List<HouseServiceVo> findCustomHouseService(Integer areaType);
 }

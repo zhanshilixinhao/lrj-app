@@ -27,7 +27,8 @@ public class Reservation{
     private Integer status;  //订单-服务状态 订单状态 0未完成 1已完成 2：待付款 3：已付款 4：待评价
     private Integer trackingStatus;  //订单追踪状态
     private Integer orderType; //订单类型
-    private Integer grabOrderId; //抢单人ID
+    private Integer grabOrderIdTake; //抢单人id-取件
+    private Integer grabOrderIdSend; //抢单人id-送件
     private String address; //地址
     private String createTime; //创建时间
     private String updateTime; //更新时间
@@ -35,7 +36,7 @@ public class Reservation{
     private String orderNumber; //订单号
     private String longitude; //经度
     private String latitude; //纬度
-    private String  reservationJson; // 预约的具体内容
+    private String  reservationJson; // 服务的具体内容
     @Transient
     private JSONArray reservationJSONArray;//将具体内容从json转为List 供给前端
     private Integer isUrgent; //是否加急
@@ -53,4 +54,7 @@ public class Reservation{
     private String unit;//单位
     @Transient
     private BigDecimal originalPrice;//商品原价
+    private Integer beeline; //距离最近的配送站的距离
+    private String houseServiceBeginTime;//家政开始服务时间
+    private String houseServiceEndTime;//家政服务结束时间
 }

@@ -43,4 +43,16 @@ public interface IItemMapper {
      * @return
      */
     List<AppItemVo> getSpecialItem();
+
+    /**
+     *  可删除
+     * @param params
+     */
+    void updateImagesUrl(Map<String, Object> params);
+
+    /**
+     * 可删除
+     * @return
+     */
+    List<AppItemVo> getItemList();
 }

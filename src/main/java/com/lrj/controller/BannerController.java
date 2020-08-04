@@ -26,11 +26,10 @@ public class BannerController {
     @RequestMapping(value = "/getBannerList",method = {RequestMethod.GET,RequestMethod.POST})
     public ResultVo getBannerList(HttpServletRequest request){
         List<BannerVo> bannerVoList = bannerService.getBannerList();
-        /** 获取请求URL **/
-        StringBuffer url = new StringBuffer();
-        url.append("http://www.51lrj.com/getBannerList");
+        /** 获取请求地址 **/
+        StringBuffer url = request.getRequestURL();
         /** 拼接 **/
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/" + MessagesUtil.getString("virtual_directory") + "/";
+        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
         /** 拼接可访问图片地址 **/
         for (BannerVo bannerVo : bannerVoList) {
             /** 图片地址 **/

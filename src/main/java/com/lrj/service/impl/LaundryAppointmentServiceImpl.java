@@ -71,7 +71,7 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         }
 
         //其他信息
-        reservation.setGrabOrderId(null);
+        reservation.setGrabOrderIdSend(null);
         reservation.setIsEnd(0);
 
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
@@ -116,7 +116,7 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
             reservation.setGetClothesTime((String) reservationMap.get("visitTime"));
         }
         //其他信息
-        reservation.setGrabOrderId(null);
+        reservation.setGrabOrderIdTake(null);
         reservation.setIsEnd(0);
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
         if(orderVo.getPayStatus()==0){
