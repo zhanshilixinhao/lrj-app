@@ -60,7 +60,7 @@ public class UserController {
     }*/
 
     /**
-     * 获取短信验证码
+     * 用户获取短信验证码
      */
     @RequestMapping(value = "/getVerificationCode",method = {RequestMethod.GET,RequestMethod.POST})
     public FormerResult getAuthenticationCode(String userPhone){
@@ -423,6 +423,6 @@ public class UserController {
         payOperation.setUserId(userId);
         payOperation.setUserPhone("");
         payService.payFlowRecord(payOperation);
-        return new FormerResult("SUCCESS",0,"你的提现申请",null);
+        return new FormerResult("SUCCESS",0,"你的退款申请已提交",null);
     }
 }

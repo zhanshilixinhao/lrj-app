@@ -19,4 +19,13 @@
 		FROM app_consignee
 		WHERE app_consignee_id=#{consigneeId}
 	</select>
+
+	<!--通过Id 删除用户的地址-->
+	<delete id="removeConsignee" parameterType="java.lang.Integer">
+		DELETE  FROM app_consignee WHERE app_consignee_id=#{appConsigneeId}
+	</delete>
+	<!--设置用户默认地址-->
+	<update id="updateConsigneeDefault" parameterType="java.util.HashMap">
+		UPDATE app_consignee SET is_default=#{isDefault} WHERE app_consignee_id=#{appConsigneeId}
+	</update>
 </mapper>

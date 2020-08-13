@@ -18,5 +18,5 @@ public interface IUpLoadService {
      * @Author: LxH
      * @Date: 2020/5/13 14:26
      */
-    ReturnUpLoad fileUpload(Map<String, MultipartFile> fileMap, Integer uploadType, HttpServletRequest request);
+    ReturnUpLoad fileUpload(MultipartFile files, Integer uploadType, HttpServletRequest request);
 }

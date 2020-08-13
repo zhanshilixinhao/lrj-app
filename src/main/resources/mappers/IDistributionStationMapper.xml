@@ -8,4 +8,8 @@
         SELECT * FROM distribution_station;
     </select>
 
+    <select id="getDistriButionStationById" parameterType="com.lrj.pojo.DistributionStation" resultType="com.lrj.pojo.DistributionStation">
+        SELECT * FROM distribution_station WHERE distribution_station_id=#{distributionStationId}
+    </select>
+
 </mapper>

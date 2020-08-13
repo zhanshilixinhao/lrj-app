@@ -19,4 +19,11 @@ public interface IDistributionStationMapper {
      * @return
      */
     List<DistributionStation> getDistriButionStationList();
+
+    /**
+     * 根据Id 查询配送站信息
+     * @param distributionStationId
+     * @return
+     */
+    DistributionStation getDistriButionStationById(Integer distributionStationId);
 }

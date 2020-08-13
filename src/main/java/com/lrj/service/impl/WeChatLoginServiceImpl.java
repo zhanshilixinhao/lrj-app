@@ -113,7 +113,8 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
                 return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
             }
             UserLevel userLevel = new UserLevel();
-            userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
+            int num =0;
+            userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(num);
             int insert = userLevelMapper.insert(userLevel);
             System.out.println("用户等级"+insert);
             return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());

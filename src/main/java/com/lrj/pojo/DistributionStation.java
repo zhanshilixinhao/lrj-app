@@ -23,5 +23,6 @@ public class DistributionStation {
     private String distributionName;
     private String longitude;
     private String latitude;
+    private String distributionStationAddress;
 
 }

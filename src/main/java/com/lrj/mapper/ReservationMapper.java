@@ -44,9 +44,9 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
 
     /**
      * 锁定 预约订单(并绑定锁单人)
-     * @param orderNumber
+     * @param params
      */
-    Integer lockReservation(String orderNumber,Integer staffId);
+    Integer lockReservation(Map<String,Object> params);
 
     /**
      * 更新预约订单 追踪状态
@@ -76,4 +76,17 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
     List<HouseServiceWorkTimeVo> getHouseServiceWorkTime(Integer staffId);
 
 
+    /**
+     * 通过员工ID 和 对应状态查询取件-服务单
+     * @param params
+     * @return
+     */
+    List<Reservation> getReservationByStatus1(Map<String,Object> params);
+
+    /**
+     * 通过ID 和 对应状态查询 送件-服务单
+     * @param params
+     * @return
+     */
+    List<Reservation> getReservationByStatus2(Map<String, Object> params);
 }

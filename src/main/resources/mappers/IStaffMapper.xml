@@ -5,24 +5,8 @@
 <mapper namespace="com.lrj.mapper.IStaffMapper">
 	<!--通过Id查询员工信息-->
 	<select id="getStaffInfoByStaffId" parameterType="java.lang.Integer" resultType="com.lrj.VO.StaffInfoVo">
-SELECT
-			  app_staff_id as sysAdminId,
-			  staff_user AS adminName,
-			  staff_password AS adminPassword,
-			  real_name AS realName,
-			  active AS active,
-			  sys_admin_roles AS sysAdminRoles,
-			  sys_admin_role_type AS sysAdminRoles,
-			  create_time AS createTime,
-			  sysType AS sysType,
-			  businessName AS businessName,
-			  businessAddress AS businessAddress,
-			  businessPhone AS businessPhone,
-			  businessContactPerson AS businessContactPerson,
-			  businessInfo AS businessInfo,
-			  businessDistributionRatio AS businessDistributionRatio
-		FROM app_staff
-		WHERE sys_admin_id=#{staffId}
+	SELECT * FROM app_staff
+		WHERE app_staff_id=#{staffId}
 		AND active=1
 	</select>
 	<!--通过登录名查询员工信息-->
@@ -32,7 +16,27 @@ SELECT
 	</select>
 	<!--更改密码-->
 	<update id="updateStaffPassWord" parameterType="java.util.HashMap">
-		UPDATE sys_admin SET admin_password=#{newPassWord} WHERE sys_admin_id=#{staffId}
+		UPDATE app_staff SET staff_password=#{newPassWord} WHERE app_staff_id=#{staffId}
+	</update>
+
+	<!--根据手机号 查询员工信息-->
+	<select id="findStaffInfoByPhone" parameterType="java.lang.String" resultType="com.lrj.VO.StaffInfoVo">
+		select * from app_staff WHERE telephone=#{staffPhone};
+	</select>
+	<!--员工注册-->
+	<insert id="staffRegister" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="appStaffId" >
+		insert into  app_staff(staff_name,staff_password,telephone,address,type,staff_age,register_time) values (#{userName},#{userPassWord},#{userPhone},#{userAddress},#{staffType},#{userAge},#{registerTime});
+	</insert>
+
+	<!--服务单完成后  算钱-->
+	<update id="updateStaffInfoAfterEnd" parameterType="com.lrj.VO.StaffInfoVo">
+		UPDATE app_staff
+		<trim prefix="set" suffixOverrides=",">
+			<if test="#{money} !=null">money=#{money},</if>
+			<if test="#{serviceTime} !=null">service_time=#{serviceTime},</if>
+			<if test="#{service_count} !=null">service_count=#{serviceCount},</if>
+		</trim>
+		WHERE app_staff_id=#{appStaffId}
 	</update>
 	<!--留着以后用  -->
 </mapper>

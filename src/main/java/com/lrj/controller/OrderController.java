@@ -310,14 +310,12 @@ public class OrderController {
                 case 1:
                     itemId = Integer.parseInt(reservationJsonArray.getJSONObject(0).get("itemId").toString());
                     appItemVo= itemMapper.getItemInfoByItemId(itemId);
-                    url = new StringBuffer();
-                    url.append("http://www.51lrj.com/findUserReservationList");
+                    /** 获取请求地址 **/
+                    url = request.getRequestURL();
                     /** 拼接 **/
-                    tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-                    /** 获取虚拟目录 **/
-                    String directory = MessagesUtil.getString("virtual_directory") + "/";
+                    tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                     /** 图片地址 **/
-                    reservationListVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+                    reservationListVo.setPicture(tempContextUrl + appItemVo.getPicture());
                     reservationListVo.setUnit("件");
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
@@ -329,14 +327,12 @@ public class OrderController {
                 case 3:
                     itemId = Integer.parseInt(reservationJsonArray.getJSONObject(0).get("itemId").toString());
                     appItemVo = itemMapper.getItemInfoByItemId(itemId);
-                    url= new StringBuffer();
-                    url.append("http://www.51lrj.com/findUserReservationList");
+                    /** 获取请求地址 **/
+                     url = request.getRequestURL();
                     /** 拼接 **/
-                    tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString() + "/";
-                    /** 获取虚拟目录 **/
-                    directory = MessagesUtil.getString("virtual_directory") + "/";
+                     tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                     /** 图片地址 **/
-                    reservationListVo.setPicture(tempContextUrl + directory + appItemVo.getPicture());
+                    reservationListVo.setPicture(tempContextUrl + appItemVo.getPicture());
                     reservationListVo.setUnit("次");
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;

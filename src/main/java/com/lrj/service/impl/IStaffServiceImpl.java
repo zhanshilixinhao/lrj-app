@@ -35,6 +35,29 @@ public class IStaffServiceImpl implements IStaffService {
     }
 
     /**
+     *  员工注册
+     */
+    @Override
+    public Integer staffRegister(Map<String, Object> params) {
+        return staffMapper.staffRegister(params);
+    }
+
+    @Override
+    public void updateStaffInfoAfterEnd(StaffInfoVo staffInfoVo) {
+        staffMapper.updateStaffInfoAfterEnd(staffInfoVo);
+    }
+
+    /**
+     *根据 手机号查询员工信息
+     * @param staffPhone
+     * @return
+     */
+    @Override
+    public StaffInfoVo findStaffInfoByPhone(String staffPhone) {
+        return staffMapper.findStaffInfoByPhone(staffPhone);
+    }
+
+    /**
      * 员工登录查询并效验
      * @param parMap
      * @return

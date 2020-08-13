@@ -70,7 +70,7 @@ public class Constant {
     public static final int ORDER_TRANSSTATUS_WASHING = 6;//衣服洗涤中
     public static final int ORDER_TRANSSTATUS_STERILIZED = 7;//衣物烘干消毒
     public static final int ORDER_TRANSSTATUS_IRONING = 8;//衣服熨烫完毕
-    public static final int ORDER_TRANSSTATUS_TAKED_PACK = 9;//衣物打包
+    public static final int ORDER_TRANSSTATUS_TAKED_PACK = 9;//已出厂 为出厂单
     public static final int ORDER_TRANSSTATUS_RECEIVEING = 10; //正在送回
     public static final int ORDER_TRANSSTATUS_RECEIVED = 11;//已送回
 

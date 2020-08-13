@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Lxh
@@ -52,5 +54,31 @@ public class ConsigneeServiceImpl implements IConsigneeService {
 
     public Consignee getConsigneeByConsigneeId(Integer consigneeId) {
         return consigneeMapper.getConsigneeByConsigneeId(consigneeId);
+    }
+
+    @Override
+    public void removeConsignee(Integer appConsigneeId) {
+         consigneeMapper.removeConsignee(appConsigneeId);
+    }
+
+    @Override
+    public void updateConsigneeDefault(Integer userId, Integer appConsigneeId) {
+        Example example = new Example(Consignee.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId",userId).andEqualTo("active",1);
+        List<Consignee> consigneeList = consigneeMapper.selectByExample(example);
+        for (Consignee consignee : consigneeList){
+            if(consignee.getAppConsigneeId() == appConsigneeId){
+                Map<String, Object> params = new HashMap<>();
+                params.put("appConsigneeId", appConsigneeId);
+                params.put("isDefault", 1);
+                consigneeMapper.updateConsigneeDefault(params);
+            }else {
+                Map<String, Object> params = new HashMap<>();
+                params.put("appConsigneeId", consignee.getAppConsigneeId());
+                params.put("isDefault", 0);
+                consigneeMapper.updateConsigneeDefault(params);
+            }
+        }
     }
 }

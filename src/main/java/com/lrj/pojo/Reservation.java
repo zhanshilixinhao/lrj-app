@@ -29,10 +29,14 @@ public class Reservation{
     private Integer orderType; //订单类型
     private Integer grabOrderIdTake; //抢单人id-取件
     private Integer grabOrderIdSend; //抢单人id-送件
+    private Integer takeDistance;//取件距离
+    private Integer sendDistance;//送件距离
     private String address; //地址
     private String createTime; //创建时间
     private String updateTime; //更新时间
     private Integer userId; //用户ID
+    private String userName;//联系人
+    private String userPhone;//联系电话
     private String orderNumber; //订单号
     private String longitude; //经度
     private String latitude; //纬度
@@ -56,6 +60,8 @@ public class Reservation{
     private BigDecimal originalPrice;//商品原价
     @Transient
     private Integer beeline; //距离最近的配送站的距离
+    private String distributionName;//最近的配送站的名字
+    private String distributionAddress; //最近的配送站的地址
     @Transient
     private String houseServiceBeginTime;//家政开始服务时间
     @Transient

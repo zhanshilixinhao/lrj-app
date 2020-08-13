@@ -32,14 +32,9 @@ public class UpLoadController {
      * @Date: 2020/5/13 14:25
      */
     @RequestMapping(value = "/fileUpload",method = {RequestMethod.GET,RequestMethod.POST})
-    public ReturnUpLoad fileUpload(Integer uploadType,HttpServletRequest request){
-        CommonsMultipartResolver multipartResolver = new CommonsMultipartResolver(request.getSession().getServletContext());
-        Map<String, MultipartFile> fileMap = null;
-        if (multipartResolver.isMultipart(request)){
-            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-            fileMap = multiRequest.getFileMap();
-        }
+    public ReturnUpLoad fileUpload(MultipartFile files,Integer uploadType,HttpServletRequest request){
+
         
-        return upLoadService.fileUpload(fileMap,uploadType,request);
+        return upLoadService.fileUpload(files,uploadType,request);
     }
 }

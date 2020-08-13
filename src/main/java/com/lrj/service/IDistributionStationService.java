@@ -18,4 +18,11 @@ public interface IDistributionStationService {
      * @return
      */
     List<DistributionStation> getDistriButionStationList();
+
+    /**
+     *根据 配送站ID 查询配送站信息
+     * @param distributionStationId
+     * @return
+     */
+    DistributionStation getDistriButionStationById(String distributionStationId);
 }

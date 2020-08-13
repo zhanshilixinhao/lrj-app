@@ -1,5 +1,6 @@
 package com.lrj.service.task;
 
+import com.lrj.VO.FormerResult;
 import lombok.AllArgsConstructor;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -39,10 +40,10 @@ public class distanceTask {
      * @return
      */
     @RequestMapping(value = "/isCanOnClick",method = {RequestMethod.GET,RequestMethod.POST})
-    public Boolean isCanOnClick(String origins,String destination,Integer staffType,Integer reservationId){
+    public FormerResult isCanOnClick(String origins, String destination, Integer staffType, Integer reservationId){
         /** 校验必须参数 **/
-        if (staffType == null || staffType == 0 || reservationId==null || reservationId == 0) {
-            return false;
+        if (staffType == null || staffType == null || reservationId==null || reservationId == 0) {
+            return new FormerResult("SUCCESS", 1, "参数效验错误！", false);
         }
         String key = "81b5d90e4a546330f9e0672877299bc0"; //此key 为高德地图提供，使用API接口必传的key
         String url = "https://restapi.amap.com/v3/distance"; //距离测量API url
@@ -66,31 +67,30 @@ public class distanceTask {
             e.printStackTrace();
         }
         try {
-            HttpEntity entity = response.getEntity();
             response = httpClient.execute(httpGet);
+            HttpEntity entity = response.getEntity();
             responseContent = EntityUtils.toString(entity, "UTF-8");
         } catch (IOException e) {
             e.printStackTrace();
         }
-        HttpEntity entity = response.getEntity();
         JSONObject jsonObject = JSONObject.fromObject(responseContent);
         //获取距离
         Integer distance = Integer.parseInt(JSONObject.fromObject(JSONArray.fromObject(jsonObject.get("results")).get(0)).getString("distance"));
         switch (staffType){
             case 1:
                 if (distance <= 20){
-                    return true;
+                    return new FormerResult("SUCCESS", 0, "已取单", true);
                 }else {
-                    return false;
+                    return new FormerResult("SUCCESS", 1, "未到目的地，不可点击！", false);
                 }
             case 3:
                 if(distance <= 50){
-                    return true;
+                    return new FormerResult("SUCCESS", 0, "已开始服务", true);
                 }else {
-                    return false;
+                    return new FormerResult("SUCCESS", 1, "未到目的地，不可点击", false);
                 }
             default:
-                    return false;
+                return new FormerResult("SUCCESS", 1, "未到目的地，不可点击", false);
         }
     }
 }

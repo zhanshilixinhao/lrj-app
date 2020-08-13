@@ -26,4 +26,24 @@ public interface IStaffMapper extends Mapper<User>, MySqlMapper<User> {
      * @return
      */
     StaffInfoVo findStaffInfoByLoginInfo(String loginName);
+
+    /**
+     * 根据手机号 查询员工信息
+     * @param staffPhone
+     * @return
+     */
+    StaffInfoVo findStaffInfoByPhone(String staffPhone);
+
+    /**
+     * 员工注册
+     * @param params
+     * @return
+     */
+    Integer staffRegister(Map<String, Object> params);
+
+    /**
+     * 服务单完成后  算钱
+     * @param staffInfoVo
+     */
+    void updateStaffInfoAfterEnd(StaffInfoVo staffInfoVo);
 }

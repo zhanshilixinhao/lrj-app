@@ -30,5 +30,4 @@ public class ItemCategoryController {
         List<ItemCategoryVo> itemCategoryVoList = itemCategoryService.getItemCategory(pid);
         return new ResultVo("success",0,"查询成功",itemCategoryVoList);
     }
-
 }

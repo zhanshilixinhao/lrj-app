@@ -13,4 +13,8 @@ public interface IConsigneeService {
     FormerResult getUserAddressList(Integer userId);
 
     Consignee getConsigneeByConsigneeId(Integer consigneeId);
+
+    void removeConsignee(Integer appConsigneeId);
+
+    void updateConsigneeDefault(Integer userId, Integer appConsigneeId);
 }

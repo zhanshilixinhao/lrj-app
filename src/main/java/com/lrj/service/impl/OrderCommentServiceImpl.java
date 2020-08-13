@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : cwj
@@ -30,4 +31,10 @@ public class OrderCommentServiceImpl implements IOrderCommentService {
     public List<OrderCommentVo> getMyReservationComment(Integer staffId) {
         return orderCommentMapper.getMyReservationComment(staffId);
     }
+
+    @Override
+    public Integer addReservationComment(OrderCommentVo orderCommentVo) {
+        return orderCommentMapper.addReservationComment(orderCommentVo);
+    }
+
 }

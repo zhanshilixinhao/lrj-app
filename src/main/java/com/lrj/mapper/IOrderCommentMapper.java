@@ -4,6 +4,7 @@ import com.lrj.VO.OrderCommentVo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author : cwj
@@ -24,4 +25,17 @@ public interface IOrderCommentMapper {
      * @return
      */
     List<OrderCommentVo> getMyReservationComment(Integer staffId);
+
+    /**
+     * 评论服务单
+     * @param orderCommentVo
+     * @return
+     */
+    Integer addReservationComment(OrderCommentVo orderCommentVo);
+
+    /**
+     * 添加评论
+     * @param params
+     */
+    void uploaduserCommentImages(Map<String, Object> params);
 }

@@ -194,11 +194,14 @@ public class IOrderServiceImpl implements IOrderService{
     public Boolean lockOrderDetailIsLock(String reservationId,Integer staffId) {
         //查找服务单
         Reservation reservation = reservationMapper.getReservationByReservationId(Integer.parseInt(reservationId));
-        if (reservation.getGrabOrderIdTake() != 0 || reservation.getGrabOrderIdSend() !=0) {
+        if (reservation.getGrabOrderIdTake() != null || reservation.getGrabOrderIdSend() !=null) {
             return false;
         } else {
             //锁定服务单 并绑定锁单人
-            Integer lockNumber = reservationMapper.lockReservation(reservationId, staffId);
+            Map<String, Object> params = new HashMap<>();
+            params.put("reservationId", reservationId);
+            params.put("staffId", staffId);
+            Integer lockNumber = reservationMapper.lockReservation(params);
             if (lockNumber == 1) {
                 return true;
             } else {

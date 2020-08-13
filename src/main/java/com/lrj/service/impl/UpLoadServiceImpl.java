@@ -1,7 +1,9 @@
 package com.lrj.service.impl;
 
+import com.lrj.controller.OrderCommentController;
 import com.lrj.dto.Local;
 import com.lrj.dto.ReturnUpLoad;
+import com.lrj.mapper.IOrderCommentMapper;
 import com.lrj.mapper.IUserMapper;
 import com.lrj.mapper.UserMapper;
 import com.lrj.service.IUpLoadService;
@@ -35,6 +37,9 @@ public class UpLoadServiceImpl implements IUpLoadService {
 
     @Resource
     private UserMapper userMapper;
+
+    @Resource
+    private IOrderCommentMapper orderCommentMapper;
     /**
      * @param: uploadFile
      * @Description: 通用图片上传
@@ -42,11 +47,10 @@ public class UpLoadServiceImpl implements IUpLoadService {
      * @Date: 2020/5/13 14:26
      */
     @Override
-    public ReturnUpLoad fileUpload(Map<String, MultipartFile> fileMap,Integer uploadType,HttpServletRequest request) {
-        System.out.println("输出看看："+fileMap);
-        for (Map.Entry<String, MultipartFile> entity : fileMap.entrySet()) {
+    public ReturnUpLoad fileUpload(MultipartFile files,Integer uploadType,HttpServletRequest request) {
+        System.out.println("输出看看："+files);
             //1.判断文件是否为图片类型   abc.jpg
-            String fileName = entity.getValue().getOriginalFilename();
+            String fileName = files.getOriginalFilename();
             //将字符串转化为小写
             fileName = fileName.toLowerCase();
             if(!fileName.matches("^.+\\.(jpg|png|gif)$")) {
@@ -56,7 +60,7 @@ public class UpLoadServiceImpl implements IUpLoadService {
             try {
                 //2.判断是否为恶意程序 转化为图片对象
                 BufferedImage bufferedImage =
-                        ImageIO.read(entity.getValue().getInputStream());
+                        ImageIO.read(files.getInputStream());
                 int width = bufferedImage.getWidth();
                 int height = bufferedImage.getHeight();
                 if(width==0 || height==0) {
@@ -93,21 +97,28 @@ public class UpLoadServiceImpl implements IUpLoadService {
                 String realFileName = uuid + fileType;
 
                 //5.实现文件上传
-                entity.getValue().transferTo
+                files.transferTo
                         (new File(dateDir+realFileName));
 
-                String photo = null;
+                String photo = "";
+                Map<String, Object> params = new HashMap<>();
+                Integer userId = null;
                 switch (uploadType){
                     case 1:  //头像上传
                         photo = "/userHeadPhotos/"+realFileName;
-                        Integer userId = Integer.parseInt(request.getParameter("userId"));
-                        Map<String, Object> params = new HashMap<>();
+                        userId = Integer.parseInt(request.getParameter("userId"));
                         params.put("userId", userId);
                         params.put("photo", photo);
                         userMapper.uploadUserHeadPhotos(params);
                         break;
                     case 2: //评论图片上传
-                        photo = "/userHeadPhotos/"+realFileName;
+                        photo = "/userCommentImages/"+realFileName;
+                        Integer reservationId = Integer.parseInt(request.getParameter("reservationId"));
+                        userId = Integer.parseInt(request.getParameter("userId"));
+                        params.put("reservationId", reservationId);
+                        params.put("photo", photo);
+                        params.put("userId", userId);
+                        orderCommentMapper.uploaduserCommentImages(params);
                         break;
                     case 3: //自助理赔图片 上传
                         photo = "/selfHelpClaims/"+realFileName;
@@ -124,7 +135,7 @@ public class UpLoadServiceImpl implements IUpLoadService {
                 e.printStackTrace();
                 return ReturnUpLoad.fail();
             }
-        }
+
 
 
         return returnUpLoad;

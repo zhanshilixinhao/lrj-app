@@ -22,7 +22,6 @@ public class UserLevel {
     @Id
     private Integer userId;
     private Integer levelId;
-    @Transient
     private Integer inviteNum;
     @Transient
     private Integer remainingNum;

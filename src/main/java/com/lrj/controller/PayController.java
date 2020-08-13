@@ -269,7 +269,7 @@ public class PayController {
         InetAddress localAddr = InetAddress.getLocalHost();
         String localIp = localAddr.getHostAddress().toString();
         params.put("spbill_create_ip", localIp); //终端IP
-        params.put("notify_url", "https://cwj1.ngrok2.xiaomiqiu.cn/WXPayNotifyUrl");  //异步通知回调地址
+        params.put("notify_url", "http://cwj1.ngrok2.xiaomiqiu.cn/WXPayNotifyUrl");  //异步通知回调地址
         params.put("trade_type", "APP"); //支付类型
         //将非空参数进行签名运算(排序，MD5加密)
         /*Map<String, String> params2 = null;
@@ -509,7 +509,7 @@ public class PayController {
         String sign = "";
         String timestamp = DateUtils.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
         String version = "1.0";
-        String notify_url = "https://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";
+        String notify_url = "http://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";
         //业务参数封装
         String biz_content = "";
         //构建请求：业务参数

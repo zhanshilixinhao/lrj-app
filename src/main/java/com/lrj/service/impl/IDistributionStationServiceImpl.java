@@ -31,4 +31,11 @@ public class IDistributionStationServiceImpl implements IDistributionStationServ
     public List<DistributionStation> getDistriButionStationList() {
         return distributionStationMapper.getDistriButionStationList();
     }
+
+    @Override
+    public DistributionStation getDistriButionStationById(String distributionStationId) {
+        Integer distributionStationIdInteger = Integer.parseInt(distributionStationId);
+
+        return distributionStationMapper.getDistriButionStationById(distributionStationIdInteger);
+    }
 }

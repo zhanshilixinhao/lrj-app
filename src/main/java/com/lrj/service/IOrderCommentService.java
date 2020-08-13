@@ -20,4 +20,11 @@ public interface IOrderCommentService {
      * @return
      */
     List<OrderCommentVo> getMyReservationComment(Integer staffId);
+
+    /**
+     * 评论服务订单
+     * @param orderCommentVo
+     * @return
+     */
+    Integer addReservationComment(OrderCommentVo orderCommentVo);
 }
