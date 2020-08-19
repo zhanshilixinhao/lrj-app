@@ -51,10 +51,10 @@ public class ActivityController {
     public FormerResult isActivityByParam(HttpServletRequest request){
         String shareOrderNumber = request.getParameter("shareOrderNumber");
         OrderVo orderVo = orderService.findOrderByOrderNumber(shareOrderNumber);
-        if(orderVo.getIsShare() ==1){
-            return new FormerResult("SUCCESS", 0, "该活动已经被领取过了,不可再享受优惠", null);
-        }else if(orderVo.getIsShare() ==0){
+        if(orderVo.getIsShare() ==null){
             return new FormerResult("SUCCESS", 0, "该活动可以正常参与", shareOrderNumber);
+        }else if(orderVo.getIsShare() ==1){
+            return new FormerResult("SUCCESS", 0, "该活动已经被领取过了,不可再享受优惠", null);
         }
         return null;
     }

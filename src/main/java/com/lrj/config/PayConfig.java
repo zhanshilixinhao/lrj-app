@@ -1,9 +1,7 @@
 package com.lrj.config;
 
-import com.lrj.VO.AliPayVo;
-import lombok.AllArgsConstructor;
 
-import java.util.Map;
+import lombok.AllArgsConstructor;
 
 /**
  * @author : cwj
@@ -13,7 +11,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class PayConfig {
     //支付成功后的服务器回调url
-    public static final String notify_url = "http://cwj1.ngrok2.xiaomiqiu.cn/appletsPayNotify";
+    public static final String notify_url = "http://lxh.ngrok2.xiaomiqiu.cn/appletsPayNotify";
     //签名方式
     public static final String SIGNTYPE = "MD5";
     //交易类型

@@ -35,7 +35,9 @@ public class Reservation{
     private String createTime; //创建时间
     private String updateTime; //更新时间
     private Integer userId; //用户ID
+    @Transient
     private String userName;//联系人
+    @Transient
     private String userPhone;//联系电话
     private String orderNumber; //订单号
     private String longitude; //经度
@@ -60,10 +62,10 @@ public class Reservation{
     private BigDecimal originalPrice;//商品原价
     @Transient
     private Integer beeline; //距离最近的配送站的距离
+    @Transient
     private String distributionName;//最近的配送站的名字
+    @Transient
     private String distributionAddress; //最近的配送站的地址
-    @Transient
     private String houseServiceBeginTime;//家政开始服务时间
-    @Transient
     private String houseServiceEndTime;//家政服务结束时间
 }
