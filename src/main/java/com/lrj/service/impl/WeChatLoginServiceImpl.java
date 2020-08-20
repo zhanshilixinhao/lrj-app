@@ -110,7 +110,10 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
                 System.out.println("更新"+i);
             }catch (Exception e){
                 System.out.println(e.getMessage());
-                return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
+                //return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
+                FormerResult formerResult = new FormerResult();
+                formerResult.setErrorCode(1).setErrorTip("统一电话号码只能绑定一次").setData(null);
+                return formerResult;
             }
             UserLevel userLevel = new UserLevel();
             int num =0;
