@@ -1,8 +1,12 @@
 package com.lrj.controller;
+import com.lrj.VO.AppItemVo;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.Order_custom_houseServiceVo;
 import com.lrj.VO.Order_monthCardVo;
+import com.lrj.mapper.IItemJSONMapper;
+import com.lrj.mapper.IItemMapper;
 import com.lrj.mapper.IOrderMapper;
+import com.lrj.pojo.ItemJSON;
 import com.lrj.service.IOrderService;
 import com.lrj.service.LaundryAppointmentService;
 
@@ -17,7 +21,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -33,6 +39,10 @@ public class LaundryAppointmentController {
     private IOrderMapper orderMapper;
     @Resource
     private IOrderService orderService;
+    @Resource
+    private IItemJSONMapper itemJSONMapper;
+    @Resource
+    private IItemMapper itemMapper;
 
     /**
      * 预约洗衣
@@ -60,10 +70,28 @@ public class LaundryAppointmentController {
             reservationMap.put("userName", userName);
             reservationMap.put("takeConsigneeId", takeConsigneeId);
             reservationMap.put("orderNumber", monthCardOrder.getOrderNumber());
-            reservationMap.put("reservationJson", reservationJson);
-
             //创建预约
-            laundryAppointmentService.createWashingAppoint(reservationMap);
+            Integer insertId = laundryAppointmentService.createWashingAppoint(reservationMap);
+            //封装月卡预约商品数据
+            JSONArray jsonArray = JSONArray.fromObject(reservationJson);
+            List<ItemJSON> itemJSONList = new ArrayList<>();
+            for (int i=0;i<jsonArray.size();i++){
+                ItemJSON itemJSON = new ItemJSON();
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                itemJSON.setItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
+                itemJSON.setQuentity(Integer.parseInt(jsonObject.get("quantity").toString()));
+                //查询商品信息
+                AppItemVo item = itemMapper.getItemInfoByItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
+                itemJSON.setItemName(item.getItemName());
+                itemJSON.setPicture(item.getPicture());
+                itemJSON.setPrice(item.getPrice());
+                itemJSON.setOrderNumber(monthCardOrder.getOrderNumber());
+                itemJSON.setReservationId(insertId);
+                itemJSONMapper.addOrderJSONOnly(itemJSON);
+                //装到集合做更新
+                itemJSONList.add(itemJSON);
+            }
+            //解析预约商品
             if(monthCardOrder.getUserMonthCardCount()>=1){
                 //如果月卡使用是最后一次
                 if(monthCardOrder.getUserMonthCardCount()-1 ==0){
@@ -74,22 +102,20 @@ public class LaundryAppointmentController {
                 orderService.updateUserMonthCardCount(monthCardOrder.getUserMonthCardCount()-1,monthCardOrder.getOrderNumber());
                 //更新月卡剩余可洗内容
                 //解析商品json
-                JSONArray wahsingDetailJSONArray = JSONArray.fromObject(reservationJson);
-                JSONArray washingDetailJSONArrayAll = JSONArray.fromObject(monthCardOrder.getUserMonthCardItemJson());
-                for (int i = 0; i < wahsingDetailJSONArray.size(); i++) {
-                    JSONObject d = wahsingDetailJSONArray.getJSONObject(i);
-                    for (int j = 0; j < washingDetailJSONArrayAll.size(); j++) {
-                        JSONObject D = washingDetailJSONArrayAll.getJSONObject(j);
-                        if (d.get("itemId").equals(D.get("itemId"))) {
-                           int num1 =  Integer.parseInt(D.get("count").toString());
-                            int num2 = Integer.parseInt(d.get("quantity").toString());
-                            int end = num1-num2;
-                            D.put("count", end);
+                List<ItemJSON> itemJSONListMany  = itemJSONMapper.getItemJSONByOrderNumber(monthCardOrder.getOrderNumber());
+                for (ItemJSON itemJSON : itemJSONList) {
+                    for(ItemJSON itemJSON1 : itemJSONListMany){
+                        if(itemJSON1.getItemId() == itemJSON.getItemId()){
+                            Map<String, Object> params = new HashMap<>();
+                            params.put("orderNumber", itemJSON1.getOrderNumber());
+                            params.put("itemId", itemJSON1.getItemId());
+                            params.put("quentity", itemJSON1.getQuentity() - itemJSON.getQuentity());
+                            itemJSONMapper.updateJSONManyByOrderNumberAndItemId(params);
+                        }else {
+                            continue;
                         }
                     }
                 }
-                //保存更新
-                orderService.updateUserMonthCardItemJson(washingDetailJSONArrayAll.toString(),monthCardOrder.getOrderNumber());
             }else {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }
@@ -125,9 +151,27 @@ public class LaundryAppointmentController {
             reservationMap.put("takeConsigneeId", takeConsigneeId);
             reservationMap.put("visitTime", visitTime);
             reservationMap.put("orderNumber", customHouseServiceOrder.getOrderNumber());
-            reservationMap.put("reservationJson", reservationJson);
             //创建预约
-            laundryAppointmentService.createHouseServiceAppoint(reservationMap);
+            Integer insertId = laundryAppointmentService.createHouseServiceAppoint(reservationMap);
+            //封装定制家政预约商品数据
+            JSONArray jsonArray = JSONArray.fromObject(reservationJson);
+            List<ItemJSON> itemJSONList = new ArrayList<>();
+            for (int i=0;i<jsonArray.size();i++){
+                ItemJSON itemJSON = new ItemJSON();
+                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                itemJSON.setItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
+                itemJSON.setQuentity(Integer.parseInt(jsonObject.get("quantity").toString()));
+                //查询商品信息
+                AppItemVo item = itemMapper.getItemInfoByItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
+                itemJSON.setItemName(item.getItemName());
+                itemJSON.setPicture(item.getPicture());
+                itemJSON.setPrice(item.getPrice());
+                itemJSON.setOrderNumber(customHouseServiceOrder.getOrderNumber());
+                itemJSON.setReservationId(insertId);
+                itemJSONMapper.addOrderJSONOnly(itemJSON);
+                //装到集合做更新
+                itemJSONList.add(itemJSON);
+            }
             if(customHouseServiceOrder.getBaseServiceCount()>=1){
                 //如果定制家政使用是最后一次
                 if(customHouseServiceOrder.getBaseServiceCount()-1 ==0){
@@ -138,22 +182,20 @@ public class LaundryAppointmentController {
                 orderService.updateUserHouseServiceBaseServiceCount(customHouseServiceOrder.getBaseServiceCount()-1,customHouseServiceOrder.getOrderNumber());
                 //更新定制家政剩余内容
                 //解析商品json
-                JSONArray customHouseServiceDetailJSONArray = JSONArray.fromObject(reservationJson);
-                JSONArray customHouseServiceDetailJSONArrayAll = JSONArray.fromObject(customHouseServiceOrder.getIndividualServiceJson());
-                for (int i = 0; i < customHouseServiceDetailJSONArray.size(); i++) {
-                    JSONObject d = customHouseServiceDetailJSONArray.getJSONObject(i);
-                    for (int j = 0; j < customHouseServiceDetailJSONArrayAll.size(); j++) {
-                        JSONObject D = customHouseServiceDetailJSONArrayAll.getJSONObject(j);
-                        if (d.get("itemId").equals(D.get("itemId"))) {
-                            int num1 =  Integer.parseInt(D.get("quantity").toString());
-                            int num2 = Integer.parseInt(d.get("quantity").toString());
-                            int end = num1-num2;
-                            D.put("quantity", end);
+                List<ItemJSON> itemJSONListMany  = itemJSONMapper.getItemJSONByOrderNumber(customHouseServiceOrder.getOrderNumber());
+                for (ItemJSON itemJSON : itemJSONList) {
+                    for(ItemJSON itemJSON1 : itemJSONListMany){
+                        if(itemJSON1.getItemId() == itemJSON.getItemId()){
+                            Map<String, Object> params = new HashMap<>();
+                            params.put("orderNumber", itemJSON1.getOrderNumber());
+                            params.put("itemId", itemJSON1.getItemId());
+                            params.put("quentity", itemJSON1.getQuentity() - itemJSON.getQuentity());
+                            itemJSONMapper.updateJSONManyByOrderNumberAndItemId(params);
+                        }else {
+                            continue;
                         }
                     }
                 }
-                //保存更新
-                orderService.updateIndividualServiceJson(customHouseServiceDetailJSONArrayAll.toString(),customHouseServiceOrder.getOrderNumber());
             }else {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }
@@ -175,25 +217,5 @@ public class LaundryAppointmentController {
             return CommonUtil.FAIL(result,"缺少参数!",null);
         }
         return CommonUtil.SUCCESS(result,"更新成功!",laundryAppointmentService.changeAuto(option));
-    }*/
-    /**
-     * 获取预约列表
-     *
-     * @param option
-     * @return
-     */
-    /*public FormerResult getList(BuyCardOptionVo option) {
-        FormerResult result = new FormerResult();
-        if (option.getUserId() == null) {
-            return CommonUtil.FAIL(result,"缺少参数",null);
-        }
-        if (option.getPageSize() == null) {
-            option.setPageSize(10);
-        }
-        if (option.getCurrentPage() == null) {
-            option.setCurrentPage(1);
-        }
-        option.setCurrentPage((option.getCurrentPage() - 1) * option.getPageSize());
-        return laundryAppointmentService.getList(option);
     }*/
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lrj.mapper.IItemJSONMapper">
+	<!--留着以后用  -->
+	<insert id="addOrderJSONOnly" parameterType="com.lrj.pojo.ItemJSON" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO order_json_only (order_number,reservation_id,item_id,quentity,item_name,price,picture)
+		VALUES (#{orderNumber},#{reservationId},#{itemId},#{quentity},#{itemName},#{price},#{picture})
+	</insert>
+
+	<insert id="addOrderJSONMany" parameterType="com.lrj.pojo.ItemJSON" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO order_json_many (order_number,item_id,quentity,item_name,price,picture)
+		VALUES (#{orderNumber},#{itemId},#{quentity},#{itemName},#{price},#{picture})
+	</insert>
+
+	<!--通过服务单Id 查询该服务单的商品列表-->
+	<select id="getItemJSONByReservationId" parameterType="java.lang.Integer" resultType="com.lrj.pojo.ItemJSON">
+		SELECT * FROM order_json_only
+	</select>
+
+	<!--通过订单号查询  月卡或定制家政的剩余可用商品列表-->
+	<select id="getItemJSONByOrderNumber" parameterType="java.lang.String" resultType="com.lrj.pojo.ItemJSON">
+		SELECT * FROM order_json_many WHERE order_number=#{orderNumber}
+	</select>
+
+	<!--通过订单号 和 itemId 更新月卡或定制家政商品使用次数-->
+	<update id="updateJSONManyByOrderNumberAndItemId" parameterType="java.util.HashMap">
+		UPDATE order_json_many SELECT quentity=#{quentity} WHERE order_number=#{orderNumber} AND item_id=#{itemId}
+	</update>
+</mapper>

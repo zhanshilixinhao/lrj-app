@@ -6,31 +6,18 @@
 <mapper namespace="com.lrj.mapper.IOrderCommentMapper">
 
     <select id="listLatestOrderComment" resultType="com.lrj.VO.OrderCommentVo">
-        SELECT
-        a.comment_content AS commentContent,
-        a.create_time AS createTime,
-        IFNULL(
-        ROUND(
-        (
-        a.distributionStar + a.qualityStar + a.serviceStar
-        ) / 3
-        ),
-        a.comment_level
-        ) AS star,
-        a.commentImage,
-        b.head_photo AS headPhoto,
-        IFNULL(b.nick_name,
-        '匿名用户') AS nickname,
-        b.user_phone as userPhone
-        FROM
-        order_comment a
-        LEFT JOIN app_user
-        b ON a.user_id = b.app_user_id
-        WHERE
-        a.isVisible =1
+        select order_comment_id AS commentId,
+            user_id AS userId,
+            reservation_id AS reservationId,
+            star AS star,
+            comment_content AS commentContent,
+            comment_image AS commentImage,
+            create_time AS createTime,
+            remark AS remark
+        FROM order_comment WHERE isVisible=1
         ORDER BY
-        a.create_time DESC
-        LIMIT 0,20
+        create_time DESC
+        LIMIT 0,10
     </select>
 
     <!--根据员工Id 查询对应服务的评论-->

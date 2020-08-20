@@ -1,10 +1,8 @@
 package com.lrj.controller;
 
-import com.lrj.VO.FormerResult;
-import com.lrj.VO.OrderCommentVo;
-import com.lrj.VO.ResultVo;
-import com.lrj.VO.StaffInfoVo;
+import com.lrj.VO.*;
 import com.lrj.mapper.ReservationMapper;
+import com.lrj.mapper.UserMapper;
 import com.lrj.pojo.Reservation;
 import com.lrj.service.IOrderCommentService;
 import com.lrj.service.IStaffService;
@@ -39,6 +37,8 @@ public class OrderCommentController {
     private ReservationMapper reservationMapper;
     @Resource
     private IStaffService staffService;
+    @Resource
+    private UserMapper userMapper;
 
     /**
      * 获取评论列表数据
@@ -49,6 +49,11 @@ public class OrderCommentController {
         ResultVo resultVo = new ResultVo();
         resultVo.setRequestStatus("success");
         List<OrderCommentVo> orderCommentVoList= commentService.listLatestOrderComment();
+        for(OrderCommentVo orderCommentVo : orderCommentVoList){
+            UserInfoVo userInfoVo = userMapper.getUserInfoByUserId(orderCommentVo.getUserId());
+            orderCommentVo.setNickname(userInfoVo.getNickname());
+            orderCommentVo.setHeadPhoto(userInfoVo.getHeadPhoto());
+        }
         resultVo.setErrorCode(0);
         resultVo.setErrorTip("查询成功");
         resultVo.setData(orderCommentVoList);

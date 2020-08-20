@@ -15,11 +15,11 @@ public interface LaundryAppointmentService {
      * @param reservationMap
      * @return
      */
-    FormerResult createWashingAppoint(Map<String,Object> reservationMap);
+    int createWashingAppoint(Map<String,Object> reservationMap);
 
     /**
      * 创建 家政 预约
      * @param reservationMap
      */
-    FormerResult createHouseServiceAppoint(Map<String, Object> reservationMap);
+    int createHouseServiceAppoint(Map<String, Object> reservationMap);
 }

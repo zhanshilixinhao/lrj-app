@@ -2,7 +2,6 @@ package com.lrj.controller;
 
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
-import com.lrj.mapper.IUserMapper;
 import com.lrj.mapper.ReservationMapper;
 import com.lrj.pojo.DistributionStation;
 import com.lrj.pojo.Reservation;
@@ -228,8 +227,6 @@ public class EnterpriseController {
             case 4:break;
 
         }
-
-
         return new ResultVo("SUCCESS", 0, "查询成功",reservationList);
     }
 

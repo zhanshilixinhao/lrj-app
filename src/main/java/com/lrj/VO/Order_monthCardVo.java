@@ -1,5 +1,6 @@
 package com.lrj.VO;
 
+import com.lrj.pojo.ItemJSON;
 import com.lrj.pojo.MonthCard;
 import com.lrj.util.BigDecimalUtil;
 import lombok.AllArgsConstructor;
@@ -30,8 +31,7 @@ public class Order_monthCardVo extends OrderVo {
     private Integer monthCardId;//月卡类型Id
     private String monthCardName;//月卡名称
     private Integer userMonthCardCount;//月卡剩余可使用次数
-    private String userMonthCardItemJson; //剩余可洗内容
-    private JSONArray userMonthCardItemJSONArray;//将具体内容从json转为List 供给前端
+    private List<ItemJSON> userMonthCardItemJSONArray;//剩余可洗内容
     private String createTime;//月卡创建时间
     private String endTime; //月卡结束时间
 }

@@ -1,11 +1,15 @@
 server:
-  port: 8080
+  port: 8083
 
 spring:
   datasource:
     username: root
-    password: 111111
-    url: jdbc:mysql://192.168.0.110:3306/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    #password: 111111
+    #年瑞数据库密码
+    password: 987071
+    #年瑞服务器打包地址
+    url: jdbc:mysql://goodbadluck.myds.me:3307/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    #url: jdbc:mysql://192.168.0.110:3306/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 60000
@@ -16,7 +20,7 @@ spring:
   mvc:
     static-path-pattern: /**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/usr/local/project/images
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/volume1/server/images
 # mybatis����
 mybatis:
   mapper-locations: classpath:mappers/*.xml

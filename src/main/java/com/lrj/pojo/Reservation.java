@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author Lxh
@@ -42,7 +43,7 @@ public class Reservation{
     private String latitude; //纬度
     private String  reservationJson; // 服务的具体内容
     @Transient
-    private JSONArray reservationJSONArray;//将具体内容从json转为List 供给前端
+    private List<ItemJSON> itemJSONList;//将具体内容从json转为List 供给前端
     private Integer isUrgent; //是否加急
     private Integer isService; //是否收取服务费
     private BigDecimal totalPrice;//总价

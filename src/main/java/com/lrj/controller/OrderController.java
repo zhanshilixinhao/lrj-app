@@ -1,8 +1,10 @@
 package com.lrj.controller;
 
+import com.alipay.api.domain.ItemInfo;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
 import com.lrj.mapper.*;
+import com.lrj.pojo.ItemJSON;
 import com.lrj.pojo.MerchantOrder;
 import com.lrj.pojo.MonthCard;
 import com.lrj.pojo.Reservation;
@@ -10,7 +12,6 @@ import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
 import com.lrj.util.DateUtils;
-import com.lrj.util.MessagesUtil;
 import com.lrj.util.RandomUtil;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -52,6 +53,8 @@ public class OrderController {
     private IHouseServiceMapper houseServiceMapper;
     @Resource
     private IItemMapper itemMapper;
+    @Resource
+    private IItemJSONMapper itemJSONMapper;
 
     /** 创建订单  +增值服务
      * @param request
@@ -205,6 +208,7 @@ public class OrderController {
             }
             Integer orderType = Integer.parseInt(request.getParameter("orderType"));
             Integer takeConsigneeId = null;
+            AppItemVo item = null;
             switch (orderType){
                 case 1:
                     BigDecimal levelPrice = new BigDecimal(request.getParameter("levelPrice")); //等级减免金额
@@ -227,16 +231,16 @@ public class OrderController {
                 case 3:
                     takeConsigneeId =Integer.parseInt(request.getParameter("takeConsigneeId"));
                     Integer houseServiceId = Integer.parseInt(request.getParameter("houseServiceId"));
-                    //封装单项家政数据格式 一致
-                    JSONArray array = new JSONArray();
-                    JSONObject houseServiceJson = new JSONObject();
-                    houseServiceJson.put("itemId", houseServiceId);
-                    AppItemVo appItemVo= itemMapper.getItemInfoByItemId(houseServiceId);
-                    houseServiceJson.put("itmeName",appItemVo.getItemName());
-                    houseServiceJson.put("count", 1);
-                    array.add(houseServiceJson);
+                    //封装订单商品数据
+                    ItemJSON itemJSON1 = new ItemJSON();
+                    itemJSON1.setItemId(houseServiceId);
+                    item = itemMapper.getItemInfoByItemId(houseServiceId);
+                    itemJSON1.setItemName(item.getItemName());
+                    itemJSON1.setQuentity(1);
+                    itemJSON1.setPrice(item.getPrice());
+                    itemJSON1.setPicture(item.getPicture());
                     typeParams.put("takeConsigneeId", takeConsigneeId);
-                    typeParams.put("houseServiceJson", array.toString());
+                    typeParams.put("itemJSON", itemJSON1);
                     break;
                 case 4:
                     Integer serviceCycle = Integer.parseInt(request.getParameter("serviceCycle"));
@@ -250,7 +254,23 @@ public class OrderController {
                     typeParams.put("workTime", workTime);
                     typeParams.put("houseArea", houseArea);
                     typeParams.put("baseServicePrice", baseServicePrice);
-                    typeParams.put("individualServiceJson", individualServiceJson);
+                    //封装定制家政商品数据
+                    JSONArray jsonArray = JSONArray.fromObject(individualServiceJson);
+                    List<ItemJSON> itemJSONList = new ArrayList<>();
+                    for (int i=0;i<jsonArray.size();i++){
+                        ItemJSON itemJSON2 = new ItemJSON();
+                        JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                        itemJSON2.setItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
+                        itemJSON2.setQuentity(Integer.parseInt(jsonObject.get("quantity").toString()));
+                        //查询商品信息
+                        item = itemMapper.getItemInfoByItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
+                        itemJSON2.setItemName(item.getItemName());
+                        itemJSON2.setPicture(item.getPicture());
+                        itemJSON2.setPrice(item.getPrice());
+                        itemJSON2.setOrderNumber(orderVo.getOrderNumber());
+                        itemJSONList.add(itemJSON2);
+                    }
+                    typeParams.put("itemJSONList",itemJSONList);
                     break;
             }
             orderVo.setOrderType(orderType);
@@ -299,8 +319,8 @@ public class OrderController {
             reservationListVo.setStatus(reservation.getStatus());
             reservationListVo.setTotalPrice(reservation.getTotalPrice());
             //转化json 为JSONArray 用于计算
-            JSONArray reservationJsonArray = JSONArray.fromObject(reservation.getReservationJson());
-            reservationListVo.setCount(reservationJsonArray.size());
+            List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByReservationId(reservation.getReservationId());
+            reservationListVo.setCount(itemJSONList.size());
             //局部变量
             Integer itemId = null;
             AppItemVo appItemVo = null;
@@ -308,14 +328,12 @@ public class OrderController {
             StringBuffer url = null;
             switch (reservation.getOrderType()){
                 case 1:
-                    itemId = Integer.parseInt(reservationJsonArray.getJSONObject(0).get("itemId").toString());
-                    appItemVo= itemMapper.getItemInfoByItemId(itemId);
                     /** 获取请求地址 **/
                     url = request.getRequestURL();
                     /** 拼接 **/
                     tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                     /** 图片地址 **/
-                    reservationListVo.setPicture(tempContextUrl + appItemVo.getPicture());
+                    reservationListVo.setPicture(tempContextUrl + itemJSONList.get(0).getPicture());
                     reservationListVo.setUnit("件");
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
@@ -325,15 +343,13 @@ public class OrderController {
                     reservationListVo.setTotalPrice(new BigDecimal(0.00).setScale(2));
                     break;
                 case 3:
-                    itemId = Integer.parseInt(reservationJsonArray.getJSONObject(0).get("itemId").toString());
-                    appItemVo = itemMapper.getItemInfoByItemId(itemId);
                     /** 获取请求地址 **/
-                     url = request.getRequestURL();
+                    url = request.getRequestURL();
                     /** 拼接 **/
-                     tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+                    tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                     /** 图片地址 **/
-                    reservationListVo.setPicture(tempContextUrl + appItemVo.getPicture());
-                    reservationListVo.setUnit("次");
+                    reservationListVo.setPicture(tempContextUrl + itemJSONList.get(0).getPicture());
+                    reservationListVo.setUnit("件");
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
                 case 4:
@@ -361,42 +377,31 @@ public class OrderController {
         OrderVo orderVo = orderMapper.getOrderByOrderNumber(reservation.getOrderNumber());
         reservation.setOriginalPrice(orderVo.getOriginalPrice());
         //转化json 为JSONArray 用于计算
-        JSONArray reservationJsonArray = JSONArray.fromObject(reservation.getReservationJson());
+        List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByReservationId(reservation.getReservationId());
         if(reservation.getOrderType()==1 || reservation.getOrderType()==2){
             //拼接商品信息
-            for(int i=0;i<reservationJsonArray.size();i++){
-                Integer itemId = Integer.parseInt(reservationJsonArray.getJSONObject(i).get("itemId").toString());
-                AppItemVo appItemVo = itemMapper.getItemInfoByItemId(itemId);
+            for(ItemJSON itemJSON : itemJSONList){
                 /** 获取请求地址 **/
                 StringBuffer url = request.getRequestURL();
                 /** 拼接 **/
                 String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 /** 拼接可访问图片地址 **/
-                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl  + appItemVo.getPicture());
-                reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
-                reservationJsonArray.getJSONObject(i).element("defect", "无瑕疵");
-                reservationJsonArray.getJSONObject(i).element("price", appItemVo.getPrice());
-                reservationJsonArray.getJSONObject(i).element("washingPicture", "http://cwj1.hhhh.com");
+                itemJSON.setPicture(tempContextUrl+itemJSON.getPicture());
             }
             //清空json,换为jsonArray
-            reservation.setReservationJson(null);
-            reservation.setReservationJSONArray(reservationJsonArray);
+            reservation.setItemJSONList(itemJSONList);
         }else {
             //拼接商品信息
-            for(int i=0;i<reservationJsonArray.size();i++){
-                Integer itemId = Integer.parseInt(reservationJsonArray.getJSONObject(i).get("itemId").toString());
-                AppItemVo appItemVo = itemMapper.getItemInfoByItemId(itemId);
+            for(ItemJSON itemJSON : itemJSONList){
                 /** 获取请求地址 **/
                 StringBuffer url = request.getRequestURL();
                 /** 拼接 **/
                 String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 /** 拼接可访问图片地址 **/
-                reservationJsonArray.getJSONObject(i).element("picture", tempContextUrl + appItemVo.getPicture());
-                reservationJsonArray.getJSONObject(i).element("itemName", appItemVo.getItemName());
+                itemJSON.setPicture(tempContextUrl+itemJSON.getPicture());
             }
             //清空json,换为jsonArray
-            reservation.setReservationJson(null);
-            reservation.setReservationJSONArray(reservationJsonArray);
+            reservation.setItemJSONList(itemJSONList);
         }
 
         return new FormerResult("SUCCESS", 0, "查询成功", reservation);
@@ -419,14 +424,8 @@ public class OrderController {
                 //拼接月卡名字
                 MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardVo.getMonthCardId());
                 monthCardVo.setMonthCardName(monthCard.getName());
-                //转化json 为JSONArray  供前端使用
-                JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardVo.getUserMonthCardItemJson());
-                //拼接商品信息
-                for(int i=0;i<userMonthCardItemList.size();i++){
-                    Integer itemCategoryId = itemMapper.getItemCategoryByItemId(Integer.parseInt(userMonthCardItemList.getJSONObject(i).get("itemId").toString()));
-                    ItemCategoryVo itemCategoryVo = itemMapper.getItemCategoryInfoByCategoryId(itemCategoryId);
-                    userMonthCardItemList.getJSONObject(i).element("itemCategoryName", itemCategoryVo.getCategoryName());
-                }
+                //月卡剩余可使用商品列表
+                List<ItemJSON> userMonthCardItemList = itemJSONMapper.getItemJSONByOrderNumber(monthCardVo.getOrderNumber());
                 monthCardVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
                 return new FormerResult("SUCCESS",0,"查询成功！",monthCardVo);
             }
@@ -435,18 +434,10 @@ public class OrderController {
             if(monthCardOrderList == null || monthCardOrderList.equals("")){
                 return new FormerResult("SUCCESS", 0, "查询完成", monthCardOrderList);
             }else {
+                //拼接月卡名字
                 for (Order_monthCardVo monthCardOrderVo : monthCardOrderList) {
                     MonthCard monthCard = monthCardMapper.getMonthCardById(monthCardOrderVo.getMonthCardId());
                     monthCardOrderVo.setMonthCardName(monthCard.getName());
-                    //转化json 为JSONArray  供前端使用
-                    JSONArray userMonthCardItemList = JSONArray.fromObject(monthCardOrderVo.getUserMonthCardItemJson());
-                    //拼接商品信息
-                    for(int i=0;i<userMonthCardItemList.size();i++){
-                        Integer itemCategoryId = itemMapper.getItemCategoryByItemId(Integer.parseInt(userMonthCardItemList.getJSONObject(i).get("itemId").toString()));
-                        ItemCategoryVo itemCategoryVo = itemMapper.getItemCategoryInfoByCategoryId(itemCategoryId);
-                        userMonthCardItemList.getJSONObject(i).element("itemCategoryName", itemCategoryVo.getCategoryName());
-                    }
-                    monthCardOrderVo.setUserMonthCardItemJSONArray(userMonthCardItemList);
                 }
                 return new FormerResult("SUCCESS", 0, "查询成功！", monthCardOrderList);
             }
@@ -468,9 +459,6 @@ public class OrderController {
             if(customHouseServiceVo == null || customHouseServiceVo.equals("")){
                 return new FormerResult("SUCCESS", 0, "查询完成", null);
             }else {
-                //转化json 为JSONArray  供前端使用
-                JSONArray individualServiceJSONArray= JSONArray.fromObject(customHouseServiceVo.getIndividualServiceJson());
-                customHouseServiceVo.setIndividualServiceJSONArray(individualServiceJSONArray);
                 return new FormerResult("SUCCESS",0,"查询成功！",customHouseServiceVo);
             }
         }else if(type==2){
@@ -478,11 +466,6 @@ public class OrderController {
             if(customHouseServiceOrderList == null || customHouseServiceOrderList.equals("")){
                 return new FormerResult("SUCCESS", 0, "查询完成", customHouseServiceOrderList);
             }else {
-                for(Order_custom_houseServiceVo customHouseServiceOrderVo : customHouseServiceOrderList) {
-                    //转化json 为JSONArray  供前端使用
-                    JSONArray individualServiceJSONArray = JSONArray.fromObject(customHouseServiceOrderVo.getIndividualServiceJson());
-                    customHouseServiceOrderVo.setIndividualServiceJSONArray(individualServiceJSONArray);
-                }
                 return new FormerResult("SUCCESS", 0, "查询完成", customHouseServiceOrderList);
             }
         }
@@ -515,10 +498,18 @@ public class OrderController {
     public FormerResult isCanShare(HttpServletRequest request){
         String orderNumber = request.getParameter("orderNumber");
         OrderVo orderVo = orderService.findOrderByOrderNumber(orderNumber);
-        if(orderVo.getShareOrderNumber() !="" && orderVo.getShareOrderNumber() !=null){
-            return new FormerResult("SUCCESS", 0, "不可以分享", null);
+        Map<String, Object> params = new HashMap<>();
+        if (orderVo.getOrderType() ==1){
+            if(orderVo.getShareOrderNumber() !="" && orderVo.getShareOrderNumber() !=null){
+                return new FormerResult("SUCCESS", 0, "不可以分享", null);
+            }else {
+                params.put("orderNumber", orderNumber);
+                params.put("activityId", orderVo.getActivity());
+                return new FormerResult("SUCCESS", 0, "可以分享", params);
+            }
         }else {
-            return new FormerResult("SUCCESS", 0, "可以分享", orderNumber);
+            return new FormerResult("SUCCESS", 0, "家政类型订单不可分享", null);
         }
+
     }
 }

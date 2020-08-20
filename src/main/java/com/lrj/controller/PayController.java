@@ -269,7 +269,7 @@ public class PayController {
         InetAddress localAddr = InetAddress.getLocalHost();
         String localIp = localAddr.getHostAddress().toString();
         params.put("spbill_create_ip", localIp); //终端IP
-        params.put("notify_url", "http://cwj1.ngrok2.xiaomiqiu.cn/WXPayNotifyUrl");  //异步通知回调地址
+        params.put("notify_url", "http://goodbadluck.myds.me:8083/WXPayNotifyUrl");  //异步通知回调地址
         params.put("trade_type", "APP"); //支付类型
         //将非空参数进行签名运算(排序，MD5加密)
         /*Map<String, String> params2 = null;
@@ -509,7 +509,7 @@ public class PayController {
         String sign = "";
         String timestamp = DateUtils.formatDate(new Date(),"yyyy-MM-dd HH:mm:ss");
         String version = "1.0";
-        String notify_url = "http://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl";
+        String notify_url = "http://goodbadluck.myds.me:8083/AliPayNotifyUrl";
         //业务参数封装
         String biz_content = "";
         //构建请求：业务参数
@@ -533,7 +533,7 @@ public class PayController {
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         AlipayTradeAppPayRequest payRequest = new AlipayTradeAppPayRequest();
         payRequest.setBizContent(biz_content);
-        payRequest.setNotifyUrl("https://cwj1.ngrok2.xiaomiqiu.cn/AliPayNotifyUrl");
+        payRequest.setNotifyUrl("http://goodbadluck.myds.me:8083/AliPayNotifyUrl");
         try {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);

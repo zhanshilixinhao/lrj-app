@@ -31,7 +31,7 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
     @Resource
     private ReservationMapper reservationMapper;
 
-    public FormerResult createWashingAppoint(Map<String,Object> reservationMap) {
+    public int createWashingAppoint(Map<String,Object> reservationMap) {
         //创建预约信息
         Reservation reservation = new Reservation();
         //拼接地址信息
@@ -83,12 +83,12 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         reservation.setCreateTime(DateUtils.getNowDateTime());
         reservation.setUpdateTime(DateUtils.getNowDateTime());
         reservation.setUserId(Integer.parseInt(reservationMap.get("userId").toString()));
-        Integer insertNumber = reservationMapper.insertReservation(reservation);
-        return new FormerResult("SUCCESS", 0, "预约成功！", null);
+        reservationMapper.insertReservation(reservation);
+       return reservation.getReservationId();
     }
 
     @Override
-    public FormerResult createHouseServiceAppoint(Map<String, Object> reservationMap) {
+    public int createHouseServiceAppoint(Map<String, Object> reservationMap) {
         //创建预约信息
         Reservation reservation = new Reservation();
         //拼接地址信息
@@ -133,6 +133,6 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
 
         reservation.setTrackingStatus(Constant.ORDER_TRANSSTATUS_LOCK);
         Integer insertNumber = reservationMapper.insertReservation(reservation);
-        return new FormerResult("SUCCESS", 0, "预约成功！", null);
+        return reservation.getReservationId();
     }
 }

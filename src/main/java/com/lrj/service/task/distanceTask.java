@@ -1,6 +1,8 @@
 package com.lrj.service.task;
 
 import com.lrj.VO.FormerResult;
+import com.lrj.mapper.ReservationMapper;
+import com.lrj.pojo.Reservation;
 import lombok.AllArgsConstructor;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -31,6 +34,9 @@ import java.net.URISyntaxException;
 @AllArgsConstructor
 @RestController
 public class distanceTask {
+
+    @Resource
+    private ReservationMapper reservationMapper;
 
     /**
      * 主动查询是否可以 点击按钮
@@ -76,6 +82,8 @@ public class distanceTask {
         JSONObject jsonObject = JSONObject.fromObject(responseContent);
         //获取距离
         Integer distance = Integer.parseInt(JSONObject.fromObject(JSONArray.fromObject(jsonObject.get("results")).get(0)).getString("distance"));
+        //获取该服务单信息
+        Reservation reservation = reservationMapper.getReservationByReservationId(reservationId);
         switch (staffType){
             case 1:
                 if (distance <= 20){
@@ -85,7 +93,11 @@ public class distanceTask {
                 }
             case 3:
                 if(distance <= 50){
-                    return new FormerResult("SUCCESS", 0, "已开始服务", true);
+                    if(reservation.getTrackingStatus()==1){
+                        return new FormerResult("SUCCESS", 0, "已开始服务并计时！", true);
+                    }else if(reservation.getTrackingStatus() ==33){
+                        return new FormerResult("SUCCESS", 0, "已结束服务停止计时！", true);
+                    }
                 }else {
                     return new FormerResult("SUCCESS", 1, "未到目的地，不可点击", false);
                 }

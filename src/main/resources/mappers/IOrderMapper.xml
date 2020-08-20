@@ -5,8 +5,8 @@
 		>
 <mapper namespace="com.lrj.mapper.IOrderMapper">
 	<insert id="createOrder" parameterType="com.lrj.VO.OrderVo" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO `order` (order_number,user_id,total_price,status,pay_status,create_time,order_type,user_coupon_id,user_phone)
-		VALUES  (#{orderNumber},#{userId},#{totalPrice},#{status},#{payStatus},#{createTime},#{orderType},#{userCouponId},#{userPhone})
+		INSERT INTO `order` (order_number,user_id,total_price,status,pay_status,create_time,order_type,user_coupon_id,user_phone,activity)
+		VALUES  (#{orderNumber},#{userId},#{totalPrice},#{status},#{payStatus},#{createTime},#{orderType},#{userCouponId},#{userPhone},#{activity})
 	</insert>
 	<!--通过订单号查询订单-->
 	<select id="getOrderByOrderNumber" parameterType="java.lang.String" resultType="com.lrj.VO.OrderVo">
@@ -27,8 +27,8 @@
     </insert>
 	<!--保存 月卡订单-->
 	<insert id="createMonthCardOrder" parameterType="com.lrj.VO.Order_monthCardVo">
-		INSERT INTO order_month_card (order_number,user_id,active,month_card_id,user_month_card_count,create_time,end_time,user_month_card_item_json)
-		VALUES  (#{orderNumber},#{userId},#{active},#{monthCardId},#{userMonthCardCount},#{createTime},#{endTime},#{userMonthCardItemJson})
+		INSERT INTO order_month_card (order_number,user_id,active,month_card_id,user_month_card_count,create_time,end_time)
+		VALUES  (#{orderNumber},#{userId},#{active},#{monthCardId},#{userMonthCardCount},#{createTime},#{endTime})
 	</insert>
 	<!--保存单项家政服务订单-->
 	<insert id="createHouseServiceOrder" parameterType="com.lrj.VO.Order_houseServiceVo">
@@ -111,7 +111,7 @@
 		FROM
 		`order` a
 		LEFT JOIN order_month_card b ON a.order_number=b.order_number
-		WHERE a.user_id=#{userId} AND b.active=1
+		WHERE a.user_id=#{userId} AND b.active=1 AND a.pay_status=1
 	</select>
 	<!--查询用户月卡购买记录 通过userId-->
 	<select id="getMonthCatdOrderListByUserId" resultType="com.lrj.VO.Order_monthCardVo" parameterType="java.lang.Integer">
@@ -161,7 +161,7 @@
 		FROM
 		`order` a
 		LEFT JOIN order_custom_house_service b ON a.order_number=b.order_number
-		WHERE a.user_id=#{userId} AND b.active=1 AND a.order_type=4
+		WHERE a.user_id=#{userId} AND b.active=1 AND a.order_type=4 AND a.pay_status=1
 	</select>
 	<!--查询定制家政订单购买记录 通过userId -->
 	<select id="getCustomHouseServiceOrderListByUserId" parameterType="java.lang.Integer" resultType="com.lrj.VO.Order_custom_houseServiceVo">
