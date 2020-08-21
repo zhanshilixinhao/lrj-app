@@ -4,8 +4,10 @@ package com.lrj.controller;
 import com.alibaba.fastjson.JSON;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.LoginMess;
+import com.lrj.mapper.BalanceMapper;
 import com.lrj.mapper.UserLevelMapper;
 import com.lrj.mapper.UserMapper;
+import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 
 import com.lrj.pojo.UserLevel;
@@ -24,6 +26,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -39,6 +42,8 @@ public class OneClickLogin {
     private UserMapper userMapper;
     @Resource
     private UserLevelMapper userLevelMapper;
+    @Resource
+    private BalanceMapper balanceMapper;
     /**
      * 接收极光推送的token
      */
@@ -70,6 +75,10 @@ public class OneClickLogin {
                     userLevel.setUserId(user1.getAppUserId()).setLevelId(1).setInviteNum(0);
                     int userLevelInsert = userLevelMapper.insert(userLevel);
                     System.out.println("用户等级"+userLevelInsert);
+                    Balance balance = new Balance();
+                    balance.setUserId(user1.getAppUserId()).setBalance(new BigDecimal("0.00")).
+                            setCreateTime(DateUtils.formatDate(new Date()));
+                    balanceMapper.insertSelective(balance);
                 }
                 if (insert==0) {
                     return CommonUtil.FAIL(formerResult,"用户添加失败!",null);

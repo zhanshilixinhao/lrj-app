@@ -7,9 +7,11 @@ import com.lrj.VO.WXResult;
 import com.lrj.common.Constant;
 import com.lrj.common.ErrorCode;
 import com.lrj.exception.ServiceException;
+import com.lrj.mapper.BalanceMapper;
 import com.lrj.mapper.ThirdAccMapper;
 import com.lrj.mapper.UserLevelMapper;
 import com.lrj.mapper.UserMapper;
+import com.lrj.pojo.Balance;
 import com.lrj.pojo.ThirdAcc;
 import com.lrj.pojo.User;
 import com.lrj.pojo.UserLevel;
@@ -27,6 +29,7 @@ import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -74,6 +77,9 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
 
     @Resource
     private ThirdAccMapper thirdAccMapper;
+
+    @Resource
+    private BalanceMapper balanceMapper;
 
     private FormerResult formerResult = new FormerResult();
 
@@ -230,24 +236,28 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             if (merchantId!=null&&merchantId!=0) {
                 user.setSuperId(merchantId).setSuperType(2);
             }
-                try {
-                    int i = RandomUtil.generateRandom(6);
-                    String name = "懒"+i;
-                    user.setNickName(name);
-                }catch (Exception ex){
-                    System.out.println(ex.getMessage());
-                }
-                user.setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age);
-                userMapper.insertSelective(user);
-                UserLevel userLevel = new UserLevel();
-                userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
-                userLevelMapper.insertSelective(userLevel);
-                if (user.getActive() != null && user.getActive() != 1) {
-                    //throw new ServiceException(ErrorCode.ACC_DISABLED);
-                    return formerResult.setErrorTip("该账号已被禁用").setErrorCode(5005).setRequestStatus(Constant.SUCCESS);
-                }
-                return CommonUtil.SUCCESS(formerResult,null,user);
+            try {
+                int i = RandomUtil.generateRandom(6);
+                String name = "懒"+i;
+                user.setNickName(name);
+            }catch (Exception ex){
+                System.out.println(ex.getMessage());
             }
+            user.setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age);
+            userMapper.insertSelective(user);
+            UserLevel userLevel = new UserLevel();
+            userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
+            userLevelMapper.insertSelective(userLevel);
+            Balance balance = new Balance();
+            balance.setUserId(user.getAppUserId()).setBalance(new BigDecimal("0.00")).
+                    setCreateTime(DateUtils.formatDate(new Date()));
+            balanceMapper.insertSelective(balance);
+            if (user.getActive() != null && user.getActive() != 1) {
+                //throw new ServiceException(ErrorCode.ACC_DISABLED);
+                return formerResult.setErrorTip("该账号已被禁用").setErrorCode(5005).setRequestStatus(Constant.SUCCESS);
+            }
+            return CommonUtil.SUCCESS(formerResult,null,user);
+        }
         return null;
     }
 

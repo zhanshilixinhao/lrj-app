@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.WeChatUserInfo;
 import com.lrj.VO.WxUserInfo;
+import com.lrj.mapper.BalanceMapper;
 import com.lrj.mapper.UserLevelMapper;
 import com.lrj.mapper.UserMapper;
+import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import com.lrj.pojo.UserLevel;
 import com.lrj.service.IWeChatLoginService;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,8 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     private UserMapper userMapper;
     @Resource
     private UserLevelMapper userLevelMapper;
+    @Resource
+    private BalanceMapper balanceMapper;
 
 
     @Override
@@ -120,6 +125,10 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
             userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(num);
             int insert = userLevelMapper.insert(userLevel);
             System.out.println("用户等级"+insert);
+            Balance balance = new Balance();
+            balance.setUserId(user.getAppUserId()).setBalance(new BigDecimal("0.00")).
+                    setCreateTime(DateUtils.formatDate(new Date()));
+            balanceMapper.insertSelective(balance);
             return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
         }
         return null;
