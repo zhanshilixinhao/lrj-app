@@ -87,6 +87,7 @@ public class IOrderServiceImpl implements IOrderService{
                         itemJSON.setItemName(appItemVo.getItemName());
                         itemJSON.setPrice(appItemVo.getPrice());
                         itemJSON.setPicture(appItemVo.getPicture());
+                        itemJSON.setItemUnit(appItemVo.getItemUnit());
                         itemJSONList.add(itemJSON);
                     }
                 }
@@ -132,6 +133,7 @@ public class IOrderServiceImpl implements IOrderService{
                     itemJSON.setItemName(appItemVo.getItemName());
                     itemJSON.setPrice(appItemVo.getPrice());
                     itemJSON.setPicture(appItemVo.getPicture());
+                    itemJSON.setItemUnit(appItemVo.getItemUnit());
                     itemJSON.setOrderNumber(orderVo.getOrderNumber());
                     itemJSONMapper.addOrderJSONMany(itemJSON);
                 }

@@ -1,6 +1,7 @@
 package com.lrj.VO;
 
 import com.alibaba.fastjson.JSON;
+import com.lrj.pojo.ItemJSON;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,6 +10,7 @@ import net.sf.json.JSONArray;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author : cwj
@@ -28,7 +30,7 @@ public class Order_custom_houseServiceVo extends OrderVo{
     private Integer baseServiceCount; // 每月基础服务次数（剩余）
     private BigDecimal baseServicePrice;//基础服务价格
     private String individualServiceJson; //个性服务以及次数
-    private JSONArray individualServiceJSONArray; //将json转化为对象给前端
+    private List<ItemJSON> individualServiceJSONList; //将json转化为对象给前端
     private Integer active; //月卡是否还可以用
     private String orderNumber; //订单号
 

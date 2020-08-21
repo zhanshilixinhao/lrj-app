@@ -60,6 +60,8 @@ public class PayController {
     private RebateService rebateService;
     @Resource
     private ReservationMapper reservationMapper;
+    @Resource
+    private IUserService userService;
 
     public PayController(RebateService rebateService) {
         this.rebateService = rebateService;
@@ -396,6 +398,9 @@ public class PayController {
                             if (out_trade_no.contains("E")) {
                                 //完成充值单
                                 payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
+                                //修改用户余额(只有充值金额)
+                                Balance userBalance = userService.getUserBalanceInfo(balanceRecord.getUserId());
+                                balanceService.updateUserBalance(userBalance.getBalance().doubleValue()+balanceRecord.getAmount().doubleValue(),balanceRecord.getUserId());
                             } else if (out_trade_no.contains("A") || out_trade_no.contains("B") || out_trade_no.contains("C") || out_trade_no.contains("D")) {
                                 payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
                                 //完成 赠送余额 记录
@@ -429,6 +434,9 @@ public class PayController {
                                 payOperation.setUserId(balanceRecord.getUserId());
                                 payOperation.setUserPhone("");
                                 payService.payFlowRecord(payOperation);
+                                //修改用户余额(充值金额+赠送金额)
+                                Balance userBalance = userService.getUserBalanceInfo(balanceRecord.getUserId());
+                                balanceService.updateUserBalance(userBalance.getBalance().doubleValue()+balanceRecord.getAmount().doubleValue()+balanceRecord2.getAmount().doubleValue(),balanceRecord.getUserId());
                             }
                         }
                     }
@@ -591,6 +599,9 @@ public class PayController {
                             if (out_trade_no.contains("E")) {
                                 //完成充值单
                                 payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
+                                //修改用户余额(只有充值金额)
+                                Balance userBalance = userService.getUserBalanceInfo(balanceRecord.getUserId());
+                                balanceService.updateUserBalance(userBalance.getBalance().doubleValue()+balanceRecord.getAmount().doubleValue(),balanceRecord.getUserId());
                             } else if (out_trade_no.contains("A") || out_trade_no.contains("B") || out_trade_no.contains("C") || out_trade_no.contains("D")) {
                                 payService.updateUserBalanceRecord(balanceRecord.getRechargeOrderNumber());
                                 //完成 赠送余额 记录
@@ -623,6 +634,9 @@ public class PayController {
                                 payOperation.setUserId(balanceRecord.getUserId());
                                 payOperation.setUserPhone("");
                                 payService.payFlowRecord(payOperation);
+                                //修改用户余额(充值金额+赠送金额)
+                                Balance userBalance = userService.getUserBalanceInfo(balanceRecord.getUserId());
+                                balanceService.updateUserBalance(userBalance.getBalance().doubleValue()+balanceRecord.getAmount().doubleValue()+balanceRecord2.getAmount().doubleValue(),balanceRecord.getUserId());
                             }
                     }
                 }

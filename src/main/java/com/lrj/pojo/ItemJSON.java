@@ -27,4 +27,5 @@ public class ItemJSON {
     private String itemName;
     private String picture;
     private BigDecimal price;
+    private String itemUnit;
 }

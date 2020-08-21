@@ -239,6 +239,7 @@ public class OrderController {
                     itemJSON1.setQuentity(1);
                     itemJSON1.setPrice(item.getPrice());
                     itemJSON1.setPicture(item.getPicture());
+                    itemJSON1.setItemUnit(item.getItemUnit());
                     typeParams.put("takeConsigneeId", takeConsigneeId);
                     typeParams.put("itemJSON", itemJSON1);
                     break;
@@ -268,6 +269,7 @@ public class OrderController {
                         itemJSON2.setPicture(item.getPicture());
                         itemJSON2.setPrice(item.getPrice());
                         itemJSON2.setOrderNumber(orderVo.getOrderNumber());
+                        itemJSON2.setItemUnit(item.getItemUnit());
                         itemJSONList.add(itemJSON2);
                     }
                     typeParams.put("itemJSONList",itemJSONList);
@@ -349,7 +351,7 @@ public class OrderController {
                     tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                     /** 图片地址 **/
                     reservationListVo.setPicture(tempContextUrl + itemJSONList.get(0).getPicture());
-                    reservationListVo.setUnit("件");
+                    reservationListVo.setUnit("项");
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
                 case 4:
@@ -459,6 +461,9 @@ public class OrderController {
             if(customHouseServiceVo == null || customHouseServiceVo.equals("")){
                 return new FormerResult("SUCCESS", 0, "查询完成", null);
             }else {
+                //定制家政剩余可使用商品列表
+                List<ItemJSON> customHouseServiceItemList = itemJSONMapper.getItemJSONByOrderNumber(customHouseServiceVo.getOrderNumber());
+                customHouseServiceVo.setIndividualServiceJSONList(customHouseServiceItemList);
                 return new FormerResult("SUCCESS",0,"查询成功！",customHouseServiceVo);
             }
         }else if(type==2){

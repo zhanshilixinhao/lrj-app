@@ -16,7 +16,7 @@
 
 	<!--通过服务单Id 查询该服务单的商品列表-->
 	<select id="getItemJSONByReservationId" parameterType="java.lang.Integer" resultType="com.lrj.pojo.ItemJSON">
-		SELECT * FROM order_json_only
+		SELECT * FROM order_json_only WHERE reservation_id=#{reservationId}
 	</select>
 
 	<!--通过订单号查询  月卡或定制家政的剩余可用商品列表-->
