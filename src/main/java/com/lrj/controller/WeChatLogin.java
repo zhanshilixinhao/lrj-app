@@ -141,11 +141,10 @@ public class WeChatLogin {
     @Transactional
     public FormerResult appleLogin(String identityToken){
         try {
-            Map<String, String> map = new HashMap<>();
             //验证identityToken
             if(!AppleUitl.verify(identityToken)){
-                return new FormerResult("授权验证失败",Fail_CODE,null,null);
-            }
+            return new FormerResult("授权验证失败",Fail_CODE,null,null);
+        }
             //对identityToken解码
             JSONObject json = AppleUitl.parserIdentityToken(identityToken);
             if(json == null){
@@ -155,7 +154,7 @@ public class WeChatLogin {
             System.out.println(token);
             User user = weChatLoginService.findUserByEmail(json.getString("email"));
             if (user==null) {
-                return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(token);
+                return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(json.getString("email"));
             }
             return new FormerResult("SUCCESS",SUCCESS_CODE,null,user);
         }catch (Exception e){
