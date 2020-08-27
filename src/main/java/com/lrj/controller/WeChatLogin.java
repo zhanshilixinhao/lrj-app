@@ -1,21 +1,31 @@
 package com.lrj.controller;
 import	java.util.HashMap;
+import java.util.Map;
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.PropertyNamingStrategy;
 import com.alibaba.fastjson.parser.ParserConfig;
+import com.baomidou.mybatisplus.extension.api.ApiResult;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.ReturnResult;
 import com.lrj.VO.WxUserInfo;
 import com.lrj.mapper.WxUserInfoMapper;
 import com.lrj.pojo.User;
 import com.lrj.service.IWeChatLoginService;
+import com.lrj.util.AppleUitl;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.HttpClientTool;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+
+import static com.lrj.VO.FormerResult.Fail_CODE;
+import static com.lrj.VO.FormerResult.SUCCESS_CODE;
+
 /**
  * @author Lxh
  * 微信第三方登录功能
@@ -120,5 +130,34 @@ public class WeChatLogin {
             return "参数不正确";
         }
         return returnResult.getErrMsg();
+    }
+
+    /**
+     * @Description: IOS授权登录
+     * @Author: LxH
+     * @Date: 2020/8/26 16:33
+     */
+    @RequestMapping("appleLogin")
+    @Transactional
+    public FormerResult appleLogin(String identityToken){
+        try {
+            Map<String, String> map = new HashMap<>();
+            //验证identityToken
+            if(!AppleUitl.verify(identityToken)){
+                return new FormerResult("授权验证失败",Fail_CODE,null,null);
+            }
+            //对identityToken解码
+            JSONObject json = AppleUitl.parserIdentityToken(identityToken);
+            if(json == null){
+                return new FormerResult("授权验证失败",Fail_CODE,"json为空",null);
+            }
+            String token = json.toString();
+            System.out.println(token);
+            map.put("token",token);
+            return new FormerResult("SUCCESS",SUCCESS_CODE,null,map);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            return new FormerResult("系统错误",Fail_CODE,"json为空",null);
+        }
     }
 }

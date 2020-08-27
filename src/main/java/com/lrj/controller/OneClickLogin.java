@@ -58,13 +58,18 @@ public class OneClickLogin {
         if (loginMess.getPhone()==null||loginMess.getId()==null) {
             return CommonUtil.FAIL(formerResult,"参数错误!",null);
         }
-
         try {
             String phoneNum = JiGuangOauthLogin.decrypt(loginMess.getPhone(), prikey);
             List<User> userList = userService.findUserByPhone(phoneNum);
             //如果没有注册过
             if (userList.size()==0||userList==null) {
                 User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setCreateTime(DateUtils.formatDate(new Date()));
+                /** 获取请求地址 **/
+                StringBuffer url = request.getRequestURL();
+                /** 拼接 **/
+                String text = null;
+                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+                user.setHeadPhoto(tempContextUrl + text);
                 int insert = userMapper.insert(user);
                 Example example = new Example(User.class);
                 example.createCriteria().andEqualTo("userPhone",phoneNum);

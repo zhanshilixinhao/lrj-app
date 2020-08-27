@@ -133,5 +133,10 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         }
         return null;
     }
+
+    @Override
+    public void appleLogin() {
+
+    }
 }
 

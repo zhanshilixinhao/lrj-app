@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 8083
 
 spring:
   datasource:
     username: root
-    password: 111111
-    url: jdbc:mysql://192.168.0.110:3306/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
+    password: 987071
+    url: jdbc:mysql://goodbadluck.myds.me:3307/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 60000
@@ -14,9 +14,9 @@ spring:
       maximum-pool-size: 20
       idle-timeout: 30000
   mvc:
-    static-path-pattern: /2020/**
+    static-path-pattern: /**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:D://wy/pic2020/
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/volume1/server/images
 # mybatis����
 mybatis:
   mapper-locations: classpath:mappers/*.xml
@@ -28,3 +28,5 @@ mapper:
     - tk.mybatis.mapper.common.Mapper
 mybatis-plus:
   mapper-locations: classpath:mappers/*.xml
+
+
