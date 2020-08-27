@@ -153,11 +153,23 @@ public class WeChatLogin {
             }
             String token = json.toString();
             System.out.println(token);
-            map.put("token",token);
-            return new FormerResult("SUCCESS",SUCCESS_CODE,null,map);
+            User user = weChatLoginService.findUserByEmail(json.getString("email"));
+            if (user==null) {
+                return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(token);
+            }
+            return new FormerResult("SUCCESS",SUCCESS_CODE,null,user);
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new FormerResult("系统错误",Fail_CODE,"json为空",null);
         }
+    }
+    //绑定用户电话号码
+    @RequestMapping("/toAppleBindPhoneNumber")
+    public FormerResult AppleBindPhoneNumber(String email,String userPhone,String verificationCode,Byte age,HttpServletRequest request){
+
+        if (email==null||userPhone==null) {
+            return CommonUtil.FAIL(new FormerResult(),"参数异常",null);
+        }
+        return weChatLoginService.AppleBindPhoneNumber(email,userPhone,verificationCode,age,request);
     }
 }

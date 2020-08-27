@@ -67,7 +67,7 @@ public class OneClickLogin {
                 /** 获取请求地址 **/
                 StringBuffer url = request.getRequestURL();
                 /** 拼接 **/
-                String text = null;
+                String text = "/headPhoto/avatar.png";
                 String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 user.setHeadPhoto(tempContextUrl + text);
                 int insert = userMapper.insert(user);

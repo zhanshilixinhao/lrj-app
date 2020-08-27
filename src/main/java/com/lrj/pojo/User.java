@@ -48,6 +48,7 @@ public class User {
     private String verificationCode;
     private Byte age;
     private Integer superId;
+    private String email;
     /**
      * 1 APP用户 2. 商家
      */

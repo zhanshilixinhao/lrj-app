@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -135,8 +136,57 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     }
 
     @Override
-    public void appleLogin() {
-
+    public User findUserByEmail(String email) {
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("email", email);
+        List<User> users = userMapper.selectByExample(example);
+        for (User user : users) {
+            return user;
+        }
+        return null;
     }
+
+    @Override
+    public FormerResult AppleBindPhoneNumber(String email, String userPhone, String verificationCode, Byte age, HttpServletRequest request) {
+        Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("verificationCode", verificationCode);
+        List<User> users = userMapper.selectByExample(example);
+        if (users==null) {
+            return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
+        }
+        for (User user : users) {
+            user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId()).setAge(age);
+            StringBuffer url = request.getRequestURL();
+            /** 拼接 **/
+            String text = "/headPhoto/avatar.png";
+            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+            user.setHeadPhoto(tempContextUrl + text).setEmail(email);
+            try {
+                int i = userMapper.updateByPrimaryKeySelective(user);
+                System.out.println("更新"+i);
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+                //return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
+                FormerResult formerResult = new FormerResult();
+                formerResult.setErrorCode(1).setErrorTip("统一电话号码只能绑定一次").setData(null);
+                return formerResult;
+            }
+            UserLevel userLevel = new UserLevel();
+            int num =0;
+            userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(num);
+            int insert = userLevelMapper.insert(userLevel);
+            System.out.println("用户等级"+insert);
+            Balance balance = new Balance();
+            balance.setUserId(user.getAppUserId()).setBalance(new BigDecimal("0.00")).
+                    setCreateTime(DateUtils.formatDate(new Date()));
+            balanceMapper.insertSelective(balance);
+            return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
+        }
+        return null;
+    }
+
+
 }
 
