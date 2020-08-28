@@ -140,6 +140,9 @@ public class WeChatLogin {
     @RequestMapping("appleLogin")
     @Transactional
     public FormerResult appleLogin(String identityToken){
+        if (identityToken==null) {
+            return new FormerResult("参数不能为空",Fail_CODE,null,null);
+        }
         try {
             //验证identityToken
             if(!AppleUitl.verify(identityToken)){
@@ -156,7 +159,7 @@ public class WeChatLogin {
             if (user==null) {
                 return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(json.getString("email"));
             }
-            return new FormerResult("SUCCESS",SUCCESS_CODE,null,user);
+            return new FormerResult("success",0,null,user.getAppUserId());
         }catch (Exception e){
             System.out.println(e.getMessage());
             return new FormerResult("系统错误",Fail_CODE,"json为空",null);

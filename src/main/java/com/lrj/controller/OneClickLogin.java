@@ -98,7 +98,6 @@ public class OneClickLogin {
                 for (User user : userList) {
                     return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user);
                 }
-
             }
         } catch (Exception e) {
             e.printStackTrace();
