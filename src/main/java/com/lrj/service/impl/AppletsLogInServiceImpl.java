@@ -107,9 +107,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         // 1.判断该openid是否存在
         Example example = new Example(ThirdAcc.class);
         Example.Criteria criteria = example.createCriteria();
-        if (StringUtils.isBlank(result.getOpenid())) {
-            criteria.andEqualTo(COLUMN_THIRDACC_OPEN_ID,result.getOpenid());
-        }
+        criteria.andEqualTo(COLUMN_THIRDACC_OPEN_ID,result.getOpenid());
         List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
         // 1.1如果账号不存在需要绑定手机号
         if (thirdAccs.size() == 0) {
@@ -124,19 +122,20 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             return formerResult.setErrorTip("需要绑定手机号!").setErrorCode(6001).setRequestStatus(Constant.SUCCESS).setData(map);
             //throw new ServiceException(ErrorCode.NEED_BIND_PHONE).data(map);
             // 如果账号存在，取出用户信息
-        }
-        for (ThirdAcc thirdAcc : thirdAccs) {
-            Example e = new Example(User.class);
-            Example.Criteria c = e.createCriteria();
-            if (thirdAcc.getPhone()!=null) {
-                c.andEqualTo(COLUMN_USER_PHONE,thirdAcc.getPhone());
-            }
-            List<User> users = userMapper.selectByExample(e);
-            for (User user : users) {
-                if (user != null && user.getActive() != null && user.getActive() != 1) {
-                    throw new ServiceException(ErrorCode.ACC_DISABLED);
+        } else {
+            for (ThirdAcc thirdAcc : thirdAccs) {
+                Example e = new Example(User.class);
+                Example.Criteria c = e.createCriteria();
+                if (thirdAcc.getPhone()!=null) {
+                    c.andEqualTo(COLUMN_USER_PHONE,thirdAcc.getPhone());
                 }
-                return CommonUtil.SUCCESS(formerResult,null,user);
+                List<User> users = userMapper.selectByExample(e);
+                for (User user : users) {
+                    if (user != null && user.getActive() != null && user.getActive() != 1) {
+                        throw new ServiceException(ErrorCode.ACC_DISABLED);
+                    }
+                    return CommonUtil.SUCCESS(formerResult,null,user);
+                }
             }
         }
         return null;
