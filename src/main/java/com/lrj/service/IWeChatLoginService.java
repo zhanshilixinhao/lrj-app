@@ -5,6 +5,7 @@ import com.lrj.VO.FormerResult;
 
 import com.lrj.VO.WxUserInfo;
 import com.lrj.pojo.User;
+import org.apache.http.HttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,4 +27,11 @@ public interface IWeChatLoginService {
     User findUserByEmail(String email);
 
     FormerResult AppleBindPhoneNumber(String email, String userPhone, String verificationCode, Byte age, HttpServletRequest request);
+
+    /**
+     * @Description:
+     * @Author: LxH
+     * @Date: 2020/8/31 12:54
+     */
+    FormerResult buildUser(String email, HttpServletRequest request);
 }

@@ -16,6 +16,7 @@ import com.lrj.service.IWeChatLoginService;
 import com.lrj.util.AppleUitl;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.HttpClientTool;
+import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -139,7 +140,7 @@ public class WeChatLogin {
      */
     @RequestMapping("appleLogin")
     @Transactional
-    public FormerResult appleLogin(String identityToken){
+    public FormerResult appleLogin(String identityToken , HttpServletRequest request){
         if (identityToken==null) {
             return new FormerResult("参数不能为空",Fail_CODE,null,null);
         }
@@ -157,7 +158,8 @@ public class WeChatLogin {
             System.out.println(token);
             User user = weChatLoginService.findUserByEmail(json.getString("email"));
             if (user==null) {
-                return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(json.getString("email"));
+                return weChatLoginService.buildUser(json.getString("email"),request);
+                //return new FormerResult().setErrorCode(2).setErrorTip("请绑定手机号码").setData(json.getString("email"));
             }
             return new FormerResult("success",0,null,user.getAppUserId());
         }catch (Exception e){
@@ -173,5 +175,9 @@ public class WeChatLogin {
             return CommonUtil.FAIL(new FormerResult(),"参数异常",null);
         }
         return weChatLoginService.AppleBindPhoneNumber(email,userPhone,verificationCode,age,request);
+    }
+    @RequestMapping("AppIsShow")
+    public FormerResult AppIsShow(){
+        return new FormerResult("SUCCESS",0,"判断完成",1);
     }
 }

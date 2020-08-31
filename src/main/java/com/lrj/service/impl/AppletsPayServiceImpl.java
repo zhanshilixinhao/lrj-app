@@ -353,7 +353,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         params.put("nonce_str", StringUtils.generateNonceStr());
         params.put("body", "lrjcheshi");
         params.put("out_trade_no", orderNumber);
-        params.put("total_fee", "1");
+        params.put("total_fee", value);
         try {
             InetAddress localAddr = InetAddress.getLocalHost();
             String localIp = localAddr.getHostAddress().toString();
