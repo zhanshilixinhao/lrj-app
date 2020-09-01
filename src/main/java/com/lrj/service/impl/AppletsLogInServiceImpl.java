@@ -153,9 +153,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         // 判断账号是否存在
         Example example = new Example(ThirdAcc.class);
         Example.Criteria criteria = example.createCriteria();
-        if (StringUtils.isBlank(phone)) {
-            criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
-        }
+        criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
         List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
         if (thirdAccs.size()!=0) {
             // 如果已绑定账号
@@ -204,9 +202,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         // 判断账号是否存在
         Example example = new Example(ThirdAcc.class);
         Example.Criteria criteria = example.createCriteria();
-        if (StringUtils.isBlank(phone)) {
-            criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
-        }
+        criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
         List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
         if (thirdAccs.size()!=0) {
             // 如果已绑定账号
@@ -221,9 +217,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         // 判断用户信息是否存在
         Example e = new Example(User.class);
         Example.Criteria c = e.createCriteria();
-        if (StringUtils.isBlank(phone)) {
-            c.andEqualTo(COLUMN_USER_PHONE,phone);
-        }
+        c.andEqualTo(COLUMN_USER_PHONE,phone);
         List<User> users = userMapper.selectByExample(e);
         // 如果没有用户信息，创建一个
         if (users!=null||users.size()!=0) {
