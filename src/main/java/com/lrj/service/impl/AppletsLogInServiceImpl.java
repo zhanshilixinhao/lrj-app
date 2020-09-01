@@ -219,8 +219,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         Example.Criteria c = e.createCriteria();
         c.andEqualTo(COLUMN_USER_PHONE,phone);
         List<User> users = userMapper.selectByExample(e);
-        // 如果没有用户信息，创建一个
-        if (users!=null||users.size()!=0) {
+        if (users.size()==0) {
             User user = new User();
             if (superId!=null&&superId!=0) {
                 promoteLevel(superId);
@@ -250,6 +249,10 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
                 return formerResult.setErrorTip("该账号已被禁用").setErrorCode(5005).setRequestStatus(Constant.SUCCESS);
             }
             return CommonUtil.SUCCESS(formerResult,null,user);
+        }else {
+            for (User user : users) {
+                return CommonUtil.SUCCESS(formerResult,null,user);
+            }
         }
         return null;
     }

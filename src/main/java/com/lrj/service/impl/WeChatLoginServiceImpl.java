@@ -114,35 +114,44 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         List<User> users1 = userMapper.selectByExample(example1);
         if (users1.size()!=0) {
             for (User user : users1) {
+                user.setNickName(wxUserInfo.getNickName()).setHeadPhoto(wxUserInfo.getHeadImgUrl()).setUnionId(wxUserInfo.getUnionId());
+                userMapper.updateByPrimaryKeySelective(user);
+                for (User user1 : users) {
+                    userMapper.delete(user1);
+                }
                 return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
             }
         }else {
             for (User user : users) {
                 user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId()).setAge(age)
                         .setHeadPhoto(wxUserInfo.getHeadImgUrl());
-                try {
-                    int i = userMapper.updateByPrimaryKeySelective(user);
-                    System.out.println("更新"+i);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                    //return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
-                    FormerResult formerResult = new FormerResult();
-                    formerResult.setErrorCode(1).setErrorTip("统一电话号码只能绑定一次").setData(null);
-                    return formerResult;
-                }
-                UserLevel userLevel = new UserLevel();
-                int num =0;
-                userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(num);
-                int insert = userLevelMapper.insert(userLevel);
-                System.out.println("用户等级"+insert);
-                Balance balance = new Balance();
-                balance.setUserId(user.getAppUserId()).setBalance(new BigDecimal("0.00")).
-                        setCreateTime(DateUtils.formatDate(new Date()));
-                balanceMapper.insertSelective(balance);
-                return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
+                return getResult(user);
             }
         }
         return null;
+    }
+
+    private FormerResult getResult(User user) {
+        try {
+            int i = userMapper.updateByPrimaryKeySelective(user);
+            System.out.println("更新"+i);
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            //return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
+            FormerResult formerResult = new FormerResult();
+            formerResult.setErrorCode(1).setErrorTip("统一电话号码只能绑定一次").setData(null);
+            return formerResult;
+        }
+        UserLevel userLevel = new UserLevel();
+        int num =0;
+        userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(num);
+        int insert = userLevelMapper.insert(userLevel);
+        System.out.println("用户等级"+insert);
+        Balance balance = new Balance();
+        balance.setUserId(user.getAppUserId()).setBalance(new BigDecimal("0.00")).
+                setCreateTime(DateUtils.formatDate(new Date()));
+        balanceMapper.insertSelective(balance);
+        return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
     }
 
     @Override
@@ -171,6 +180,11 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         List<User> users1 = userMapper.selectByExample(example1);
         if (users1.size()!=0) {
             for (User user : users1) {
+                user.setEmail(email);
+                userMapper.updateByPrimaryKeySelective(user);
+                for (User user1 : users) {
+                    userMapper.deleteByPrimaryKey(user1);
+                }
                 return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
             }
         }else {
@@ -181,26 +195,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
                 String text = "/userHeadPhotos/touxiang.png";
                 String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 user.setHeadPhoto(tempContextUrl + text).setEmail(email);
-                try {
-                    int i = userMapper.updateByPrimaryKeySelective(user);
-                    System.out.println("更新"+i);
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                    //return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
-                    FormerResult formerResult = new FormerResult();
-                    formerResult.setErrorCode(1).setErrorTip("统一电话号码只能绑定一次").setData(null);
-                    return formerResult;
-                }
-                UserLevel userLevel = new UserLevel();
-                int num =0;
-                userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(num);
-                int insert = userLevelMapper.insert(userLevel);
-                System.out.println("用户等级"+insert);
-                Balance balance = new Balance();
-                balance.setUserId(user.getAppUserId()).setBalance(new BigDecimal("0.00")).
-                        setCreateTime(DateUtils.formatDate(new Date()));
-                balanceMapper.insertSelective(balance);
-                return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
+                return getResult(user);
             }
         }
         return null;
@@ -215,12 +210,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     @Override
     public FormerResult buildUser(String email, HttpServletRequest request) {
         User user = new User();
-        user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setCreateTime(DateUtils.formatDate(new Date()));
-        StringBuffer url = request.getRequestURL();
-        /** 拼接 **/
-        String text = "/headPhoto/avatar.png";
-        String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
-        user.setHeadPhoto(tempContextUrl + text).setEmail(email);
+        user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setHeadPhoto("http://www.51lrj.com/headPhoto/avatar.png").setCreateTime(DateUtils.formatDate(new Date()));
         userMapper.insertSelective(user);
         UserLevel userLevel = new UserLevel();
         int num =0;
