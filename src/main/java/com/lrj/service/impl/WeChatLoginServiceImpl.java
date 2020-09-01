@@ -178,7 +178,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
                 user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId()).setAge(age);
                 StringBuffer url = request.getRequestURL();
                 /** 拼接 **/
-                String text = "/headPhoto/avatar.png";
+                String text = "/userHeadPhotos/touxiang.png";
                 String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
                 user.setHeadPhoto(tempContextUrl + text).setEmail(email);
                 try {
