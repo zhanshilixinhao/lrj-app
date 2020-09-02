@@ -63,7 +63,7 @@ public class OneClickLogin {
             List<User> userList = userService.findUserByPhone(phoneNum);
             //如果没有注册过
             if (userList.size()==0||userList==null) {
-                User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setHeadPhoto("http://www.51lrj.com/headPhoto/avatar.png").setCreateTime(DateUtils.formatDate(new Date()));
+                User user = new User().setUserPhone(phoneNum).setActive(1).setNickName("懒人家新用户").setIsCheck(1).setHeadPhoto("http://www.51lrj.com/userHeadPhotos/touxiang.png").setCreateTime(DateUtils.formatDate(new Date()));
                 int insert = userMapper.insert(user);
                 Example example = new Example(User.class);
                 example.createCriteria().andEqualTo("userPhone",phoneNum);

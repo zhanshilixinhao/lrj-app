@@ -117,7 +117,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
                 user.setNickName(wxUserInfo.getNickName()).setHeadPhoto(wxUserInfo.getHeadImgUrl()).setUnionId(wxUserInfo.getUnionId());
                 userMapper.updateByPrimaryKeySelective(user);
                 for (User user1 : users) {
-                    userMapper.delete(user1);
+                    userMapper.deleteByPrimaryKey(user1);
                 }
                 return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
             }
@@ -210,7 +210,7 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
     @Override
     public FormerResult buildUser(String email, HttpServletRequest request) {
         User user = new User();
-        user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setHeadPhoto("http://www.51lrj.com/headPhoto/avatar.png").setCreateTime(DateUtils.formatDate(new Date()));
+        user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setHeadPhoto("http://www.51lrj.com/userHeadPhotos/touxiang.png").setCreateTime(DateUtils.formatDate(new Date()));
         userMapper.insertSelective(user);
         UserLevel userLevel = new UserLevel();
         int num =0;
