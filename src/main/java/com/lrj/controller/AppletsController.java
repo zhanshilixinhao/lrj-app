@@ -3,8 +3,6 @@ package com.lrj.controller;
 import com.alibaba.fastjson.JSON;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.RawData;
-import com.lrj.common.ErrorCode;
-import com.lrj.exception.ServiceException;
 import com.lrj.service.AppletsLogInService;
 import com.lrj.service.AppletsPayService;
 import com.lrj.util.CommonUtil;

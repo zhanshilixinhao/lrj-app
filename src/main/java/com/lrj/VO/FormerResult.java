@@ -17,7 +17,7 @@ public class FormerResult {
     private String requestStatus = "";
     private Integer errorCode;
     public static final int SUCCESS_CODE = 200;
-    public static final int Fail_CODE = 500;
+    public static final int Fail_CODE = 1;
     private String errorTip = "";
     private Object data;
 }

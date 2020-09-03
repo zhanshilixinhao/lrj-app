@@ -21,6 +21,9 @@ import java.security.spec.RSAPublicKeySpec;
 
 import java.util.Map;
 
+/**
+ * @author 战士李昕昊
+ */
 public class AppleUitl {
 
     private static final Logger logger = LoggerFactory.getLogger(AppleUitl.class);
