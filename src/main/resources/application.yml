@@ -5,9 +5,7 @@ spring:
   datasource:
     username: root
     password: oTt9WJU4OnWYaN9O
-    #password: 987071
     url: jdbc:mysql://121.37.1.52:3306/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
-    #url: jdbc:mysql://goodbadluck.myds.me:3307/swkj?useUnicode=yes&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8
     driver-class-name: com.mysql.cj.jdbc.Driver
     hikari:
       connection-timeout: 60000
@@ -18,7 +16,7 @@ spring:
   mvc:
     static-path-pattern: /**
   resources:
-    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/usr/local/project/images
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/volume1/server/images
 # mybatis����
 mybatis:
   mapper-locations: classpath:mappers/*.xml

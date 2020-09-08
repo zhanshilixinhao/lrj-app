@@ -30,7 +30,9 @@ public class Reservation{
     private Integer orderType; //订单类型
     private Integer grabOrderIdTake; //抢单人id-取件
     private Integer grabOrderIdSend; //抢单人id-送件
+    @Transient
     private Integer takeDistance;//取件距离
+    @Transient
     private Integer sendDistance;//送件距离
     private String address; //地址
     private String createTime; //创建时间
@@ -61,11 +63,8 @@ public class Reservation{
     private String unit;//单位
     @Transient
     private BigDecimal originalPrice;//商品原价
-    @Transient
-    private Integer beeline; //距离最近的配送站的距离
-    @Transient
+    private Integer beeline; //距离最近的配送站的距
     private String distributionName;//最近的配送站的名字
-    @Transient
     private String distributionAddress; //最近的配送站的地址
     private String houseServiceBeginTime;//家政开始服务时间
     private String houseServiceEndTime;//家政服务结束时间
