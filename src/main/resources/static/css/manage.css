@@ -1,0 +1,58 @@
+@charset "utf-8";
+/* CSS Document */
+html{border:none; margin:0px; padding:0px;}
+body{border:none; margin:0px; padding:0px; font-size:14px;font-family:"Microsoft Yahei";}
+div, span, label, cite, b, font, img, a, h1, h2, h3, h4, h5, h6, table, tbody, tr, td, th, form, p,ol{border:none; margin:0px; padding:0px;}
+table{cellpadding:0;cellspacing:0; border:0;}
+ul{padding:0px; margin:0px; list-style:none;}
+a{ color:#333;font-family:"Microsoft Yahei";text-decoration:none;}
+
+a:hover{ color:#000;text-decoration:none;}
+input{font-family:"Microsoft Yahei";}
+.db-icbu .ui-form-bd{margin:0;}
+.floatleft{ float:left; display:inline; overflow:hidden;zoom:1;}
+.floatright{ float:right; display:inline; overflow:hidden;zoom:1;}
+
+.mg_bg{ background:#b2ddf8 url(../images/manage/backgroud.png) repeat-x;padding-top:80px;}
+
+/*登陆*/
+.mg_login{ background:url(../images/manage/bg.png) no-repeat; width:718px; min-height:388px; margin:0 auto; }
+.mg_user_bar{ padding-top:305px; overflow:hidden;zoom:1; height:38px; line-height:38px;}
+.mg_120{ margin-left:120px;}
+.mg_user_bar .user{ width:200px; height:38px; line-height:38px; overflow:hidden;zoom:1; color:#bfbfbf; font-size:14px; background:none; border:none;}
+.mg_user_bar .password-text{ width:200px; height:38px; line-height:38px; overflow:hidden;zoom:1; color:#bfbfbf; font-size:14px; background:none; border:none; margin-left:104px;}
+.mg_user_bar .password{ width:200px; height:38px; line-height:38px; overflow:hidden;zoom:1; color:#bfbfbf; font-size:14px; background:none; border:none;margin-left:100px;}
+.mg_login .login{ background:url(../images/manage/login.png) no-repeat; width:254px; height:60px; overflow:hidden;zoom:1; display:block; margin:0 auto; border:none;}
+.mg_remind{ height:50px; overflow:hidden;zoom:1; margin-top:50px;}
+.mg_login .login:hover{ background:url(../images/manage/login_hover.png) no-repeat; cursor:pointer;}
+
+/*回复评论 merchant*/
+
+.db-showpanel{width:150px;height:150px;}
+.db-showpanel a{width:150px;height:150px;}
+.db-icbu{margin-left:180px;}
+.db-icbu .ui-form-bd{padding:0;}
+.db-icbu{border:none;}
+.db-icbu h3{font-size:14px;}
+.db-icbu .ui-form-label{font-size:12px;}
+.db-icbu .ui-form-right{color:#333;}
+.superstar-price strong{font-size:16px;font-weight:normal;}
+.db-icbu{height:auto;}
+.ap-title{color:#999;width:60px;}
+.ap-tag {overflow:hidden;zoom:1; line-height:28px; margin-top:10px;}
+.ap-content{margin-left:30px;}
+.ap-ct-text{color:#333;}
+.ap-date{color:#999;}
+ol.ap-border{border-top:1px solid #ccc;border-bottom:1px solid #ccc; margin-top:20px; padding:15px 0;}
+.ap-replytitle{background:url(../images/manage/ap_title.png) no-repeat left center; height:30px; line-height:30px; overflow:hidden;zoom:1; padding-left:10px; margin-top:20px;}
+.ap-top{ padding:15px 0 10px;}
+.ap-con{border:1px solid #ccc;width:598px;}
+.l-btn-text{background:#2581be;border:1px solid #1d567d;height:26px; line-height:26px;text-align:center;color:#fff;padding:3px 20px;font-size:12px;margin:0;}
+.icon-ok{display:none;}
+.l-btn-icon-left .l-btn-text{margin:0;}
+.icon-cancel{display:none;}
+.l-btn-text{display:inline;}
+.l-btn{border:none;}
+.l-btn:hover{border:none;}
+textarea{color:#333;}
+.ap-aplaycolor{color:#de7908;}

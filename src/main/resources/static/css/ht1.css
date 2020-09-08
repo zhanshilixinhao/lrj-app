@@ -1,0 +1,22 @@
+@charset "utf-8";
+/* CSS Document */
+*{margin:0;padding:0;}
+.add_power{width:500px;margin:0 auto;}
+.infro1{overflow:hidden;margin-top:10px;}
+.la1{float:left;width:60px;text-align:right;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.in1{float:left;width:180px;height:25px;line-height:25px;padding-left:3px;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.select_infro{overflow:hidden;margin-top:10px;}
+.name2{float:left;width:60px;text-align:right;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.ra1{float:left;margin-left:5px;margin-top:2px;}
+.la2{float:left;margin-left:5px;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.sel{float:left;min-width:140px;min-height:200px;border:1px solid #999;}
+.btn1{float:left;margin:90px 30px;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.opt{min-width:105px;text-indent:5px;margin:2px auto 0px auto;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.opt1{overflow:hidden;min-width:100px;margin:2px auto 0px auto;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+.ch1{float:left;margin:5px 5px 0px 5px;}
+.sp1{float:left;}
+.opt2{min-width:110px;text-indent:20px;margin:2px auto 0px auto;font-family:"Microsoft YaHei","Hiragino Sans GB",tahoma,arial,simhei;font-size:14px;}
+
+.table_infro{border-collapse:collapse;border-spacing:0px;border:1px solid #999;min-width:400px;margin-top:10px;}
+th{border:1px solid #999;}
+td{border:1px solid #999;text-align:center;padding:0px;}

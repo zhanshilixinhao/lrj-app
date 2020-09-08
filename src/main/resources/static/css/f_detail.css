@@ -1,0 +1,42 @@
+@CHARSET "UTF-8";
+.fmain_resourse{width:977px;margin:30px auto;border:1px solid #e8e8e7;min-height:900px;}
+.f_wrap{margin:0px auto 30px auto;overflow:hidden;}
+.fmain_left{float:left;width:648px;position:relative;}
+.fpic{width:648px;height:474px;overflow:hidden;position:absolute;}
+.fpic img{float:left;}
+.f_move{position:absolute;width:648px;overflow:hidden;top:219px;}
+.m_left{width:35px;height:35px;background:url(../images/move_left.png) no-repeat center center;float:left;cursor:pointer;}
+.m_right{width:35px;height:35px;background:url(../images/move_right.png) no-repeat center center;float:right;cursor:pointer;}
+.fmain_right{float:right;width:329px;}
+.p1{float:left;margin-left:13.5px;margin-bottom:9px;margin-top:2px;width:151px;height:151px;background:url(../images/border_k0.png) no-repeat center center;text-align:center;cursor:pointer;}
+.p2{float:left;margin-left:13.5px;margin-bottom:9px;margin-top:2px;width:151px;height:151px;background:url(../images/border_k.png) no-repeat center center;text-align:center;cursor:pointer;}
+/*.p1:active{float:left;margin-left:15.5px;margin-bottom:10px;background:url(../images/p1.png) no-repeat center center;width:149px;height:149px;cursor:pointer;}*/
+.p img{display:block;margin:1px auto;}
+.f_resource_des{width:930px;margin:0 auto;overflow:hidden;}
+.des_left{float:left;}
+.f_name{font-family:"微软雅黑";font-size:24px;font-weight:400;color:#324454;}
+.f_time{font-family:"微软雅黑";font-size:12px;font-weight:400;color:#4c4b4b;line-height:35px;}
+.f_price{line-height:40px;}
+.pr{font-family:"微软雅黑";font-size:16px;font-weight:400;color:#4c4b4b;}
+.areaa{margin-left:20px;}
+.floor{margin-left:20px;}
+.nu{font-family:"微软雅黑";font-size:24px;font-weight:400;color:#fcae27;}
+.un{font-family:"微软雅黑";font-size:14px;font-weight:400;color:#4c4b4b;}
+.f_des{line-height:40px;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#4c4b4b;}
+.area_mear{margin-left:20px;}
+.floor{margin-left:20px;}
+.scandcn_btn{float:right;/*line-height:90px;height:90px;*/}
+.sc_btn{background:url(../images/f_detail.png) no-repeat 10% 50%;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fff;width:132px;height:35px;line-height:35px;text-indent:70px;cursor:pointer;}
+.sc_btn:hover{background:url(../images/f_detail1.png) no-repeat 10% 50%;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fff;width:132px;height:35px;line-height:35px;text-indent:70px;cursor:pointer;}
+.cancel_btn{background:url(../images/f_cancel.png) no-repeat 10% 50%;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fff;width:132px;height:35px;line-height:35px;text-indent:60px;margin-top:-35px;cursor:pointer;}
+.cancel_btn:hover{background:url(../images/f_cancel1.png) no-repeat 10% 50%;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fff;width:132px;height:35px;line-height:35px;text-indent:60px;margin-top:-35px;cursor:pointer;}
+.fang_phone{background-color:#fcae27;overflow:hidden;line-height:60px;width:510px;}
+.tele_wrap{overflow:hidden;float:left;}
+.tele_ico{float:left;width:35px;height:60px;background:url(../images/telephone.png) no-repeat center center;margin-left:30px;}
+.telephone{word-wrap:break-word;line-height:25px;margin-top:20px;float:left;width:200px;font-family:"微软雅黑";font-size:24px;font-weight:400;color:#fff;}
+.mobil_wrap{overflow:hidden;float:left;}
+.mobil_ico{float:left;width:25px;height:60px;background:url(../images/mobilephone.png) no-repeat center center;margin-left:10px;}
+.mobilephone{word-wrap:break-word;line-height:25px;margin-top:20px;float:left;width:200px;font-family:"微软雅黑";font-size:24px;font-weight:400;color:#fff;}
+.other_infro{width:930px;margin:25px auto 0 auto;}
+.other_title{font-family:"微软雅黑";font-size:16px;font-weight:400;color:#324454;}
+.other_con{font-family:"微软雅黑";font-size:12px;font-weight:400;color:#324454;}

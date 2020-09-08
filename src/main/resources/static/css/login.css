@@ -1,0 +1,206 @@
+* {
+    border: 0 none;
+    font-size: 9pt;
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "΢���ź�";
+    margin: 0 auto;
+    min-width: 980px;
+}
+ul {
+    display: block;
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+li {
+    display: block;
+    list-style: outside none none;
+    margin: 0;
+    padding: 0;
+}
+img {
+    border: 0 none;
+}
+dl, dt, dd, span {
+    display: block;
+    margin: 0;
+    padding: 0;
+}
+a, a:focus {
+    color: #000;
+    outline: medium none;
+    text-decoration: none;
+}
+a:hover {
+    color: #00a4ac;
+    text-decoration: none;
+}
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+cite {
+    font-style: normal;
+}
+h2 {
+    font-weight: normal;
+}
+#mainBody {
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: -1;
+}
+.cloud {
+    background: rgba(0, 0, 0, 0) url("../images/cloud.png") no-repeat scroll 0 0;
+    height: 100%;
+    left: 0;
+    opacity: 0.5;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
+}
+#cloud2 {
+    z-index: 2;
+}
+.logintop {
+    background: rgba(0, 0, 0, 0) url("../images/loginbg1.png") repeat-x scroll 0 0;
+    height: 47px;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+}
+.logintop span {
+    background: rgba(0, 0, 0, 0) url("../images/loginsj.png") no-repeat scroll 21px 18px;
+    color: #afc5d2;
+    float: left;
+    line-height: 47px;
+    text-indent: 44px;
+}
+.logintop ul {
+    float: right;
+    padding-right: 30px;
+}
+.logintop ul li {
+    float: left;
+    line-height: 47px;
+    margin-left: 20px;
+}
+.logintop ul li a {
+    color: #afc5d2;
+}
+.logintop ul li a:hover {
+    color: #fff;
+}
+.loginbody {
+    background: rgba(0, 0, 0, 0) url("../images/loginbg3.png") no-repeat scroll center center;
+    height: 585px;
+    overflow: hidden;
+    position: absolute;
+    top: 47px;
+    width: 100%;
+}
+.systemlogo {
+    background: rgba(0, 0, 0, 0) url("") no-repeat scroll center center;
+    height: 71px;
+    margin-top: 40px;
+    width: 100%;
+}
+.loginbox {
+    background: rgba(0, 0, 0, 0) url("../images/logininfo.png") no-repeat scroll 0 0;
+    height: 336px;
+    margin-top: 30px;
+    width: 692px;
+}
+.loginbox ul {
+    margin-left: 285px;
+    margin-top: 78px;
+}
+.loginbox ul li {
+    margin-bottom: 10px;
+}
+.loginbox ul li label {
+    color: #687f92;
+    padding-left: 25px;
+}
+.loginbox ul li label a {
+    color: #687f92;
+}
+.loginbox ul li label a:hover {
+    color: #3d96c9;
+}
+.loginbox ul li label input {
+    margin-right: 5px;
+}
+.yzma {
+    float: left;
+    height: 48px;
+    line-height: 48px;
+}
+.yzmb {
+    height: 48px;
+    line-height: 48px;
+    text-indent: 20px;
+}
+.loginuser {
+    background: rgba(0, 0, 0, 0) url("../images/loginuser.png") no-repeat scroll 0 0;
+    border: medium none;
+    color: #3793c7;
+    font-size: 14px;
+    height: 48px;
+    line-height: 48px;
+    padding-left: 44px;
+    width: 299px;
+}
+.loginpwd {
+    background: rgba(0, 0, 0, 0) url("../images/loginpassword.png") no-repeat scroll 0 0;
+    border: medium none;
+    color: #3793c7;
+    font-size: 14px;
+    height: 48px;
+    line-height: 48px;
+    padding-left: 44px;
+    width: 299px;
+}
+.loginyzm {
+    background: rgba(0, 0, 0, 0) url("../images/loginyzm.png") no-repeat scroll 0 0;
+    border: medium none;
+    color: #3793c7;
+    font-size: 14px;
+    height: 48px;
+    line-height: 48px;
+    padding-left: 44px;
+    width: 137px;
+}
+.loginbtn {
+    background: rgba(0, 0, 0, 0) url("../images/buttonbg.png") repeat-x scroll 0 0;
+    color: #fff;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    height: 35px;
+    line-height: 35px;
+    width: 111px;
+}
+.loginbm {
+    background: rgba(0, 0, 0, 0) url("../images/loginbg2.png") repeat-x scroll 0 0;
+    bottom: 0;
+    color: #0b3a58;
+    height: 37px;
+    line-height: 37px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+}
+.loginbm a {
+    color: #0b3a58;
+    font-weight: bold;
+}
+.loginbm a:hover {
+    color: #fff;
+}

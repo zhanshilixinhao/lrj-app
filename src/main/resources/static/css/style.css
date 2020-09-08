@@ -1,0 +1,188 @@
+@charset "utf-8";
+/* CSS Document */
+html{border:none; margin:0px; padding:0px;}
+body{border:none; margin:0px; padding:0px; font-size:14px; line-height:22px; font-family:"微软雅黑"; background:#fff; color:#333;}
+body.backgroundColor{border:none; margin:0px; padding:0px; font-size:14px; line-height:22px; font-family:"微软雅黑"; background:#f5f5f5; color:#333; padding-bottom:36px;min-width:1000px; overflow:auto;}
+div, span, label, cite, b, font, img, a, h1, h2, h3, h4, h5, h6, table, tbody, tr, td, th, form, p,dl,dt,dd{border:none; margin:0px; padding:0px;}
+a:hover{ text-decoration:none;}
+a{color:#00A2FF; text-decoration:none;}
+ul,li{padding:0px; margin:0px; list-style:none;}
+input{margin:0;padding:0;}
+.floatleft{float:left; display:inline; overflow:hidden; zoom:1;}
+.floatright{float:right; display:inline; overflow:hidden; zoom:1;}
+
+
+/*管理后台头部*/
+.logo_a{width:259px; height:44px; background:url(../images/logo.png) no-repeat; margin:17px 0 0 10px;}
+.web-userlogins{ position:relative; left:556px; top:0;}
+.web-usericon{ background:url(../images/usericon.png) no-repeat; width:37px; height:37px; margin-top:13px;}
+.web-weluser{ color:#ffffff; font-size:14px; font-weight:bold; height:26px; overflow:hidden;zoom:1; margin-top:27px; margin-left:3px;}
+.web-padding{ padding:0px 0 130px; margin:70px auto 0;}
+.web-changepwd{ background:url(../images/changepwd.png) no-repeat 0 8px; width:56px; height:34px; cursor:pointer;}
+.web-userup{ height:56px; overflow:hidden;zoom:1;}
+.userInfo_a{width:250px; height:90px; position:relative;}
+.userInfo_a .web-opchange{ position:absolute; left:41px; top:47px;  width:150px; height:30px;zoom:1; overflow:hidden;}
+.web-loginout{font-family:"微软雅黑"; font-size:16px; color:#fff; height:30px; line-height:30px; font-weight:bold; margin-left:10px; cursor:pointer;}
+.allOperation input{ margin:0 3px;}
+/*左侧*/
+.xt-left{ width:202px; overflow:hidden;zoom:1; min-height:648px; background:#fff; overflow-y:auto;  margin-right:10px; border: 1px solid #361D03; margin-left:10px;}
+.xt-list{ overflow:hidden;zoom:1; padding-left:31px;}
+.xt-list li{ height:30px; line-height:30px;  background:url(../images/leftlist.png) no-repeat; width:162px; margin:10px 0 0; text-align:right; font-family:"微软雅黑"; font-size:14px;padding-right:10px;cursor:pointer;}
+.xt-list li a{text-align:right; color:#000; font-family:"微软雅黑"; display:block; margin-right:10px;}
+.xt-list li.on{ background:url(../images/leftliston.png) no-repeat;color:#fff;}
+.xt-list li.on a{ color:#fff;}
+
+.xt-info{ width:260px; margin:30px auto 0;}
+.xt-textin{ font-family:"微软雅黑"; font-size:16px; font-weight:bold; }
+iframe{border:none;}
+.xt-bar{min-height:450px; min-width:700px;}
+.xt-bg{ padding-top:150px;}
+.xt-login{width:423px; height:302px; margin:0 auto; background:url(../images/xt-login.png) no-repeat; padding:50px;}
+.xt-logintop{ background:url(../images/logintop.png) no-repeat; width:420px; height:44px; margin:0 auto; padding-bottom:20px;}
+
+/*按钮*/
+.xt-button{ background:#2581be;border:1px solid #1d567d; height:31px; line-height:31px; padding:0 10px; min-width:80px; color:#fff; font-family:"微软雅黑"; font-size:16px;  cursor:pointer; margin:0 3px;font-size:12px;}
+.xt-button:hover{ background:#e1dad6;}
+.xt-marleft{ margin-left:10px;}
+
+/*登录页面*/
+.xt-textwz{ overflow:hidden;zoom:1; color:#371d00; font-size:16px; font-family:"微软雅黑";}
+.xt-textwz tr td{ height:40px; line-height:40px;}
+.xt-textinput{ background:#fff; border:1px solid #ccc; width:180px; line-height:30px; height:30px; padding:0 5px; margin-left:10px;font-family:"微软雅黑"; font-size:14px;}
+.xt-checkbox{ margin:0 5px 0 10px;}
+
+/*右侧*/
+/****right***/
+
+/*活动查看*/
+h3.hr1{height:51px; line-height:51px; overflow:hidden;zoom:1; color:#6d3500; font-size:16px; font-weight:normal;}
+
+.rightbar{overflow:hidden;zoom:1; padding:0 2px;}
+.con1{ border:1px solid #361d03; overflow:hidden;zoom:1; min-height:600px; padding:18px 18px 30px; background:#fff;}
+
+.pcon_a{ overflow:hidden;zoom:1;padding:18px;}
+.box_a{overflow:hidden;zoom:1;}
+h3.titlepay{color:#00a2ff; font-size:14px; font-weight:normal;height:35px; line-height:35px;overflow:hidden;zoom:1;}
+.colorgreen{color:#6d3500;}
+.hide_Show_a{width:28px;height:14px; margin-top:13px;}
+.hide_a{overflow:hidden;zoom:1;cursor:pointer;}
+.show_a{overflow:hidden;zoom:1; cursor:pointer;}
+
+.allOperation{ overflow:hidden;zoom:1; border-bottom:1px solid #522b05; padding-bottom:5px;padding-top:15px;}
+.node_a{ overflow:hidden;zoom:1;height:30px; line-height:30px; margin:20px 15px 0;}
+.pa_a{ color:#00a2ff; font-size:14px; cursor:pointer;}
+.po_a{ color:#00a2ff; font-size:14px;cursor:pointer;}
+.sizeText_a{font-size:14px; margin:0 3px;}
+.search_a{margin:0 24px 0 0; overflow:hidden;zoom:1}
+.inputText_a{ border:1px solid #ccc; height:29px; line-height:29px;font-size:14px; overflow:hidden;zoom:1;margin-left:4px; background:#fff; padding-left:2px; color:#333; float:left; display:inline; width:100px;}
+.default_find{background:url(../images/search.jpg) no-repeat; overflow:hidden;zoom:1; border:none; height:30px; line-height:30px; float:left; display:inline; width:34px; text-align:center; color:#fff; vertical-align:middle; margin-left:6px; cursor:pointer;}
+
+.listForm{width:100%; overflow:hidden;zoom:1; text-align:center;line-height:35px;}
+.listForm tr th{white-space:nowrap; padding:0 10px;}
+.listForm tr td{padding:0 10px;}
+.titleName th{border-bottom:1px solid #522b05;font-weight:normal;}
+.bghover{width:5px;}
+.listForm tr.backgroudHover:hover{ background:#f8f8f8;}
+.listForm tr.backgroudHover:hover .bghover{width:5px; background:#cc9377;}
+
+.con1 .page{ text-align:right; height:30px; line-height:30px; overflow:hidden;zoom:1; position:absolute; right:10px; bottom:0;}
+.page a{ margin:0 5px;}
+.page input.add_print{width:33px; height:22px; line-height:22px; background:#e0e6ec; border:none; text-align:center; color:#0184e9;}
+
+.nowPage{width:26px; text-align:center;}
+
+/*首页顶部*/
+.topbox_a{ background:url(../images/background.png) repeat-x; height:100px; overflow:hidden;zoom:1; padding:0 10px; margin-bottom:3px;min-width:1000px;}
+.orange{ color:#FF8868}
+.lightGreen{ color:#00EAFF;}
+.language_a{ height:18px; line-height:18px; overflow:hidden;zoom:1;}
+.userOperate_a a, .userOperate_a img{ margin:0 2px; line-height:20px; cursor:pointer;}
+.logintime_a{font-size:12px;}
+.userOperate_a{ height:24px; overflow:hidden;zoom:1;}
+.white{ color:#fff;}
+
+.container_a{ zoom:1; width:100%; min-width:1000px; }
+.aright{width:100%;overflow-x:hidden;zoom:1;}
+.black{ color:#333333}
+.footer{height:56px; text-align:right; padding-right:27px; line-height:56px; min-width:1000px;}
+.xt-textinputw{ width:100%;}
+.xt-tableinfo{ width:98%; padding-right:2%}
+.xt-right{ text-align:right;}
+.xt-padding{ padding-left:30px; padding-bottom:20px;}
+.xt-tableinfo tr td{ padding:5px 0;}
+.xt-opbutton{ padding-right:2%; width:98%;}
+.xt-opbutton .xt-button{ margin-right:0px;}
+.xt-fontweight{ font-weight:normal;}
+ .xt-alignleft{ text-align:left;}
+ .xt-tableinfow{width:500px;}
+ .xt-marginl{margin-left:10px;}
+ .web-pointout{color:#de5e21;}
+ 
+ .web-sexleft{ margin-left:10px;}
+ .xt-checkboxwt{min-width:135px;margin-left:10px;}
+ 
+ .web-adddinfo{ padding-top:0;}
+.web-adddinfo img{ display:block; margin:0 auto;}
+.web-adddinfo p{ text-indent:2em; line-height:26px; font-size:16px; font-weight:normal; color:##361D03;}
+.web-adddinfo h3{text-indent:2em; line-height:26px; font-size:16px; font-weight:bold; color:##361D03;}
+.web-publishttime{ font-size:16px; font-weight:normal; color:#4b2f13; margin-top:10px;}
+.xt-selectradio{ margin:0 10px;}
+.xt-inputfile{ position:relative; left:0; top:0;}
+.xt-inputfile .file{ position:absolute; left:100px; top:0; width:57px; left:207px; min-width:5px;filter:alpha(opacity=0);-moz-opacity:0;opacity:0;}
+.xt-textinputh{ height:90px;}
+
+.xt-ml{ margin-left:15px;}
+.xt-fileload{ position:relative;}
+.xt-fileload .xt-showbrowse{ position:absolute; left:0; top:0; width:73px;filter:alpha(opacity=0);-moz-opacity:0;opacity:0;}
+.xt-imagewrap{ overflow:hidden;zoom:1;}
+.xt-imagek{ border:1px solid #ffc097; width:125px; height:125px; margin-left:15px; line-height:125px; text-align:center; margin-top:10px;}
+.xt-red{ color:#fd6600;}
+
+/*微信下载*/
+.xt-download{ width:483px; min-height:170px; margin:10px 0 0 10px;border:1px solid #ccc;}
+.xt-downicon{ height:170px; overflow:hidden;zoom:1;}
+.xt-imgwh{ margin:20px 0 0 25px;}
+.xt-ewcode{ width:105px; height:105px;text-align:center; padding:7px 0; margin:25px 25px 20px 0;}
+.xt-address{  padding:5px 15px 15px; overflow:hidden;zoom:1; color:#333;font-family:"Microsoft Yahei"; min-height:280px;}
+.xt-downloadg{ background:#fff; margin-left:35px;}
+.xt-address p{ line-height:28px; padding:10px 0 20px; overflow:hidden;zoom:1; }
+.xt-address p span{ color:#999;width:100px;}
+.xt-address p span label{color:#333;}
+
+.xt-wel{ background:url(../images/wel.gif) no-repeat; width:765px; height:312px; margin:190px auto 0;}
+.xt-bara{min-height:320px;}
+.xt-noborder{border:none!important}
+.auto-kal2{width:347px;}
+.xt-textinputwh{ height:90px; width:347px; margin:0;}
+.xt-lf{ margin-left:10px;}
+.xt-barnew{min-width:1100px;}
+.xt-opbutton  .xt-buttonm{ margin:10px auto 0; display:block;}
+
+.xt-writeconent{text-align:left; min-height:24px; line-height:24px;max-height:96px;overflow-y:auto;width:100%;}
+.xt-widthh1{min-width:500px;max-width:600px;}
+.xt-widthh2{min-width:150px;}
+.xt-widthh3{min-width:300px;}
+.xt-minw{min-width:1120px;}
+
+#shop_signage_and{width:68px; overflow:hidden;zoom:1;}
+#shop_signage_ios{width:68px; overflow:hidden;zoom:1;}
+
+.xt-container{ padding:10px 30px 10px; overflow:hidden;zoom:1;}
+.xt-title{ color:#6d3500; font-size:20px; font-weight:normal;}
+.xt-content{overflow:hidden;zoom:1; min-height:700px;}
+/*系统维护*/
+.xt-systembar{width:590px; overflow:hidden;zoom:1; padding:80px 0 0 100px;}
+.xt-system{ height:79px; line-height:79px; overflow:hidden;zoom:1;}
+.xt-system span{ float:left; display:inline; cursor:pointer;}
+.xt-maintenance{ background:url(../images/systemMaintenance.png) no-repeat; height:79px; line-height:79px; 
+
+width:297px;}
+.xt-renew{ background:url(../images/systemRenew.png) no-repeat; width:283px;height:79px; line-height:79px;}
+.xt-maintenance.on{ background:url(../images/systemMaintenanceon.png) no-repeat;}
+.xt-renew.on{ background:url(../images/systemRenewon.png) no-repeat;}
+.xt-point{ overflow:hidden;zoom:1; padding-top:50px;}
+h4{ color:#ff0000; font-size:18px; font-weight:normal;}
+.xt-point p{ font-size:16px; line-height:24px; padding:10px 0;}
+.xt-point p span{ color:#72360b;}
+.xt-protect{height:50px; line-height:50px; overflow:hidden;zoom:1;}
+.xt-protect span.xt-tl{color:#ff0000;}

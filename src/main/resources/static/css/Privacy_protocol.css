@@ -1,0 +1,17 @@
+@charset "utf-8";
+/* CSS Document */
+/*注册协议*/
+body{width:100%;background-color:#5aaf42;}
+.register_protocol{width:992px;margin:0 auto;}
+.register_protocol .protocol_wrap{width:992px;}
+.register_protocol .protocol_wrap .top_protocol{width:992px;height:37px;background:url(../images/t.jpg) no-repeat;}
+.register_protocol .protocol_wrap .protocol_con{width:992px;background:url(../images/b.jpg);color:#fff;margin-top:-10px;}
+.register_protocol .protocol_wrap .protocol_con h2{font-size:24px;font-family:"微软雅黑";font-weight:400;width:140px;margin:10px auto;}
+.register_protocol .protocol_wrap .protocol_con .title1{text-align:left;list-style-type:none;font-size:16px;font-family:"微软雅黑";font-weight:400;width:950px;margin:0 auto;}
+.register_protocol .protocol_wrap .protocol_con .title1 li.li1{width:140px;margin-left:10px;}
+.register_protocol .protocol_wrap .protocol_con .title2{list-style-type:none;font-size:14px;font-family:"微软雅黑";font-weight:400;width:920px;margin:10px auto;}
+.register_protocol .protocol_wrap .protocol_con .title2 li{}
+.register_protocol .protocol_wrap .protocol_con .title3{list-style-type:none;font-size:13px;font-family:"微软雅黑";font-weight:400;width:920px;margin:10px auto;}
+.register_protocol .protocol_wrap .foor_protocol{width:992px;height:37px;background:url(../images/f.jpg);margin-top:-10px;}
+.register_protocol .protocol_back{width:207px;height:67px;background:url(../images/protocol_back.png) no-repeat;margin-left:760px;cursor:pointer;}
+

@@ -1,0 +1,42 @@
+@charset "utf-8";
+/* CSS Document */
+*{margin:0;padding:0;font-family:'微软雅黑';}
+.container{width:100%;}
+.container .wrap{width:995px;margin:0 auto;}
+.container .wrap .pay_logo{height:80px;background:url(../images/pay_logo.png) no-repeat;cursor:pointer;border-bottom:4px solid #5aaf42;}
+.container .wrap .content{height:470px;background:url(../images/pay_content1.png) no-repeat;position:relative;}
+.container .wrap .content .content1{width:940px;overflow:hidden;margin:0 auto;line-height:100px;}
+.container .wrap .content .content1 .subcontent_1{float:left;font-size:18px;font-weight:400;color:#626060;}
+.container .wrap .content .content1 .subcontent_2{float:left;font-size:16px;font-weight:400;color:#626060;margin-left:20px;}
+.container .wrap .content .content1 .subcontent_3{float:left;font-size:16px;font-weight:400;color:#626060;}
+.container .wrap .content .content1 .subcontent_4{float:left;font-size:16px;font-weight:400;color:#626060;margin-left:320px;}
+.container .wrap .content .content1 .subcontent_5{float:left;font-size:16px;font-weight:400;color:#626060;margin-left:5px;}
+.container .wrap .content .content2{width:940px;margin:-20px auto 0px auto;font-size:16px;font-weight:400;color:#626060;}
+.container .wrap .content .content3{width:920px;border-bottom:2px solid #5aaf42; line-height:50px;font-size:16px;font-weight:400;color:#626060;margin:0 auto;}
+.container .wrap .content .content4{width:940px;font-size:16px;font-weight:400;color:#626060;margin:0 auto;}
+.container .wrap .content .content4 ul{float:left;list-style-type:none;width:460px;overflow:hidden;line-height:27px;margin:20px auto 0px 10px;}
+.container .wrap .content .content4 ul .liselect_no{float:left;background:url(../images/pay_selectno.png) no-repeat left top;width:80px;padding-left:35px;}
+.container .wrap .content .content4 ul .liselect{float:left;background:url(../images/pay_selectyes.png) no-repeat left top;width:80px;padding-left:35px;}
+.container .wrap .content .content4 .subcontent4{float:right;margin-right:20px;margin-top:20px;font-size:16px;font-weight:400;color:#599a32;line-height:25px;cursor:pointer;}
+.container .wrap .content .content4 .subcontent4:hover{font-size:16px;font-weight:400;color:#599a32;border-bottom:1px solid #5aaf42;line-height:25px;cursor:pointer;}
+.container .wrap .content .content4 .subcontent41{clear:both;width:160px;margin-left:160px;}
+.container .wrap .content .content4 .subcontent41 .content411{font-size:16px;font-weight:400;color:#626060;}
+.container .wrap .content .content4 .subcontent41 .content411 #paystyle{display:block;line-height:50px;}
+.container .wrap .content .content4 .subcontent41 .content411 #paystyle #online_paybtn10{width:75px;text-align:center;}
+.container .wrap .content .content4 .subcontent41 .content411 #pay_bank{display:block;}
+.container .wrap .content .content4 .subcontent41 .content411 #pay_bank #online_paybtn20{margin-left:32px;}
+.container .wrap .content .content4 .immediate_btn{background-color:#5aaf42;font-size:16px;font-weight:400;color:#fff;width:200px;height:40px;line-height:40px;text-align:center;margin:20px auto 0px auto;cursor:pointer;}
+.container .wrap .content .content4 .immediate_btn:hover{background-color:#479c2f;font-size:16px;font-weight:400;color:#fff;width:200px;height:40px;line-height:40px;text-align:center;margin:20px auto 0px auto;cursor:pointer;}
+/*支付限额*/
+.container .wrap .content .limit_money{display:none;position:absolute;background-color:#CCC;color:#fff;width:900px;left:45px;top:0px;}
+.container .wrap .content .limit_money h2{width:150px;margin:0 auto;}
+.container .wrap .content .limit_money p{padding-left:5px;text-indent:1em;}
+.container .wrap .content .limit_money ol{padding-left:25px;}
+.container .wrap .content .limit_money ol li{}
+.container .wrap .content .limit_money .limit_btn{background-color:#5aaf42;font-size:16px;font-weight:400;color:#fff;width:200px;height:40px;line-height:40px;text-align:center;margin:100px auto 50px auto;cursor:pointer;}
+.container .wrap .content .limit_money .limit_btn:hover{background-color:#479c2f;font-size:16px;font-weight:400;color:#fff;width:200px;height:40px;line-height:40px;text-align:center;margin:100px auto 50px auto;cursor:pointer;}
+
+
+
+/*版权*/
+.container .footer{font-size:12px;font-weight:400;text-align:center;}

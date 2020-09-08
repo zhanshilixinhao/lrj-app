@@ -1,0 +1,5 @@
+@CHARSET "UTF-8";
+.pl_x{width:280px;overflow:hidden;float:left;height:35px;line-height:35px;}
+.pl_x .pj{float:left;width:50px;font-size:16px;font-weight:400;color:#696767;}
+.pl_x .ecom2_pj{float:left;width:30px;height:27px;background:url(../images/click_xfront.png) no-repeat;margin-left:5px;margin-top:5px;}
+.pl_x .ecom2_pj_on{float:left;width:30px;height:27px;background:url(../images/click_xafter.png) no-repeat;margin-left:5px;margin-top:5px;}

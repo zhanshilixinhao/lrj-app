@@ -1,0 +1,54 @@
+#pageOverlay {
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1987;
+	width: 100%;
+	height: 100%;
+	background: #b1b1b1;
+	filter: alpha(opacity = 30);
+	opacity: 0.3;
+}
+/*IE6 fixed*/
+* html {
+	background: url(*) fixed;
+}
+
+* html body {
+	margin: 0;
+	height: 100%;
+}
+
+* html #pageOverlay {
+	position: absolute;
+	left: expression(documentElement.scrollLeft +   documentElement.clientWidth -
+		  this.offsetWidth);
+	top: expression(documentElement.scrollTop +   documentElement.clientHeight -
+		  this.offsetHeight);
+}
+.content-msg-size{
+	width:300px;
+}
+.content-msg-sizeh{
+	height:180px;
+}
+.content-msg-body{
+	width:298px;
+}
+.context-msg{
+	background:url(../images/del_infrbg.png) no-repeat left center;width:298px;line-height:135px;height:135px;
+	width:300px;
+	height:200px;
+	position: fixed; 
+	left:40%; 
+	top:30%;
+	z-index:2000; 
+	display:none;
+}
+.context-msg-btn{
+	width:262px;
+	height:40px;
+	margin-left:18px;
+	margin-right:18px;
+}

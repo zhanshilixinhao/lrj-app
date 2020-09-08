@@ -1,0 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+
+*{margin:0;padding:0;}
+body{width:100%;}
+#deal_status{width:800px;margin:0 auto;position:relative;}
+#deal_status #deal_wrap{width:800px;height:400px;position:absolute;border:2px solid #5AAF42;top:100px;}#deal_status #deal_wrap #d_num{width:800px;overflow:hidden;}
+#deal_status #deal_wrap #l_num{width:800px;overflow:hidden;}
+#deal_status #deal_wrap #t_num{width:800px;overflow:hidden;}
+#deal_status #deal_wrap #m_num{width:800px;overflow:hidden;}
+#deal_status #deal_wrap label{float:left;font-size:16px;font-family:"微软雅黑";font-weight:600;margin-top:25px;margin-left:230px;}
+#deal_status #deal_wrap input{float:right;margin:10px auto;width:260px;height:20px;line-height:20px;padding:6px;margin-top:20px;margin-right:190px;}
+#deal_status #deal_wrap #o_back{border:1px solid #5AAF42;width:120px;height:30px;line-height:30px;text-align:center;margin:40px auto;}
+#deal_status #deal_wrap #o_back a{color:#000;text-decoration:none;font-size:16px;font-family:"微软雅黑";font-weight:400;}
+

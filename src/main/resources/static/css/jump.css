@@ -1,0 +1,23 @@
+@charset "utf-8";
+/* CSS Document */
+*{margin:0;padding:0;}
+body{margin:0 auto;width:100%;background-color:#5aaf42;height:100%;}
+/*img{display:block;margin:10px auto;width:900px;height:600px;/*background:url(../images/jump1.png) no-repeat;}*/
+.wrap_jump{width:100%;margin:0 auto;}
+.wrap_jump .wrap_content{width:635px;margin-left:auto;margin-right:auto;overflow:hidden;}
+.wrap_jump .wrap_content .wrap_content1{width:236px;height:70px;background:url(../images/jump_logo.png) no-repeat;margin:40px auto;}
+.wrap_jump .wrap_content .wrap_content2{font-size:22px;font-family:"微软雅黑";color:#fff;font-weight:600;height:40px;line-height:40px;width:265px;}
+.wrap_jump .wrap_content .wrap_content3{font-size:16px;font-family:"微软雅黑";color:#fff;font-weight:600;width:635px;}
+.wrap_jump .wrap_content .wrap_content4{width:295px;height:36px;background:url(../images/haier_pre.png) no-repeat;cursor:pointer;margin:60px auto 0;}
+.wrap_jump .wrap_content .wrap_content4:hover{width:295px;height:36px;background:url(../images/haier_after.png) no-repeat;cursor:ponter;margin:60px auto 0;}
+
+/*其它电商跳转*/
+.wrap_jump .wrap{width:240px;margin-left:auto;margin-right:auto;overflow:hidden;}
+.wrap_jump .wrap .wrap_logo{width:236px;height:70px;background:url(../images/jump_logo.png) no-repeat;}
+.wrap_jump .wrap .wrap_welcome{font-size:16px;font-family:"微软雅黑";color:#fff;font-weight:600;width:195px;margin:0 auto;}
+
+
+.maintain .maintain1{width:156px;height:174px;background:url(../images/maintain.png) no-repeat center top;margin:120px auto 20px auto;}
+.maintain .maintain2{font-size:16px;font-family:"微软雅黑";color:#5aaf42;font-weight:600;width:240px;margin:0 auto;}
+
+

@@ -1,0 +1,185 @@
+/* reset */
+body,div,h1,h2,h3,h4,h5,h6,a {font-family: Helvetica, Tahoma, Arial, "Microsoft YaHei", "微软雅黑", STXihei, "华文细黑", SimSun, "宋体", Heiti, "黑体", sans-serif !important;color: #707070}
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,ul,ol,li,p,blockquote,pre,hr,figure,table,caption,th,td,form,fieldset,legend,input,button,textarea,menu{margin:0;padding:0;}
+header,footer,section,article,aside,nav,hgroup,address,figure,figcaption,menu,details{display:block;}
+table{border-collapse:collapse;border-spacing:0;}
+caption,th{text-align:left;font-weight:normal;}
+html,body,fieldset,img,iframe,abbr{border:0;}
+i,cite,em,var,address,dfn{font-style:normal;}
+[hidefocus],summary{outline:0;}
+li{list-style:none;}
+h1,h2,h3,h4,h5,h6,small{font-size:100%;}
+sup,sub{font-size:83%;}
+pre,code,kbd,samp{font-family:inherit;}
+q:before,q:after{content:none;}
+textarea{overflow:auto;resize:none;}
+label,summary{cursor:default;}
+a,button{cursor:pointer;}
+h1,h2,h3,h4,h5,h6,em,strong,b{font-weight:bold;}
+del,ins,s,a,a:hover{text-decoration:none;}
+html,body{width: 100%;height: 100%}
+body{background:#FFFFFF;font-size: 16px;}
+a,a:hover{color:#333;display: inline-block}
+img{width: 100%;vertical-align: middle;}
+input:focus,button:focus{outline: none;}
+a,button{
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+    -webkit-user-select: none;
+    -moz-user-focus: none;
+    -moz-user-select: none;
+}
+
+::-webkit-input-placeholder {
+    /* WebKit browsers */
+    color: #c2c2c2;
+}
+
+:-moz-placeholder {
+    /* Mozilla Firefox 4 to 18 */
+    color: #c2c2c2;
+}
+
+::-moz-placeholder {
+    /* Mozilla Firefox 19+ */
+    color: #c2c2c2;
+}
+
+:-ms-input-placeholder {
+    /* Internet Explorer 10+ */
+    color: #c2c2c2;
+}
+$border: #dddddd;
+$btn: #72C5F7;
+$white: #FFFFFF;
+// 按钮
+.btn {
+    text-align: center;
+    button {
+        width: 80%;
+        background-color: $btn;
+        border: none;
+        color: $white;
+        padding: 12px 10px;
+        border-radius: 5px;
+        font-size: 16px;
+    }   
+}
+//  ----------------------------------------------------------------------------
+//  分享 ---------------------------------------------------------------------
+//  ----------------------------------------------------------------------------
+.share {
+    position: relative;
+    height: 100%;
+    .share_img {
+        @media screen and (max-device-height :481px){
+            height: 320px;
+         }
+    }
+    .shareMsg {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        text-align: center;
+        display: flex;
+        display: -webkit-flex;
+        align-items: center;
+        -webkit-align-items:center;
+        -moz-box-align:center;
+        -webkit-box-align:center;
+        justify-content: center;
+        -webkit-justify-content:center;
+        -moz-box-pack:center;
+        .shares {
+            width: 100%;
+            p {
+                color: #F18C50;
+                font-size: 14px;
+            }
+            input {
+                width: 80%;
+                padding: 10px;
+                border: 1px solid $border;
+                border-radius: 5px;
+                text-align: center;
+                box-sizing: border-box;
+                margin: 6px 0 14px;
+            }
+        }
+    }
+}
+
+// 注册
+.register {
+    position: relative;
+    height: 100%;
+    .registerMsg {
+        text-align: center;
+        ul {
+            li {
+                position: relative;
+                text-align: left;
+                input {
+                    padding: 12px 10px;
+                    border: none;
+                    box-sizing: border-box;
+                    font-size: 15px;
+                }
+                button {
+                    padding: 5px 8px;
+                    font-size: 14px;
+                    border: 1px solid $border;
+                    border-radius: 5px;
+                    color: #929292;
+                    float: right;
+                    margin: 4px;
+                    box-sizing: border-box;
+                    background-color: $white;
+                }
+                &::after {
+                    position: absolute;
+                    content: "";
+                    bottom: 0;
+                    left: 0;
+                    height: 1px;
+                    width: 100%;
+                    background-color: $border;
+                }
+                &:last-child {
+                    margin-bottom: 10px;
+                }
+            }
+        }
+    }
+    .contact {
+        position: absolute;
+        bottom: 40px;
+        left: 0;
+    }
+}
+
+// 下载
+.download {
+    background: url(../images/bg-xiaza@2x.png) no-repeat;
+    background-color: #d2f7ff;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-size: 100%;
+    .download_content {
+        position: absolute;
+        right: 0;
+        bottom: 20px;
+        left: 0;
+        ul {
+            padding: 0 10px 0 30px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+        .down_icon {
+            width: 24px;
+            vertical-align: top;
+        }
+    }
+}

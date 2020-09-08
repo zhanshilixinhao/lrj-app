@@ -1,0 +1,59 @@
+@CHARSET "UTF-8";
+.house_main1{width:977px;margin:10px auto;border:1px solid #e6e6e6;background-color:#fff;}
+.classes{background-color:#ebedea;overflow:hidden;line-height:40px;}
+.rental{float:left;background:url(../images/chuzu.png) no-repeat 26% 50%;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#686a67;width:105px;text-indent:47px;cursor:pointer;}
+.rental_visited{float:left;background:url(../images/chuzu.png) #fff no-repeat 26% 50%;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#37a326;width:105px;text-indent:47px;cursor:pointer;}
+.rental_r{float:left;background:url(../images/chuzu.png) #fff no-repeat 26% 50%;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#37a326;width:105px;text-indent:47px;cursor:pointer;}
+.sell_visited{float:left;background:url(../images/chushou.png) #fff no-repeat 26% 50%;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#37a326;width:105px;text-indent:47px;cursor:pointer;}
+.sell{float:left;background:url(../images/chushou.png) no-repeat 26% 50%;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#686a67;width:105px;text-indent:47px;cursor:pointer;}
+.sell_r{float:left;background:url(../images/chushou.png) #fff no-repeat 26% 50%;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#37a326;width:105px;text-indent:47px;cursor:pointer;}
+
+.house_list{margin:20px auto 20px 20px;}
+.lis{line-height:35px;}
+.lis span{font-family:"微软雅黑";font-size:14px;font-weight:400;color:#599a32;margin-right:10px;cursor:pointer;}
+.lis span:hover{background:none;border-bottom:1px solid #fcae27;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fcae27;margin-right:10px;cursor:pointer;}
+.lis .span_e{background-color:#37a326;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fff;margin-right:10px;cursor:pointer;border:none;}
+.lis .span_e:hover{background-color:#37a326;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#fff;margin-right:10px;cursor:pointer;border:none;}
+span.t1{background:none;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#88898a;margin-right:0px;}
+span.t1:hover{background:none;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#88898a;border:none;margin-right:0px;}
+.house_resource{overflow:hidden;width:977px;margin:0 auto;border-bottom:2px solid #599a32;line-height:40px;margin-top:10px;}
+.resource_left{float:left;background:url(../images/xx_icon.png) no-repeat left center;font-family:"微软雅黑";font-size:20px;font-weight:400;color:#599a32;width:110px;text-align:right;}
+.resource_right{float:right;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#9d9b9b;}
+/*房屋收藏*/
+.fcollect_resource{overflow:hidden;width:977px;margin:0 auto;border-bottom:2px solid #599a32;line-height:40px;margin-top:10px;}
+.fcollect_left{float:left;background:url(../images/xx_icon.png) no-repeat left center;font-family:"微软雅黑";font-size:20px;font-weight:400;color:#599a32;width:150px;text-align:right;}
+.fcollect_right{float:right;overflow:hidden;font-family:"微软雅黑";font-size:14px;font-weight:400;color:#9d9b9b;margin-top:10px;}
+.se_all{float:left;background:url(../images/se_all.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;cursor:pointer;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#599a32;}
+.se_all_no{float:left;background:url(../images/se_all.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#696767;}
+.se_all:hover{float:left;background:url(../images/se_all.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;cursor:pointer;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#599a32;text-decoration:underline;}
+.se_alll{float:left;background:url(../images/se_yes.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;cursor:pointer;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#599a32;}
+.se_alll:hover{float:left;background:url(../images/se_yes.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;cursor:pointer;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#599a32;text-decoration:underline;}
+.se_del{float:left;background:url(../images/se_del.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;margin-left:25px;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#696767;}
+.se_del_active{float:left;background:url(../images/se_del.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;margin-left:25px;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#599a32;cursor:pointer;}
+.se_del_active:hover{float:left;background:url(../images/se_del.png) no-repeat left center;width:70px;line-height:24px;height:24px;text-align:right;margin-left:25px;font-family:"微软雅黑";font-size:18px;font-weight:400;color:#599a32;text-decoration:underline;cursor:pointer;}
+
+.fang_list_wrap{position:relative;width:977px;margin:0px auto 20px auto;border:1px solid #e8e8e7;min-height:800px;}
+/*房源收藏信息删除*/
+.fang_list_del{z-index:200;position:fixed;background:url(../images/del_infrbg.png) no-repeat left center;width:298px;line-height:135px;height:135px;}
+.del_close{background:url(../images/del_infrclose.png) no-repeat 95% 50%;width:20px;line-height:20px;height:20px;cursor:pointer;float:right;margin-right:8px;margin-top:38px;}
+.del_infrodes{width:155px;font-family:"微软雅黑";font-size:14px;font-weight:bold;color:#fca933;line-height:20px;clear:both;margin:80px auto 0px auto;}
+.infrbtn{width:160px;margin:20px auto 0 auto;overflow:hidden;}
+.del_infrbtn1{float:left;background:url(../images/infrbtn1.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.del_infrbtn1:hover{float:left;background:url(../images/infrbtn11.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.del_infrbtn2{float:right;background:url(../images/infrbtn2.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.del_infrbtn2:hover{float:right;background:url(../images/infrbtn22.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+
+.fang_list{overflow:hidden;width:800px;min-height:1000px;margin:10px auto;}
+.fy_wrap{margin:0 auto 30px auto;min-width:220px;text-align:center;}
+.fenye{overflow:hidden;display:inline-block;}
+.pageup{float:left;width:70px;height:31px;line-height:31px;background:url(../images/pageup.png) no-repeat center center;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#cccccc;cursor:pointer;}
+.pageup_r{float:left;width:70px;height:31px;line-height:31px;background:url(../images/pagedown.png) no-repeat center center;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#fff;cursor:pointer;}
+.num{float:left;margin-left:5px;width:28px;height:31px;line-height:31px;background:url(../images/num.png) no-repeat center center;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#cccccc;cursor:pointer;}
+.num_r{float:left;margin-left:5px;width:28px;height:31px;line-height:31px;background:url(../images/num1.png) no-repeat center center;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#599A32;cursor:pointer;}
+.shenlue{float:left;margin-left:5px;width:28px;height:31px;line-height:31px;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#cccccc;}
+.pagedown{float:left;margin-left:5px;width:70px;height:31px;line-height:31px;background:url(../images/pageup.png) no-repeat center center;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#cccccc;cursor:pointer;}
+.pagedown_r{float:left;margin-left:5px;width:70px;height:31px;line-height:31px;background:url(../images/pagedown.png) no-repeat center center;text-align:center;font-family:"微软雅黑";font-size:16px;font-weight:400;color:#fff;cursor:pointer;}
+
+
+
+

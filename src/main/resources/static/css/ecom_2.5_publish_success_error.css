@@ -1,0 +1,54 @@
+#pageOverlayPub {
+	visibility: hidden;
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 1987;
+	width: 100%;
+	height: 100%;
+	background: #b1b1b1;
+	filter: alpha(opacity = 30);
+	opacity: 0.3;
+}
+/*IE6 fixed*/
+* html {
+	background: url(*) fixed;
+}
+
+* html body {
+	margin: 0;
+	height: 100%;
+}
+* html #pageOverlayPub {
+	position: absolute;
+	left: expression(documentElement.scrollLeft +   documentElement.clientWidth -
+		  this.offsetWidth);
+	top: expression(documentElement.scrollTop +   documentElement.clientHeight -
+		  this.offsetHeight);
+}
+.context_msg{
+	background:url(../images/del_infrbg.png) no-repeat left center;width:298px;line-height:135px;height:135px;
+	width:300px;
+	height:200px;
+	position: fixed; 
+	left:40%; 
+	top:30%;
+	z-index:2000; 
+	display:none;
+}
+.publish_close{background:url(../images/del_infrclose.png) no-repeat 95% 50%;width:20px;line-height:20px;height:20px;cursor:pointer;float:right;margin-right:8px;margin-top:38px;}
+.publish_infrodes{width:70px;font-family:"Microsoft YaHei";font-size:16px;font-weight:bold;color:#fca933;line-height:20px;clear:both;margin:80px auto 0px auto;}
+.publish_infrbtn{width:180px;margin:20px auto 0 auto;overflow:hidden;}
+
+.publish_back{float:left;background:url(../images/back.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.publish_back:hover{float:left;background:url(../images/back1.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.publish_continue{float:right;background:url(../images/continue.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.publish_continue:hover{float:right;background:url(../images/continue1.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+
+.publish_re{float:right;background:url(../images/republish.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+.publish_re:hover{float:right;background:url(../images/republish1.png) no-repeat left center;width:72px;line-height:25px;height:25px;cursor:pointer;}
+
+
+
+
+
