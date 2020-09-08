@@ -15,6 +15,9 @@ spring:
       idle-timeout: 30000
   mvc:
     static-path-pattern: /**
+    view:
+      prefix: /pages/
+      suffix: .html
   resources:
     static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/, file:/volume1/server/images
 # mybatis����
@@ -28,5 +31,6 @@ mapper:
     - tk.mybatis.mapper.common.Mapper
 mybatis-plus:
   mapper-locations: classpath:mappers/*.xml
+
 
 
