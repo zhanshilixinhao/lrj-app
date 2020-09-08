@@ -1,6 +1,7 @@
 package com.lrj.service;
 
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.MiNiUserInfo;
 import com.lrj.VO.RawData;
 
 import java.io.IOException;
@@ -36,5 +37,5 @@ public interface AppletsLogInService {
      * @Author: LxH
      * @Date: 2020/6/9 15:51
      */
-    FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId);
+    FormerResult bindPhone(String phone, String code, String s1, Integer superId, Byte age, Integer merchantId, MiNiUserInfo miNiUserInfo);
 }

@@ -1,7 +1,9 @@
 package com.lrj.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.MiNiUserInfo;
 import com.lrj.VO.RawData;
 import com.lrj.service.AppletsLogInService;
 import com.lrj.service.AppletsPayService;
@@ -73,11 +75,12 @@ public class AppletsController {
      */
     @RequestMapping(value = "bindPhone")
     @ResponseBody
-    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId) {
+    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId ,String userInfo) {
         if (StringUtils.isBlank(phone) || StringUtils.isBlank(code) || StringUtils.isBlank(s1)) {
             return CommonUtil.FAIL(result, "参数异常", 500);
         }
-        return CommonUtil.SUCCESS(result, "绑定成功", appletsLogInService.bindPhone(phone,code,s1,superId,age,merchantId));
+        MiNiUserInfo miNiUserInfo = JSONObject.parseObject(userInfo, MiNiUserInfo.class);
+        return CommonUtil.SUCCESS(result, "绑定成功", appletsLogInService.bindPhone(phone,code,s1,superId,age,merchantId,miNiUserInfo));
     }
 
     /**

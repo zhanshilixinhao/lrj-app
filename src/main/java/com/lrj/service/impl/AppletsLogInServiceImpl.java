@@ -2,6 +2,7 @@ package com.lrj.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.MiNiUserInfo;
 import com.lrj.VO.RawData;
 import com.lrj.VO.WXResult;
 import com.lrj.common.Constant;
@@ -181,7 +182,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
      * @Date: 2020/6/9 15:51
      */
     @Override
-    public FormerResult bindPhone(String phone, String code, String s1,Integer superId,Byte age,Integer merchantId) {
+    public FormerResult bindPhone(String phone, String code, String s1, Integer superId, Byte age, Integer merchantId, MiNiUserInfo miNiUserInfo) {
         // 判断s1是否存在
         String json = userCache.getCache(s1);
         log.info(json);
@@ -235,7 +236,8 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             }catch (Exception ex){
                 System.out.println(ex.getMessage());
             }
-            user.setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age);
+            user.setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age).setHeadPhoto(miNiUserInfo.getAvatarUrl()).
+            setNickName(miNiUserInfo.getNickname());
             userMapper.insertSelective(user);
             UserLevel userLevel = new UserLevel();
             userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
