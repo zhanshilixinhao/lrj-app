@@ -1,11 +1,14 @@
 package com.lrj.service.impl;
 
 import com.lrj.VO.FormerResult;
+import com.lrj.VO.OrderVo;
 import com.lrj.common.Constant;
 import com.lrj.config.PayConfig;
 import com.lrj.mapper.*;
 import com.lrj.pojo.*;
 import com.lrj.service.AppletsPayService;
+import com.lrj.service.IOrderService;
+import com.lrj.service.RebateService;
 import com.lrj.util.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ClientProtocolException;
@@ -76,6 +79,12 @@ public class AppletsPayServiceImpl implements AppletsPayService {
 
     @Resource
     private ReservationMapper reservationMapper;
+
+    @Resource
+    private RebateService rebateService;
+
+    @Resource
+    private IOrderService orderService;
 
     private static final Logger log = LoggerFactory.getLogger(AppletsPayServiceImpl.class);
 
@@ -203,7 +212,9 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                 System.out.println("添加成功"+i);
                 User user = userMapper.selectByPrimaryKey(reOrder.getUserId());
                 //上级用户返利
-                if (user.getSuperType()==1&&reOrder.getOrderType()!=2&&reOrder.getOrderType()!=4) {
+                OrderVo orderVo = orderService.findOrderByOrderNumber(reOrder.getOrderNumber());
+                rebateService.rebate(orderVo);
+                /*if (user.getSuperType()==1&&reOrder.getOrderType()!=2&&reOrder.getOrderType()!=4) {
                     UserLevel userLevel = userLevelMapper.selectByPrimaryKey(user.getSuperId());
                     if (userLevel.getLevelId()!=1) {
                         AppRebate appRebate = new AppRebate();
@@ -237,7 +248,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                         appRebate.setBackMoney(BigDecimal.valueOf(reOrder.getTotalPrice().doubleValue() * 0.05));
                     }
                     appRebateMapper.insertSelective(appRebate);
-                }
+                }*/
                 //更新预约表
                 Example example1 = new Example(Reservation.class);
                 example1.createCriteria().andEqualTo("orderNumber",reOrder.getOrderNumber());
