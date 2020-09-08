@@ -66,7 +66,6 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         //月卡预约
         }else if(orderVo.getOrderType() ==2){
             reservation.setOrderType(orderVo.getOrderType());
-            reservation.setReservationJson(reservationMap.get("reservationJson").toString());
             reservation.setTotalPrice(new BigDecimal(0.00));
         }
 
@@ -105,13 +104,11 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
         if(orderVo.getOrderType() ==3) {
             Order_houseServiceVo houseServiceOrderVo = orderMapper.getHouseServiceByOrderNumber(orderNumber);
             reservation.setOrderType(orderVo.getOrderType());
-            reservation.setReservationJson(houseServiceOrderVo.getHouseServiceJson());
             reservation.setStatus(houseServiceOrderVo.getPayStatus());
             reservation.setTotalPrice(orderVo.getTotalPrice());
         //定制家政预约
         }else if(orderVo.getOrderType() ==4){
             reservation.setOrderType(orderVo.getOrderType());
-            reservation.setReservationJson(reservationMap.get("reservationJson").toString());
             reservation.setStatus(1);
             reservation.setTotalPrice(orderVo.getTotalPrice());
             reservation.setGetClothesTime((String) reservationMap.get("visitTime"));

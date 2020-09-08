@@ -31,4 +31,6 @@ public class UserInfoVo {
         private Integer isYearsService;
         private String aliAccount; //支付宝账号
         private String realityName;//真实名字
+        private Integer type; //用户类型
+        private Integer superType;//上级用户类型
 }

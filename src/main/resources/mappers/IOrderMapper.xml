@@ -17,7 +17,9 @@
 		  		pay_status AS payStatus,
 		  		create_time AS createTime,
 		  		order_type AS orderType,
-		  		user_coupon_id AS userCouponId
+		  		user_coupon_id AS userCouponId,
+		  		activity AS activity,
+		  		is_share AS isShare
 		  FROM `order` WHERE order_number=#{orderNumber}
 	</select>
 	<!--保存单项洗衣订单-->
@@ -211,7 +213,7 @@
 	</select>
 
 	<!--更新订单分享状态-->
-	<update id="updateOrderIsShare" parameterType="java.util.Map">
+	<update id="updateOrderIsShare" parameterType="java.util.HashMap">
 		UPDATE `order` SET is_share=#{isShare} WHERE order_number=#{orderNumber}
 	</update>
 </mapper>

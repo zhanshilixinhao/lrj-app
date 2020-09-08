@@ -409,4 +409,48 @@ public class DateUtils {
         // System.out.println(daysBetween(formatStringToDate("2017-02-07 10:08:00"),formatStringToDate(getParamDateAfterNDays(getNowDateTime(),
         // 2*29))));
     }
+
+
+    //基姆拉尔森计算公式根据日期判断星期几
+    public static int CalculateWeekDay(int y, int m, int d) {
+        if(m < 1 || m >12){
+            System.out.println("你输入的月份不再范围内，请重新输入！");
+        }
+        if (m == 1 || m == 2) {
+            m += 12;
+            y--;
+        }
+        int iWeek = (d + 2 * m + 3 * (m + 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
+        switch (iWeek) {
+            case 0:
+                System.out.printf("星期一\n");
+                iWeek = 1;
+                break;
+            case 1:
+                System.out.printf("星期二\n");
+                iWeek = 2;
+                break;
+            case 2:
+                System.out.printf("星期三\n");
+                iWeek = 3;
+                break;
+            case 3:
+                System.out.printf("星期四\n");
+                iWeek = 4;
+                break;
+            case 4:
+                System.out.printf("星期五\n");
+                iWeek = 5;
+                break;
+            case 5:
+                System.out.printf("星期六\n");
+                iWeek = 6;
+                break;
+            case 6:
+                System.out.printf("星期日\n");
+                iWeek = 7;
+                break;
+        }
+        return iWeek;
+    }
 }

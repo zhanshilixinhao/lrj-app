@@ -16,4 +16,10 @@ public interface IActivityService {
      * 查询用户可参数的活动
      */
      List<Activity> getActivityList();
+
+    /**
+     * 通过ID 查询 活动内容
+     * @param merchantActivityId
+     */
+    Activity getActivityById(Integer merchantActivityId);
 }

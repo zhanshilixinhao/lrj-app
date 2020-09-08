@@ -2,8 +2,10 @@ package com.lrj.controller;
 
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
+import com.lrj.mapper.IItemJSONMapper;
 import com.lrj.mapper.ReservationMapper;
 import com.lrj.pojo.DistributionStation;
+import com.lrj.pojo.ItemJSON;
 import com.lrj.pojo.Reservation;
 import com.lrj.service.*;
 import com.lrj.util.*;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.URISyntaxException;
 import java.util.*;
 
@@ -51,6 +54,8 @@ public class EnterpriseController {
    private IDistributionStationService distributionStationService;
    @Resource
    private IUserService userService;
+   @Resource
+   private IItemJSONMapper itemJSONMapper;
 
 
     /**
@@ -76,6 +81,7 @@ public class EnterpriseController {
         params.put("userAge", userAge);
         params.put("userAddress", userAddress);
         params.put("registerTime", DateUtils.getNowDateTime());
+        params.put("active", 0);
         Integer insertNum = staffService.staffRegister(params);
         StaffInfoVo staffInfoVo = staffService.findStaffInfoByPhone(userPhone);
         if(insertNum == 1){
@@ -208,9 +214,25 @@ public class EnterpriseController {
                     reservation.setBeeline(list_Data.get(0).getValue());
                     DistributionStation distributionStation = distributionStationService.getDistriButionStationById(list_Data.get(0).getKey());
                     reservation.setDistributionAddress(distributionStation.getDistributionStationAddress());
+                    reservation.setDistributionName(distributionStation.getDistributionName());
+                    //保存最短配送站信息
+                    reservationMapper.updateReservationDistribution(reservation);
                     UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
                     reservation.setUserName(userInfoVo.getNickname());
                     reservation.setUserPhone(userInfoVo.getUserPhone());
+                    //拼接商品信息
+                    List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByReservationId(reservation.getReservationId());
+                    //拼接商品信息
+                    for(ItemJSON itemJSON : itemJSONList){
+                        /** 获取请求地址 **/
+                        StringBuffer requestUrl = request.getRequestURL();
+                        /** 拼接 **/
+                        String tempContextUrl = requestUrl.delete(requestUrl.length() - request.getRequestURI().length(), requestUrl.length()).toString();
+                        /** 拼接可访问图片地址 **/
+                        itemJSON.setPicture(tempContextUrl+itemJSON.getPicture());
+                    }
+                    //清空json,换为jsonArray
+                    reservation.setItemJSONList(itemJSONList);
                 }
                 break;
             case 2:
@@ -222,6 +244,19 @@ public class EnterpriseController {
                     UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
                     reservation.setUserName(userInfoVo.getNickname());
                     reservation.setUserPhone(userInfoVo.getUserPhone());
+                    //拼接商品信息
+                    List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByReservationId(reservation.getReservationId());
+                    //拼接商品信息
+                    for(ItemJSON itemJSON : itemJSONList){
+                        /** 获取请求地址 **/
+                        StringBuffer requestUrl = request.getRequestURL();
+                        /** 拼接 **/
+                        String tempContextUrl = requestUrl.delete(requestUrl.length() - request.getRequestURI().length(), requestUrl.length()).toString();
+                        /** 拼接可访问图片地址 **/
+                        itemJSON.setPicture(tempContextUrl+itemJSON.getPicture());
+                    }
+                    //清空json,换为jsonArray
+                    reservation.setItemJSONList(itemJSONList);
                 }
                 break;
             case 4:break;
@@ -266,17 +301,20 @@ public class EnterpriseController {
         List<Reservation> reservationList= null;
         if(trackingStatus == 1){
             reservationList = reservationMapper.getReservationByStatus1(params);
-        }else if(trackingStatus == 9){
+        }else if(trackingStatus == 2){
             reservationList = reservationMapper.getReservationByStatus2(params);
-        }else if(trackingStatus == 33){
-            reservationList = reservationMapper.getReservationByStatus1(params);
+        }else if(trackingStatus == 3){
+            reservationList = reservationMapper.getReservationByStatus3(params);
         }
-        for(Reservation reservation : reservationList){
-            UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
-            reservation.setUserName(userInfoVo.getNickname());
-            reservation.setUserPhone(userInfoVo.getUserPhone());
+        if(reservationList ==null){
+            return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
+        }else {
+            for(Reservation reservation : reservationList){
+                UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
+                reservation.setUserName(userInfoVo.getNickname());
+                reservation.setUserPhone(userInfoVo.getUserPhone());
+            }
         }
-
         return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
     }
 
@@ -322,6 +360,30 @@ public class EnterpriseController {
             params.put("houseServiceBeginTime", DateUtils.getNowDateTime());
         }else if(traceStatus == Constant.ORDER_TRANSSTATUS_HOUSESERVICE_END){
             params.put("houseServiceEndTime", DateUtils.getNowDateTime());
+        //如果为洗衣配送单完成状态
+        }else if(traceStatus == 4 || traceStatus==35){
+            Reservation reservation = reservationMapper.getReservationByReservationId(Integer.parseInt(reservationId));
+            Double moneyDouble = 0.00;
+            BigDecimal money = null;
+            Integer sendDistance = reservation.getSendDistance();
+            if(sendDistance < 1000){
+                moneyDouble = 6.00;
+            }else if(1000 <= sendDistance && sendDistance <2000){
+                moneyDouble = 6.00+((sendDistance-1000)/1000)*1;
+            }else if(2000 <= sendDistance && sendDistance <3000){
+                moneyDouble = 7.00+((sendDistance-2000)/1000)*2;
+            }else if(3000 <= sendDistance && sendDistance <4000){
+                moneyDouble = 9.00+((sendDistance-3000)/1000)*2;
+            }else if(4000 <= sendDistance && sendDistance <5000){
+                moneyDouble =11.00+((sendDistance-4000)/1000)*2;
+            }else if(5000 < sendDistance && sendDistance <6000){
+                moneyDouble = 13.00+((sendDistance-5000)/1000)*2;
+            }
+            StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(reservation.getGrabOrderIdSend());
+            money = new BigDecimal(money.doubleValue() + moneyDouble).setScale(2, BigDecimal.ROUND_HALF_UP);
+            staffInfoVo.setMoney(money);
+            staffInfoVo.setServiceCount(staffInfoVo.getServiceCount() + 1);
+            staffService.updateStaffInfoAfterEnd(staffInfoVo);
         }
         Integer updateNumber = reservationMapper.updateReservationTrackingStatus(params);
         if(updateNumber ==1){

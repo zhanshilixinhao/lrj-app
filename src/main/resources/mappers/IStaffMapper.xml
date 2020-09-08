@@ -11,7 +11,7 @@
 	</select>
 	<!--通过登录名查询员工信息-->
 	<select id="findStaffInfoByLoginInfo" parameterType="java.lang.String" resultType="com.lrj.VO.StaffInfoVo">
-		SELECT * FROM app_staff WHERE staff_name=#{loginName}
+		SELECT * FROM app_staff WHERE telephone=#{loginName}
 		AND active=1
 	</select>
 	<!--更改密码-->
@@ -25,7 +25,7 @@
 	</select>
 	<!--员工注册-->
 	<insert id="staffRegister" parameterType="java.util.HashMap" useGeneratedKeys="true" keyProperty="appStaffId" >
-		insert into  app_staff(staff_name,staff_password,telephone,address,type,staff_age,register_time) values (#{userName},#{userPassWord},#{userPhone},#{userAddress},#{staffType},#{userAge},#{registerTime});
+		insert into  app_staff(staff_name,staff_password,telephone,address,type,staff_age,register_time,active) values (#{userName},#{userPassWord},#{userPhone},#{userAddress},#{staffType},#{userAge},#{registerTime},#{active});
 	</insert>
 
 	<!--服务单完成后  算钱-->

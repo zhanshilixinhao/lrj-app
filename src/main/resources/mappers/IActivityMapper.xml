@@ -5,7 +5,14 @@
                 >
 <mapper namespace="com.lrj.mapper.IActivityMapper">
     <select id="getActivityList" resultType="com.lrj.pojo.Activity">
-        SELECT * FROM activity;
+        SELECT * FROM activity WHERE active=1
     </select>
 
+    <select id="getActivityById" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Activity">
+        SELECT * FROM activity WHERE activity_id=#{merchantActivityId}
+    </select>
+
+    <select id="getActivityItemList" parameterType="java.lang.Integer" resultType="com.lrj.pojo.ActivityJSON">
+        SELECT * FROM activity_item WHERE activity_id=#{activityId}
+    </select>
 </mapper>

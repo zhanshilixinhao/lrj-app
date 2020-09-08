@@ -43,21 +43,26 @@ public class UserController {
     //定义全局变量 codeMap 存放用户手机验证ma
     Map<String, Object> codeMap = new HashMap<String, Object>();
     /**
-     * 一键登录
+     * 通过手机号和密码登录
      */
-    /*@RequestMapping(value = "/toOauthLogin",method = {RequestMethod.GET,RequestMethod.POST})
-    public Map<String,Object> oauthLogin(HttpServletRequest request){
-        String token = request.getParameter("token");
-        Map<String,Object> resultMap = new HashMap<String,Object>();
-        //通过token调用极光接口，获取用户手机号码
-        Map<String, Object> requestParams = new HashMap<String, Object>();
-        requestParams.put("loginToken", token);
-        requestParams.put("exID","swkj001");
-        String result = doPostForJpush(token);
-        System.out.println(result);
-        resultMap.put("result", "success");
-        return resultMap;
-    }*/
+    @RequestMapping(value = "/userLoginByParams",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult userLoginByParams(HttpServletRequest request){
+        String userPhone = request.getParameter("userPhone");
+        String passWord = request.getParameter("passWord");
+        if(userPhone == null || passWord == null){
+            return new FormerResult("SUCCESS", 1, "参数有误！", null);
+        }
+        UserInfoVo userInfoVo = userService.findUserInfoByUserPhone(userPhone);
+        if(userInfoVo !=null){
+            if(userInfoVo.getUserPassword().equals(passWord)){
+                return new FormerResult("SUCCESS", 0, "查询成功！", userInfoVo.getAppUserId());
+            }else {
+                return new FormerResult("SUCCESS", 1, "密码错误！", null);
+            }
+        }else {
+            return new FormerResult("SUCCESS", 1, "查无此用户！", null);
+        }
+    }
 
     /**
      * 用户获取短信验证码

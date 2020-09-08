@@ -24,8 +24,9 @@ public class Rebate {
     private Integer userId;
     private Integer lowId;
     private BigDecimal backMoney;
-    private LocalDateTime createTime;
+    private String createTime;
     private String orderNumber;
+    private String source;
     /**
      * 1 用户 2. 商家
      */

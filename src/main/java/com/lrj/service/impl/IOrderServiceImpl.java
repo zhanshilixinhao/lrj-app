@@ -5,10 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
 import com.lrj.mapper.*;
-import com.lrj.pojo.ItemJSON;
-import com.lrj.pojo.MerchantOrder;
-import com.lrj.pojo.MonthCard;
-import com.lrj.pojo.Reservation;
+import com.lrj.pojo.*;
 import com.lrj.service.*;
 import com.lrj.util.DateUtils;
 import org.springframework.stereotype.Service;
@@ -73,8 +70,9 @@ public class IOrderServiceImpl implements IOrderService{
                 washingOrder.setTakeConsigneeId((Integer) typeParams.get("takeConsigneeId"));
                 washingOrder.setServicePrice((BigDecimal) typeParams.get("servicePrice"));
                 washingOrder.setLevelPrice((BigDecimal) typeParams.get("levelPrice"));
-                if(typeParams.get("detailJson") !=null){
-                    washingOrder.setShoppingJson((String) typeParams.get("detailJson"));
+                List<ItemJSON> itemJSONListOther = (List<ItemJSON>) typeParams.get("itemJSONList");
+                if(itemJSONListOther!=null){
+                   itemJSONList = itemJSONListOther;
                 }else {
                     /** 获取购物车商品列表 **/
                     List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(orderVo.getUserId());
@@ -221,13 +219,9 @@ public class IOrderServiceImpl implements IOrderService{
             Map<String, Object> params = new HashMap<>();
             params.put("reservationId", reservationId);
             params.put("staffId", staffId);
-            Integer lockNumber = reservationMapper.lockReservation(params);
-            if (lockNumber == 1) {
-                return true;
-            } else {
-                return false;
+            reservationMapper.lockReservation(params);
+            return true;
             }
-        }
     }
 
     public void updateUserMonthCardCount(int monthCardCount, String orderNumber) {
@@ -287,7 +281,7 @@ public class IOrderServiceImpl implements IOrderService{
     public void updateOrderIsShare(Integer isShare,String shareOrderNumber) {
         Map<String, Object> params = new HashMap<>();
         params.put("isShare", isShare);
-        params.put("shareOrderNumber", shareOrderNumber);
+        params.put("orderNumber", shareOrderNumber);
         orderMapper.updateOrderIsShare(params);
     }
 }

@@ -153,7 +153,7 @@
 	</insert>
 	
 	<select id="getUserBalanceRecordList" parameterType="java.lang.Integer" resultType="com.lrj.pojo.BalanceRecord">
-		select * from balance_log WHERE user_id=#{userId}
+		select * from balance_log WHERE user_id=#{userId} AND status=1
 	</select>
 
 	<insert id="addUserLeaveMessage" parameterType="java.util.HashMap">

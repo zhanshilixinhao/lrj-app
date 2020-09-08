@@ -31,4 +31,9 @@ public class IActivityServiceImpl implements IActivityService {
     public List<Activity> getActivityList() {
         return activityMapper.getActivityList();
     }
+
+    @Override
+    public Activity getActivityById(Integer merchantActivityId) {
+        return activityMapper.getActivityById(merchantActivityId);
+    }
 }

@@ -46,6 +46,14 @@ public interface IItemJSONMapper extends Mapper<Balance>, MySqlMapper<Balance> {
     List<ItemJSON> getItemJSONByOrderNumber(String orderNumber);
 
     /**
+     * 通过订单号查询  用户购买的商品列表
+     *
+     * @param orderNumber
+     * @return
+     */
+    List<ItemJSON> getItemJSONByOrderNumberFromItemJSONOnly(String orderNumber);
+
+    /**
      * 通过订单号 和 itemId 更新月卡或定制家政商品使用次数
      * @param params
      */

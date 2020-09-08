@@ -80,7 +80,7 @@ public class PayController {
         //增加余额充值记录
         BalanceRecord balanceRecord = new BalanceRecord();
         balanceRecord.setCreateTime(DateUtils.getNowDateTime());
-        balanceRecord.setType(2);
+        balanceRecord.setType(1);
         balanceRecord.setUserId(userId);
         balanceRecord.setStatus(0);
         switch (rechargeType){
@@ -203,12 +203,10 @@ public class PayController {
             return new FormerResult("success", 0, "请求支付完成", null);
             //使用
         } else if (isBalance == 1) {
-            Balance balance = new Balance();
-            balance.setUserId(2);
-            balance.setBalance(new BigDecimal(100));
+            Balance userBalance = userService.getUserBalanceInfo(userId);
             //如果余额金额大于等于支付金额
-            if (balance.getBalance().doubleValue() >= orderVo.getTotalPrice().doubleValue()) {
-                double balanceMoney = balance.getBalance().doubleValue() - orderVo.getTotalPrice().doubleValue();
+            if (userBalance.getBalance().doubleValue() >= orderVo.getTotalPrice().doubleValue()) {
+                double balanceMoney = userBalance.getBalance().doubleValue() - orderVo.getTotalPrice().doubleValue();
                 //修改余额
                 balanceService.updateUserBalance(balanceMoney,userId);
                 //增加余额变动记录
@@ -217,15 +215,27 @@ public class PayController {
                 balanceRecord.setCreateTime(DateUtils.getNowDateTime());
                 balanceRecord.setType(2);
                 balanceRecord.setUserId(orderVo.getUserId());
+                balanceRecord.setStatus(1);
                 payService.addUserBalanceRecord(balanceRecord);
+                //向上级返利
+                rebateService.rebate(orderVo);
+                //更改订单 支付状态
+                orderService.updateOrderPayStatus(orderVo.getOrderNumber());
+                //如果是单项洗衣或单项家政（更改预约单 状态）
+                if (orderVo.getOrderType() == 1 || orderVo.getOrderType() == 3) {
+                    Map<String, Object> params = new HashMap<>();
+                    params.put("orderNumber", orderVo.getOrderNumber());
+                    params.put("status", 3);
+                    Integer updateNum = reservationMapper.updateReservationStatus(params);
+                }
                 new FormerResult("success", 1, "请求支付完成", null);
             } else {
-                double payMoney = orderVo.getTotalPrice().doubleValue() - balance.getBalance().doubleValue();
+                double payMoney = orderVo.getTotalPrice().doubleValue() - userBalance.getBalance().doubleValue();
                 //修改余额(余额清零)
                 balanceService.updateUserBalance(0.00,userId);
                 //增加余额变动记录
                 BalanceRecord balanceRecord = new BalanceRecord();
-                balanceRecord.setAmount(balance.getBalance());
+                balanceRecord.setAmount(userBalance.getBalance());
                 balanceRecord.setCreateTime(DateUtils.getNowDateTime());
                 balanceRecord.setType(2);
                 balanceRecord.setUserId(orderVo.getUserId());
@@ -234,6 +244,8 @@ public class PayController {
                     appWXPay(request, orderNumber, payMoney);
                 }else if(payType == 2){   //支付宝支付
                     appAliPay(request, orderNumber, payMoney);
+                }else {
+                    return new FormerResult("SUCCESS", 1, "请求支付异常", null);
                 }
                return new FormerResult("success", 0, "请求支付完成", null);
             }
@@ -253,10 +265,10 @@ public class PayController {
         //全部微信支付
         String totalFee = "";
         if(payMoney == 0.00){
-            totalFee= String.valueOf(BigDecimalUtil.multiply(orderVo.getTotalPrice().doubleValue(),100));
+            totalFee = new BigDecimal(orderVo.getTotalPrice().doubleValue()*100).setScale(0).toString();//保留0位小数
             //部分微信支付
         }else {
-            totalFee = String.valueOf(BigDecimalUtil.multiply(payMoney,100));
+            totalFee = new BigDecimal(payMoney*100).setScale(0).toString();
         }
         /**调用接口必须参数**/
         String url = PayConfig.UNIFIEDORDER;
@@ -267,11 +279,11 @@ public class PayController {
         params.put("body", "懒人家洗衣-订单充值");
         params.put("out_trade_no", orderNumber);
         //充值金额
-        params.put("total_fee", "1");
+        params.put("total_fee", totalFee);
         InetAddress localAddr = InetAddress.getLocalHost();
         String localIp = localAddr.getHostAddress().toString();
         params.put("spbill_create_ip", localIp); //终端IP
-        params.put("notify_url", "http://goodbadluck.myds.me:8083/WXPayNotifyUrl");  //异步通知回调地址
+        params.put("notify_url", "http://www.51lrj.com/WXPayNotifyUrl");  //异步通知回调地址
         params.put("trade_type", "APP"); //支付类型
         //将非空参数进行签名运算(排序，MD5加密)
         /*Map<String, String> params2 = null;
@@ -410,13 +422,13 @@ public class PayController {
                                 BigDecimal amount = null;
                                 //不同充值，不同赠送
                                 if (out_trade_no.contains("A")) {
-                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.2).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    amount = new BigDecimal((new BigDecimal(total_fee).doubleValue()/100) * 0.2).setScale(2, BigDecimal.ROUND_HALF_UP);
                                 } else if (out_trade_no.contains("B")) {
-                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.25).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    amount = new BigDecimal((new BigDecimal(total_fee).doubleValue()/100) * 0.25).setScale(2, BigDecimal.ROUND_HALF_UP);
                                 } else if (out_trade_no.contains("C")) {
-                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.3).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    amount = new BigDecimal((new BigDecimal(total_fee).doubleValue()/100) * 0.3).setScale(2, BigDecimal.ROUND_HALF_UP);
                                 } else if (out_trade_no.contains("D")) {
-                                    amount = new BigDecimal(new BigDecimal(total_fee).doubleValue() * 0.4).setScale(2, BigDecimal.ROUND_HALF_UP);
+                                    amount = new BigDecimal((new BigDecimal(total_fee).doubleValue()/100) * 0.4).setScale(2, BigDecimal.ROUND_HALF_UP);
                                 }
                                 balanceRecord2.setAmount(amount);
                                 balanceRecord2.setType(4);
@@ -482,7 +494,7 @@ public class PayController {
                             payOperation.setUserPhone(orderVo.getUserPhone());
                             payService.payFlowRecord(payOperation);
                             //向上级返利
-                           /* rebateService.rebate(orderVo);*/
+                            rebateService.rebate(orderVo);
                             //更改订单 支付状态
                             orderService.updateOrderPayStatus(orderVo.getOrderNumber());
                             //如果是单项洗衣或单项家政（更改预约单 状态）
@@ -524,7 +536,17 @@ public class PayController {
         JSONObject bizContentJSON=new JSONObject();
         bizContentJSON.put("subject", "懒人家订单");
         bizContentJSON.put("out_trade_no", orderNumber);
-        bizContentJSON.put("total_amount", "0.01");//String.valueOf(BigDecimalUtil.round(payMoney, 2, BigDecimalUtil.DEF_SCALE_4)));
+        //查询该交易订单
+        OrderVo orderVo = orderService.findOrderByOrderNumber(orderNumber);
+        //全部支付宝支付
+        String totalFee = "";
+        if(payMoney == 0.00){
+            totalFee = orderVo.getTotalPrice().toString();
+            //部分支付宝支付
+        }else {
+            totalFee = new BigDecimal(payMoney).toString();
+        }
+        bizContentJSON.put("total_amount",totalFee);//
         bizContentJSON.put("product_code", "QUICK_MSECURITY_PAY");
         bizContentJSON.put("timeout_express","90m");
 
@@ -541,7 +563,7 @@ public class PayController {
         //实例化具体API对应的request类,类名称和接口名称对应,当前调用接口名称：alipay.trade.app.pay
         AlipayTradeAppPayRequest payRequest = new AlipayTradeAppPayRequest();
         payRequest.setBizContent(biz_content);
-        payRequest.setNotifyUrl("http://goodbadluck.myds.me:8083/AliPayNotifyUrl");
+        payRequest.setNotifyUrl("http://www.51lrj.com/AliPayNotifyUrl");
         try {
             //这里和普通的接口调用不同，使用的是sdkExecute
             AlipayTradeAppPayResponse response = alipayClient.sdkExecute(payRequest);
@@ -656,7 +678,7 @@ public class PayController {
                 payOperation.setUserPhone(orderVo.getUserPhone());
                 payService.payFlowRecord(payOperation);
                 //向上级返利
-                /*rebateService.rebate(orderVo);*/
+                rebateService.rebate(orderVo);
                 //更改订单 支付状态
                 orderService.updateOrderPayStatus(orderVo.getOrderNumber());
                 //如果是单项洗衣或单项家政（更改预约单 状态）

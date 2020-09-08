@@ -11,6 +11,7 @@ import com.lrj.service.IOrderService;
 import com.lrj.service.LaundryAppointmentService;
 
 import com.lrj.util.BigDecimalUtil;
+import com.lrj.util.DateUtils;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,8 +50,9 @@ public class LaundryAppointmentController {
      * @param request
      * @return
      */
-    @RequestMapping(value = "/createWashingAppoint",method = {RequestMethod.GET,RequestMethod.POST})
-    public FormerResult createWashingAppoint(HttpServletRequest request) { Integer userId = Integer.parseInt(request.getParameter("userId"));
+        @RequestMapping(value = "/createWashingAppoint",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult createWashingAppoint(HttpServletRequest request) {
+        Integer userId = Integer.parseInt(request.getParameter("userId"));
         String userName = request.getParameter("userName");
         Integer takeConsigneeId = Integer.parseInt(request.getParameter("takeConsigneeId"));
         String reservationJson = request.getParameter("reservationJson");
@@ -76,10 +78,10 @@ public class LaundryAppointmentController {
             JSONArray jsonArray = JSONArray.fromObject(reservationJson);
             List<ItemJSON> itemJSONList = new ArrayList<>();
             for (int i=0;i<jsonArray.size();i++){
-                ItemJSON itemJSON = new ItemJSON();
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                ItemJSON itemJSON = new ItemJSON();
                 itemJSON.setItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
-                itemJSON.setQuentity(Integer.parseInt(jsonObject.get("quantity").toString()));
+                itemJSON.setQuentity(Integer.parseInt(jsonObject.get("quentity").toString()));
                 //查询商品信息
                 AppItemVo item = itemMapper.getItemInfoByItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
                 itemJSON.setItemName(item.getItemName());
@@ -105,7 +107,7 @@ public class LaundryAppointmentController {
                 List<ItemJSON> itemJSONListMany  = itemJSONMapper.getItemJSONByOrderNumber(monthCardOrder.getOrderNumber());
                 for (ItemJSON itemJSON : itemJSONList) {
                     for(ItemJSON itemJSON1 : itemJSONListMany){
-                        if(itemJSON1.getItemId() == itemJSON.getItemId()){
+                        if(itemJSON1.getItemId().equals(itemJSON.getItemId())){
                             Map<String, Object> params = new HashMap<>();
                             params.put("orderNumber", itemJSON1.getOrderNumber());
                             params.put("itemId", itemJSON1.getItemId());
@@ -115,6 +117,16 @@ public class LaundryAppointmentController {
                             continue;
                         }
                     }
+                }
+                //如果月卡商品使用完毕，则更新月卡为不可用
+                int count = 0;
+                for (ItemJSON itemJSON : itemJSONList) {
+                   if(itemJSON.getQuentity()>0){
+                       count +=1;
+                   }
+                }
+                if(count==0){
+                    orderMapper.updateUserMonthCardActive(monthCardOrder.getOrderNumber());
                 }
             }else {
                 return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
@@ -144,6 +156,20 @@ public class LaundryAppointmentController {
         if(customHouseServiceOrder.getActive() ==0){
             return new FormerResult("SUCCESS", 1, "您的月卡已经到期或使用次数不够,请联系客服", null);
         }else {
+            //效验预约时间是否符合购买时的选择时间
+            int visitTimeSubYear = Integer.parseInt(visitTime.substring(0, 4));
+            int visitTimeSubMonth = Integer.parseInt(visitTime.substring(5, 7));
+            int visitTimeSubDay = Integer.parseInt(visitTime.substring(8,10));
+            int week = DateUtils.CalculateWeekDay(visitTimeSubYear,visitTimeSubMonth,visitTimeSubDay);
+            if (customHouseServiceOrder.getWorkTime()==1){
+                if(week>=6){
+                    return new FormerResult("SUCCESS", 1, "您好，您购买的定制家政不能在该时间预约！,请联系客服", null);
+                }
+            }else if(customHouseServiceOrder.getWorkTime()==2){
+                if(week<=6){
+                    return new FormerResult("SUCCESS", 1, "您好，您购买的定制家政不能在该时间预约！,请联系客服", null);
+                }
+            }
             //封装预约参数
             Map<String, Object> reservationMap = new HashMap<String, Object>();
             reservationMap.put("userId", userId);
@@ -160,7 +186,7 @@ public class LaundryAppointmentController {
                 ItemJSON itemJSON = new ItemJSON();
                 JSONObject jsonObject = (JSONObject) jsonArray.get(i);
                 itemJSON.setItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
-                itemJSON.setQuentity(Integer.parseInt(jsonObject.get("quantity").toString()));
+                itemJSON.setQuentity(Integer.parseInt(jsonObject.get("quentity").toString()));
                 //查询商品信息
                 AppItemVo item = itemMapper.getItemInfoByItemId(Integer.parseInt(jsonObject.get("itemId").toString()));
                 itemJSON.setItemName(item.getItemName());
@@ -185,7 +211,7 @@ public class LaundryAppointmentController {
                 List<ItemJSON> itemJSONListMany  = itemJSONMapper.getItemJSONByOrderNumber(customHouseServiceOrder.getOrderNumber());
                 for (ItemJSON itemJSON : itemJSONList) {
                     for(ItemJSON itemJSON1 : itemJSONListMany){
-                        if(itemJSON1.getItemId() == itemJSON.getItemId()){
+                        if(itemJSON1.getItemId().equals(itemJSON.getItemId())){
                             Map<String, Object> params = new HashMap<>();
                             params.put("orderNumber", itemJSON1.getOrderNumber());
                             params.put("itemId", itemJSON1.getItemId());

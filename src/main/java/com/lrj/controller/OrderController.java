@@ -4,10 +4,7 @@ import com.alipay.api.domain.ItemInfo;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
 import com.lrj.mapper.*;
-import com.lrj.pojo.ItemJSON;
-import com.lrj.pojo.MerchantOrder;
-import com.lrj.pojo.MonthCard;
-import com.lrj.pojo.Reservation;
+import com.lrj.pojo.*;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IShoppingService;
 import com.lrj.service.IUserService;
@@ -55,6 +52,8 @@ public class OrderController {
     private IItemMapper itemMapper;
     @Resource
     private IItemJSONMapper itemJSONMapper;
+    @Resource
+    private IActivityMapper iActivityMapper;
 
     /** 创建订单  +增值服务
      * @param request
@@ -132,7 +131,7 @@ public class OrderController {
                     typeParams.put("individualServiceJson", individualServiceJson);
                     break;
             }
-        //用户正常下单
+        //用户正常下单(包含运营活动下单)
         }else {
             String couponId = request.getParameter("couponId");
             BigDecimal totalPrice = new BigDecimal(request.getParameter("totalPrice")).setScale(2, RoundingMode.FLOOR); //实际支付金
@@ -142,63 +141,93 @@ public class OrderController {
             //是否参与活动
             Integer activityId = Integer.parseInt(request.getParameter("activityId"));
             if(activityId !=null && activityId !=0){
-                //判断是分享者还是享受者
-                String shareOrderNumber = request.getParameter("shareOrderNumber");
-                //是享受者
-                if(shareOrderNumber !=null){
-                    //设置该分享单不可再领取
-                    orderService.updateOrderIsShare(1,shareOrderNumber);
-                        //判断是新用户还是老用户
-                        List<OrderVo> orderVoList=  orderService.findOrderListByUserId(userId);
-                        if(orderVoList.size()>0){ //老用户
-                            /** 获取购物车商品列表 **/
-                            List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(userId);
-                            /**获取分享单的商品列表**/
-                            Order_washingVo washingVo = orderMapper.getWashingOrderByOrderNumber(shareOrderNumber);
-                            String washinDetail = washingVo.getShoppingJson();
-                            //比对结果集
-                            List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
-                            //比对商品减免价格
-                            for(ShoppingVo shoppingVo : shoppingVoList){
-                                //解析商品json
-                                JSONArray wahsingDetailJSONArray = JSONArray.fromObject(washinDetail);
-                                for (int i = 0; i < wahsingDetailJSONArray.size(); i++) {
-                                    JSONObject d = wahsingDetailJSONArray.getJSONObject(i);
-                                    //如果商品相同
-                                    if(shoppingVo.getItemId().equals(d.get("itemId"))){
-                                        //判断数量
-                                        if(shoppingVo.getQuantity().equals(d.get("quantity"))){ //等于
-                                            totalPrice = new BigDecimal(totalPrice.doubleValue()-new BigDecimal(d.get("quantity").toString()).doubleValue() * new BigDecimal(d.get("price").toString()).doubleValue());
-                                        }else if(shoppingVo.getQuantity() > Integer.parseInt(d.get("quantity").toString())){ //大于
-                                            totalPrice = new BigDecimal(totalPrice.doubleValue()-new BigDecimal(d.get("quantity").toString()).doubleValue() * new BigDecimal(d.get("price").toString()).doubleValue());
-                                        }else if(shoppingVo.getQuantity() < Integer.parseInt(d.get("quantity").toString())){
-                                            totalPrice = new BigDecimal(totalPrice.doubleValue() - new BigDecimal(shoppingVo.getQuantity().toString()).doubleValue() * shoppingVo.getPrice().doubleValue());
+                switch (activityId){
+                    case 14:  //商家引流活动
+                        Activity activity = iActivityMapper.getActivityById(activityId);
+                        totalPrice = activity.getPrice();
+                        //将活动数据源转化为为商品数据源
+                        List<ActivityJSON> activityJSONList = iActivityMapper.getActivityItemList(activityId);
+                        List<ItemJSON> itemJSONList = new ArrayList<>();
+                        for(ActivityJSON activityJSON : activityJSONList){
+                            ItemJSON itemJSON = new ItemJSON();
+                            itemJSON.setItemId(activityJSON.getItemId());
+                            itemJSON.setItemUnit(activityJSON.getItemUnit());
+                            itemJSON.setPicture(activityJSON.getPicture());
+                            itemJSON.setPrice(activityJSON.getPrice());
+                            itemJSON.setQuentity(activityJSON.getQuentity());
+                            itemJSON.setItemName(activityJSON.getItemName());
+                            itemJSONList.add(itemJSON);
+                        }
+                        typeParams.put("itemJSONList", itemJSONList);
+                        break;
+                    case 16:  //买一送一
+                        //判断是分享者还是享受者
+                        String shareOrderNumber = request.getParameter("shareOrderNumber");
+                        //是享受者
+                        if(shareOrderNumber !=null){
+                            OrderVo orderVo1 = orderService.findOrderByOrderNumber(shareOrderNumber);
+                            System.out.println("111111111:" + orderVo1.getIsShare());
+                            if(orderVo1.getIsShare()==null){
+                                orderVo.setShareOrderNumber(shareOrderNumber);
+                                //设置该分享单不可再领取
+                                orderService.updateOrderIsShare(1,shareOrderNumber);
+                                //判断是新用户还是老用户
+                                List<OrderVo> orderVoList=  orderService.findOrderListByUserId(userId);
+                                if(orderVoList.size()>0){ //老用户
+                                    /** 获取购物车商品列表 **/
+                                    List<ShoppingVo> shoppingVoList = shoppingService.getShoppingDetails(userId);
+                                    /**获取分享单的商品列表**/
+                                    List<ItemJSON> washingOrderItemJSON = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(shareOrderNumber);
+                                    //比对商品减免价格
+                                    for(ShoppingVo shoppingVo : shoppingVoList){
+                                        //解析商品json
+                                        for (int i = 0; i < washingOrderItemJSON.size(); i++) {
+                                            ItemJSON d = washingOrderItemJSON.get(i);
+                                            //如果商品相同
+                                            if(shoppingVo.getItemId().equals(d.getItemId())){
+                                                //判断数量
+                                                if(shoppingVo.getQuantity()-d.getQuentity()==0){ //等于
+                                                    double price1 = totalPrice.doubleValue();
+                                                    double price2 = shoppingVo.getQuantity().doubleValue()*shoppingVo.getPrice().doubleValue();
+                                                    totalPrice = new BigDecimal(price1 - price2);
+                                                }else if(shoppingVo.getQuantity() - d.getQuentity()<0){ //小于
+                                                    double price1 = totalPrice.doubleValue();
+                                                    double price2 = shoppingVo.getQuantity().doubleValue()*shoppingVo.getPrice().doubleValue();
+                                                    totalPrice = new BigDecimal(price1 - price2);
+                                                }else if(shoppingVo.getQuantity() - d.getQuentity()>0){ //大于
+                                                    double price1 = totalPrice.doubleValue();
+                                                    double price2 = d.getQuentity().doubleValue()*d.getPrice().doubleValue();
+                                                    totalPrice = new BigDecimal(price1-price2);
+                                                }
+                                            }else {
+                                                continue;
+                                            }
                                         }
+                                    }
+                                }else if(orderVoList.size()==0){ //新用户
+                                    if(totalPrice.doubleValue() - orderVo1.getTotalPrice().doubleValue() >=0){  //减免全部或分享单金额
+                                        totalPrice = new BigDecimal(totalPrice.doubleValue()-orderVo1.getTotalPrice().doubleValue());
                                     }else {
-                                        continue;
+                                        totalPrice = new BigDecimal(0.00); //减免全部
                                     }
                                 }
-                            }
-                        }else if(orderVoList.size()==0){ //新用户
-                            BigDecimal shareTotalPrice = new BigDecimal(request.getParameter("shareTotalPrice"));
-                            if(totalPrice.doubleValue() <= shareTotalPrice.doubleValue()){
-                                totalPrice = new BigDecimal(0);//全免
                             }else {
-                                totalPrice = new BigDecimal(totalPrice.doubleValue()-shareTotalPrice.doubleValue()); //减免分享单金额
+                                totalPrice = totalPrice;
                             }
+                            //是分享者
+                        }else {
+                            totalPrice = totalPrice;
                         }
-                //是分享者
-                }else {
-                    totalPrice = totalPrice;
+                        break;
                 }
                 orderVo.setActivity(activityId);
                 orderVo.setActivityPrice(activityPrice);
-                orderVo.setShareOrderNumber(shareOrderNumber);
             }else {
                 totalPrice = totalPrice;
                 orderVo.setActivity(0);
                 orderVo.setActivityPrice(new BigDecimal(0));
             }
+            System.out.println("本次使用的钱："+totalPrice);
             //是否使用红包
             if(couponId.equals("") || couponId==null || couponId.equals("0")){
                 orderVo.setUserCouponId(couponIdInt);
@@ -506,15 +535,31 @@ public class OrderController {
         Map<String, Object> params = new HashMap<>();
         if (orderVo.getOrderType() ==1){
             if(orderVo.getShareOrderNumber() !="" && orderVo.getShareOrderNumber() !=null){
-                return new FormerResult("SUCCESS", 0, "不可以分享", null);
+                return new FormerResult("SUCCESS", 1, "不可以分享", null);
             }else {
                 params.put("orderNumber", orderNumber);
                 params.put("activityId", orderVo.getActivity());
                 return new FormerResult("SUCCESS", 0, "可以分享", params);
             }
         }else {
-            return new FormerResult("SUCCESS", 0, "家政类型订单不可分享", null);
+            return new FormerResult("SUCCESS", 1, "家政类型订单不可分享", null);
         }
 
+    }
+
+    /**
+     * 通过订单号查询 用户购买的商品列表
+     */
+    @RequestMapping(value = "/getItemJSONByOrderNumber",method = {RequestMethod.GET,RequestMethod.POST})
+    public ResultVo getItemJSONByOrderNumber(HttpServletRequest request){
+        String orderNumber = request.getParameter("orderNumber");
+        /**
+         * 效验必须参数
+         */
+        if(orderNumber == null){
+            return new ResultVo("SUCCESS", 1, "参数有误！", null);
+        }
+        List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderNumber);
+        return new ResultVo("SUCCESS", 0, "查询完成！", itemJSONList);
     }
 }

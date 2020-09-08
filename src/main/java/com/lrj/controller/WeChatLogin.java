@@ -178,6 +178,6 @@ public class WeChatLogin {
     }
     @RequestMapping("AppIsShow")
     public FormerResult AppIsShow(){
-        return new FormerResult("SUCCESS",0,"判断完成",1);
+        return new FormerResult("SUCCESS",0,"判断完成",0);
     }
 }

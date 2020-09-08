@@ -14,25 +14,10 @@ import com.lrj.pojo.Rebate;
 public interface RebateService {
 
     /**
-     * 获取返利
-     * @param requestDTO 查询条件
-     * @return
-     */
-    PageInfo<Rebate> getPageByParam(RequestDTO requestDTO);
-
-
-    /**
-     * 添加
-     * @param rebate
-     * @return
-     */
-    ReturnData<Boolean> add(Rebate rebate) ;
-
-    /**
      * 向上级用户返利
      * @param orderVo
      * @return
      */
-    ReturnData<Boolean> rebate(OrderVo orderVo) ;
+    void rebate(OrderVo orderVo) ;
 
 }

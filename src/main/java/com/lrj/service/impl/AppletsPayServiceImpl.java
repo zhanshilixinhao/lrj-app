@@ -351,7 +351,7 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         params.put("attach","cheshi");
         params.put("mch_id",PayConfig.getMin_certPassword());
         params.put("nonce_str", StringUtils.generateNonceStr());
-        params.put("body", "lrjcheshi");
+        params.put("body", "懒人家洗衣-订单支付");
         params.put("out_trade_no", orderNumber);
         params.put("total_fee", value);
         try {

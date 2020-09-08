@@ -11,7 +11,7 @@ import lombok.AllArgsConstructor;
 @AllArgsConstructor
 public class PayConfig {
     //支付成功后的服务器回调url
-    public static final String notify_url = "http://lxh.ngrok2.xiaomiqiu.cn/appletsPayNotify";
+    public static final String notify_url = "https://www.51lrj.com/appletsPayNotify";
     //签名方式
     public static final String SIGNTYPE = "MD5";
     //交易类型

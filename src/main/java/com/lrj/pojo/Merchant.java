@@ -47,6 +47,8 @@ public class Merchant extends Base {
      private String saleEndTime;//销售结束时间
     /**商家可用于销售的订单Id*/
     private Integer merchantOrderId;//
+    /**引流商家綁定的活動ID*/
+    private Integer merchantActivityId;
 
     public static final String COLUMN_MERCHANT_ACTIVE = "active";
     public static final int ACTIVE_TRUE = 1;

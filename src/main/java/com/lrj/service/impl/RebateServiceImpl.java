@@ -6,17 +6,24 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lrj.VO.OrderVo;
 import com.lrj.VO.StaffInfoVo;
+import com.lrj.VO.UserInfoVo;
 import com.lrj.VO.UserLevelVo;
 import com.lrj.constant.Constant;
 import com.lrj.dto.RequestDTO;
 import com.lrj.dto.ReturnData;
 import com.lrj.mapper.RebateMapper;
+import com.lrj.pojo.Merchant;
 import com.lrj.pojo.Rebate;
 import com.lrj.pojo.User;
+import com.lrj.pojo.UserLevel;
+import com.lrj.service.IMerchantService;
 import com.lrj.service.IStaffService;
+import com.lrj.service.IUserService;
 import com.lrj.service.RebateService;
+import com.lrj.util.DateUtils;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -32,89 +39,38 @@ import static com.lrj.pojo.Rebate.USER_ID_COLUMN;
  */
 @Service
 public class RebateServiceImpl implements RebateService {
+
+    @Resource
+    private IUserService userService;
+    @Resource
     private RebateMapper rebateMapper;
-    private ObjectMapper objectMapper;
-    private IUserServiceImpl userService;
-    private IStaffService staffService;
-
-    public RebateServiceImpl(RebateMapper rebateMapper, ObjectMapper objectMapper, IUserServiceImpl userService, IStaffService staffService) {
-        this.rebateMapper = rebateMapper;
-        this.objectMapper = objectMapper;
-        this.userService = userService;
-        this.staffService = staffService;
-    }
-
-    public PageInfo<Rebate> getPageByParam(RequestDTO requestDTO) {
-        QueryWrapper<Rebate> queryWrapper = new QueryWrapper();
-        queryWrapper.orderByDesc(Rebate.CREATE_TIME);
-        Rebate rebate = null;
-        try {
-            rebate = objectMapper.convertValue(requestDTO.getObject(), Rebate.class);
-            if (rebate != null && rebate.getUserId() != null) {
-                queryWrapper.eq(USER_ID_COLUMN, rebate.getUserId());
-            }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-        }
-        PageHelper.startPage(requestDTO.getPage(),requestDTO.getSize());
-        List<Rebate> list = rebateMapper.selectList(queryWrapper);
-        return new PageInfo<Rebate>(list);
-    }
-
-    public ReturnData<Boolean> add(Rebate rebate) {
-        try {
-            if (rebateMapper.insert(rebate) > 0) {
-                return new ReturnData(SUCCESS_CODE,"操作成功", true);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return new ReturnData(Fail_CODE,"操作失败",false );
-    }
-
+    @Resource
+    private IMerchantService merchantService;
     @Override
-    public ReturnData<Boolean> rebate(OrderVo orderVo) {
-        //月卡和定制家政的固定返利比例
-        BigDecimal fixRatio = new BigDecimal(0.05);
-        BigDecimal rebateAmount = new BigDecimal(0);
-        User user = new User();
-        user.setAppUserId(orderVo.getUserId());
-        User user1 = userService.getAppUserByParam(user);
-        if (user1 != null && user1.getSuperId() != null && user1.getSuperType() != null) {
-            user.setAppUserId(user1.getSuperId());
-            //普通用户
-            if (user1.getSuperType() == Constant.APP_USER) {
-                User superUser = userService.getAppUserByParam(user);
-                if (superUser != null) {
-                    UserLevelVo level = userService.findUserLevelInfo(superUser.getAppUserId());
-                    if (level != null && level.getDistributionRatio() != null && level.getDistributionRatio().compareTo(BigDecimal.ZERO) > 0) {
-                        if (orderVo.getOrderType() == OrderVo.CUSTOM_HOUSE || orderVo.getOrderType() == OrderVo.MONTH_WASHING) {
-                            rebateAmount = orderVo.getTotalPrice().multiply(fixRatio);
-                        } else {
-                            rebateAmount = orderVo.getTotalPrice().multiply(level.getDistributionRatio());
-                        }
-                        Rebate rebate = new Rebate();
-                        rebate.setBackMoney(rebateAmount).setUserId(level.getUserId()).setLowId(orderVo.getUserId())
-                                .setCreateTime(LocalDateTime.now()).setType(Constant.APP_USER).setOrderNumber(orderVo.getOrderNumber());
-                       return this.add(rebate);
-                    }
-                }
-            } else {
-                //商家用户
-                StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(user1.getSuperId());
-                /*if (staffInfoVo != null && staffInfoVo.getStaffId() != null && staffInfoVo.getStaffId().compareTo(1) {
-                    if (orderVo.getOrderType() == OrderVo.CUSTOM_HOUSE || orderVo.getOrderType() == OrderVo.MONTH_WASHING) {
-                        rebateAmount = orderVo.getTotalPrice().multiply(fixRatio);
-                    } else {
-                        rebateAmount = orderVo.getTotalPrice().multiply(BigDecimal.valueOf(staffInfoVo.getStaffId()));
-                    }
-                    Rebate rebate = new Rebate();
-                    rebate.setBackMoney(rebateAmount).setUserId(staffInfoVo.getStaffId()).setLowId(orderVo.getUserId())
-                            .setCreateTime(LocalDateTime.now()).setType(Constant.SHOP_USER).setOrderNumber(orderVo.getOrderNumber());
-                    return  this.add(rebate);
-                }*/
+    public void rebate(OrderVo orderVo) {
+        UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+        Rebate rebate = new Rebate();
+        if(userInfoVo.getSuperId()!=null){
+            switch (userInfoVo.getSuperType()){
+                case 1:  //APP用户
+                    UserLevelVo userLevelVo = userService.findUserLevelInfo(userInfoVo.getSuperId());
+                    BigDecimal rebateMoney1 = new BigDecimal(orderVo.getTotalPrice().doubleValue()*userLevelVo.getDistributionRatio().doubleValue());
+                    rebate.setBackMoney(rebateMoney1);
+                    rebate.setUserId(userInfoVo.getSuperId());
+                    break;
+                case 2:  //引流商家
+                    Merchant merchant = merchantService.findMerchantInfoById(userInfoVo.getSuperId());
+                    BigDecimal rebateMoney2 = new BigDecimal(orderVo.getTotalPrice().doubleValue()*merchant.getDistributionRatio().doubleValue());
+                    rebate.setBackMoney(rebateMoney2);
+                    rebate.setUserId(merchant.getMerchantId());
+                    break;
             }
+            rebate.setCreateTime(DateUtils.getNowtime());
+            rebate.setType(userInfoVo.getSuperType());
+            rebate.setLowId(userInfoVo.getAppUserId());
+            rebate.setSource("消费返利");
+            rebate.setOrderNumber(orderVo.getOrderNumber());
+            rebateMapper.add(rebate);
         }
-        return new ReturnData(Fail_CODE,"订单参数错误",false );
     }
 }

@@ -82,52 +82,7 @@ public class OrderCommentController {
         //洗衣单
         BigDecimal money = null;
         Double moneyDouble = 0.00;
-        /*if(reservation.getOrderType()==1 || reservation.getOrderType()==2){
-            //送件单
-            if(reservation.getGrabOrderIdSend() !=null && reservation.getGrabOrderIdTake() !=null){
-                Integer sendDistance = reservation.getSendDistance();
-                if(sendDistance < 1000){
-                    moneyDouble = 6.00;
-                }else if(1000 <= sendDistance && sendDistance <2000){
-                    moneyDouble = 6.00+((sendDistance-1000)/1000)*7;
-                }else if(2000 <= sendDistance && sendDistance <3000){
-                    moneyDouble = 7.00+((sendDistance-2000)/1000)*9;
-                }else if(3000 <= sendDistance && sendDistance <4000){
-                    moneyDouble = 9.00+((sendDistance-3000)/1000)*11;
-                }else if(4000 <= sendDistance && sendDistance <5000){
-                    moneyDouble =11.00+((sendDistance-4000)/1000)*13;
-                }else if(5000 < sendDistance && sendDistance <6000){
-                    moneyDouble = 13.00+((sendDistance-5000)/1000)*15;
-                }
-                StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(reservation.getGrabOrderIdSend());
-                money = new BigDecimal(money.doubleValue() + moneyDouble).setScale(2, BigDecimal.ROUND_HALF_UP);
-                staffInfoVo.setMoney(money);
-                staffInfoVo.setServiceCount(staffInfoVo.getServiceCount() + 1);
-                staffService.updateStaffInfoAfterEnd(staffInfoVo);
-            //取件单
-            }else if(reservation.getGrabOrderIdTake() !=null && reservation.getGrabOrderIdSend() ==null){
-                Integer takeDistrance = reservation.getTakeDistance();
-                if(takeDistrance < 1000){
-                    moneyDouble = 6.00;
-                }else if(1000 <= takeDistrance && takeDistrance <2000){
-                    moneyDouble = 6.00+((takeDistrance-1000)/1000)*7;
-                }else if(2000 <= takeDistrance && takeDistrance <3000){
-                    moneyDouble = 7.00+((takeDistrance-2000)/1000)*9;
-                }else if(3000 <= takeDistrance && takeDistrance <4000){
-                    moneyDouble = 9.00+((takeDistrance-3000)/1000)*11;
-                }else if(4000 <= takeDistrance && takeDistrance <5000){
-                    moneyDouble =11.00+((takeDistrance-4000)/1000)*13;
-                }else if(5000 < takeDistrance && takeDistrance <6000){
-                    moneyDouble = 13.00+((takeDistrance-5000)/1000)*15;
-                }
-                StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(reservation.getGrabOrderIdTake());
-                money = new BigDecimal(money.doubleValue() + moneyDouble).setScale(2, BigDecimal.ROUND_HALF_UP);
-                staffInfoVo.setMoney(money);
-                staffInfoVo.setServiceCount(staffInfoVo.getServiceCount() + 1);
-                staffService.updateStaffInfoAfterEnd(staffInfoVo);
-            }
-        //家政服务单
-        }else*/ if(reservation.getOrderType() == 3 || reservation.getOrderType() ==4){
+         if(reservation.getOrderType() == 3 || reservation.getOrderType() ==4){
             List<OrderCommentVo> orderCommentVoList = commentService.getMyReservationComment(reservation.getGrabOrderIdTake());
             double starAll =0;
             for (OrderCommentVo orderComment : orderCommentVoList){

@@ -12,4 +12,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RebateMapper extends BaseMapper<Rebate> {
 
+    /**
+     * 返利记录
+     * @param rebate
+     */
+    void add(Rebate rebate);
 }
