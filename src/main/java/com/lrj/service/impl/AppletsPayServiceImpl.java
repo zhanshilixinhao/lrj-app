@@ -342,11 +342,11 @@ public class AppletsPayServiceImpl implements AppletsPayService {
         for (Order order : orders) {
             reOrder = order;
         }
-        Example e = new Example(ThirdAcc.class);
-        e.createCriteria().andEqualTo(COLUMN_THIRDACC_PHONE,reOrder.getUserPhone());
-        List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(e);
-        for (ThirdAcc thirdAcc : thirdAccs) {
-            openId = thirdAcc.getOpenId();
+        Example example1 = new Example(User.class);
+        example1.createCriteria().andEqualTo("userPhone",reOrder.getUserPhone());
+        List<User> users = userMapper.selectByExample(example1);
+        for (User user : users) {
+            openId = user.getOpenId();
         }
         //全部微信支付
         if (userBalance==0.00) {
