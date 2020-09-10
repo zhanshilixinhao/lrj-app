@@ -106,12 +106,11 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
         }
         // 获取成功
         // 1.判断该openid是否存在
-        Example example = new Example(ThirdAcc.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(COLUMN_THIRDACC_OPEN_ID,result.getOpenid());
-        List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
+        Example example1 = new Example(User.class);
+        example1.createCriteria().andEqualTo(COLUMN_THIRDACC_OPEN_ID, result.getOpenid());
+        List<User> users1 = userMapper.selectByExample(example1);
         // 1.1如果账号不存在需要绑定手机号
-        if (thirdAccs.size() == 0) {
+        if (users1.size() == 0) {
             // 产生一个随机数
             String key = UUID.randomUUID().toString();
             userInfo.setOpenid(result.getOpenid());
@@ -124,19 +123,8 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             //throw new ServiceException(ErrorCode.NEED_BIND_PHONE).data(map);
             // 如果账号存在，取出用户信息
         } else {
-            for (ThirdAcc thirdAcc : thirdAccs) {
-                Example e = new Example(User.class);
-                Example.Criteria c = e.createCriteria();
-                if (thirdAcc.getPhone()!=null) {
-                    c.andEqualTo(COLUMN_USER_PHONE,thirdAcc.getPhone());
-                }
-                List<User> users = userMapper.selectByExample(e);
-                for (User user : users) {
-                    if (user != null && user.getActive() != null && user.getActive() != 1) {
-                        throw new ServiceException(ErrorCode.ACC_DISABLED);
-                    }
-                    return CommonUtil.SUCCESS(formerResult,null,user);
-                }
+            for (User user : users1) {
+                return CommonUtil.SUCCESS(formerResult,null,user);
             }
         }
         return null;
@@ -152,14 +140,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
     @Override
     public FormerResult askCode(String phone) throws IOException {
         // 判断账号是否存在
-        Example example = new Example(ThirdAcc.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
-        List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
-        if (thirdAccs.size()!=0) {
-            // 如果已绑定账号
-            return formerResult.setErrorTip("该手机号已绑定!").setErrorCode(6004).setRequestStatus(Constant.SUCCESS);
-        }
+
         // 生成随机六位验证码
         String verificationCode = RandomUtil.generateOrder(6) + "";
         // 设置发送的内容(内容必须和模板匹配)
@@ -201,20 +182,7 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             return formerResult.setErrorTip("短信验证码错误!").setErrorCode(6003).setRequestStatus(Constant.SUCCESS);
         }
         // 判断账号是否存在
-        Example example = new Example(ThirdAcc.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo(COLUMN_THIRDACC_PHONE,phone);
-        List<ThirdAcc> thirdAccs = thirdAccMapper.selectByExample(example);
-        if (thirdAccs.size()!=0) {
-            // 如果已绑定账号
-            return formerResult.setErrorTip("该手机号已绑定!").setErrorCode(6004).setRequestStatus(Constant.SUCCESS);
-        }
-        // 添加新的账号
-        ThirdAcc thirdAcc = new ThirdAcc();
-        thirdAcc.setOpenId(openid);
-        thirdAcc.setPhone(phone);
-        thirdAcc.setAccType((byte) 1);
-        thirdAccMapper.insertSelective(thirdAcc);
+
         // 判断用户信息是否存在
         Example e = new Example(User.class);
         Example.Criteria c = e.createCriteria();
@@ -236,8 +204,11 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             }catch (Exception ex){
                 System.out.println(ex.getMessage());
             }
-            user.setUserPhone(phone).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age).setHeadPhoto(miNiUserInfo.getAvatarUrl()).
-            setNickName(miNiUserInfo.getNickname());
+            user.setUserPhone(phone).setOpenId(openid).setCreateTime(DateUtils.formatDate(new Date())).setActive(1).setAge(age);
+            if (miNiUserInfo!=null) {
+                user.setHeadPhoto(miNiUserInfo.getAvatarUrl()).
+                        setNickName(miNiUserInfo.getNickname());
+            }
             userMapper.insertSelective(user);
             UserLevel userLevel = new UserLevel();
             userLevel.setUserId(user.getAppUserId()).setLevelId(1).setInviteNum(0);
@@ -253,6 +224,8 @@ public class AppletsLogInServiceImpl implements AppletsLogInService {
             return CommonUtil.SUCCESS(formerResult,null,user);
         }else {
             for (User user : users) {
+                user.setOpenId(openid).setHeadPhoto(miNiUserInfo.getAvatarUrl()).setNickName(miNiUserInfo.getNickname());
+                userMapper.updateByPrimaryKey(user);
                 return CommonUtil.SUCCESS(formerResult,null,user);
             }
         }
