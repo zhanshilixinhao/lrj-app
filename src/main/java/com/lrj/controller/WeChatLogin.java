@@ -1,6 +1,7 @@
 package com.lrj.controller;
 import	java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +17,7 @@ import com.lrj.service.IWeChatLoginService;
 import com.lrj.util.AppleUitl;
 import com.lrj.util.CommonUtil;
 import com.lrj.util.HttpClientTool;
+import com.lrj.util.UserCache;
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,6 +36,7 @@ import static com.lrj.VO.FormerResult.SUCCESS_CODE;
  */
 @RestController
 public class WeChatLogin {
+
     @Value("${wx.appid}")
     private String appid;
     @Value("${wx.secret}")
@@ -179,5 +182,16 @@ public class WeChatLogin {
     @RequestMapping("AppIsShow")
     public FormerResult AppIsShow(){
         return new FormerResult("SUCCESS",0,"判断完成",0);
+    }
+
+
+    /**
+     * @Description: 苹果普通注册
+     * @Author: LxH
+     * @Date: 2020/9/15 15:59
+     */
+    @RequestMapping("CommonRegister")
+    public FormerResult commonRegister(String userPhone,String verificationCode,String passWord,HttpServletRequest request){
+        return weChatLoginService.commonRegister(userPhone,verificationCode,passWord,request);
     }
 }

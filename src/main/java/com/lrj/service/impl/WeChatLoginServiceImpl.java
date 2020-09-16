@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.WeChatUserInfo;
 import com.lrj.VO.WxUserInfo;
+import com.lrj.common.Constant;
 import com.lrj.mapper.BalanceMapper;
 import com.lrj.mapper.UserLevelMapper;
 import com.lrj.mapper.UserMapper;
@@ -11,10 +12,8 @@ import com.lrj.pojo.Balance;
 import com.lrj.pojo.User;
 import com.lrj.pojo.UserLevel;
 import com.lrj.service.IWeChatLoginService;
-import com.lrj.util.CommonUtil;
-import com.lrj.util.DateUtils;
-import com.lrj.util.JavaSmsApi;
-import com.lrj.util.RandomUtil;
+import com.lrj.util.*;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -27,6 +26,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Lxh
@@ -34,6 +34,10 @@ import java.util.List;
  */
 @Service
 public class WeChatLoginServiceImpl implements IWeChatLoginService {
+
+    /**缓存*/
+    private static final UserCache userCache = new UserCache(3, TimeUnit.MINUTES);
+
     @Value("${bind.apikey}")
     private String apiKey;
     @Resource
@@ -71,23 +75,9 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
 
     @Override
     public FormerResult getCaptcha(String userPhone) {
-        User user = new User();
-        HashMap<String, Object> map = new HashMap<String,Object>();
         // 生成随机六位验证码
         String verificationCode = RandomUtil.generateOrder(6) + "";
-        user.setVerificationCode(verificationCode);
-        int i = userMapper.insertSelective(user);
-        System.out.println("添加"+i);
-        map.put("verificationCode",verificationCode);
-        /*Example example = new Example(User.class);
-        Example.Criteria criteria = example.createCriteria();
-        criteria.andEqualTo("verificationCode", verificationCode);
-        List<User> users = userMapper.selectByExample(example);
-        for (User user1 : users) {
-            if (user1!=null) {
-                userMapper.updateByPrimaryKeySelective(user);
-            }
-        }*/
+        userCache.put(userPhone, verificationCode);
         // 设置发送的内容(内容必须和模板匹配）
         String text = "【懒人家】您的验证码是" + verificationCode + "。如非本人操作，请忽略本短信";
         try {
@@ -96,19 +86,24 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         }catch (Exception e) {
             System.out.println(e.getMessage());
         }
-        return CommonUtil.SUCCESS(new FormerResult(),"验证码获取成功!",map);
+        return CommonUtil.SUCCESS(new FormerResult(),"验证码获取成功!",verificationCode);
     }
 
     @Override
     @Transactional
     public FormerResult bindPhoneNumber(WxUserInfo wxUserInfo, String userPhone, String verificationCode,Byte age) {
-        Example example = new Example(User.class);
+        String verificationCodeCache = userCache.getCache(userPhone);
+        if (!verificationCode.equals(verificationCodeCache)) {
+            return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
+        }
+
+        /*Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("verificationCode", verificationCode);
         List<User> users = userMapper.selectByExample(example);
         if (users==null) {
             return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
-        }
+        }*/
         Example example1 = new Example(User.class);
         example1.createCriteria().andEqualTo("userPhone", userPhone);
         List<User> users1 = userMapper.selectByExample(example1);
@@ -116,25 +111,23 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
             for (User user : users1) {
                 user.setNickName(wxUserInfo.getNickName()).setHeadPhoto(wxUserInfo.getHeadImgUrl()).setUnionId(wxUserInfo.getUnionId());
                 userMapper.updateByPrimaryKeySelective(user);
-                for (User user1 : users) {
-                    userMapper.deleteByPrimaryKey(user1);
-                }
                 return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
             }
         }else {
-            for (User user : users) {
-                user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId()).setAge(age)
-                        .setHeadPhoto(wxUserInfo.getHeadImgUrl());
-                return getResult(user);
-            }
+            User user = new User();
+            user.setNickName(wxUserInfo.getNickName()).setUnionId(wxUserInfo.getUnionId()).
+                    setActive(1).setIsCheck(1).setUserPhone(userPhone).
+                    setCreateTime(DateUtils.formatDate(new Date())).setAge(age)
+                    .setHeadPhoto(wxUserInfo.getHeadImgUrl());
+            return getResult(user);
         }
         return null;
     }
 
     private FormerResult getResult(User user) {
         try {
-            int i = userMapper.updateByPrimaryKeySelective(user);
-            System.out.println("更新"+i);
+            int i = userMapper.insertSelective(user);
+            System.out.println("创建用户"+i);
         }catch (Exception e){
             System.out.println(e.getMessage());
             //return CommonUtil.SUCCESS(new FormerResult(),"统一电话号码只能绑定一次",null);
@@ -168,13 +161,17 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
 
     @Override
     public FormerResult AppleBindPhoneNumber(String email, String userPhone, String verificationCode, Byte age, HttpServletRequest request) {
-        Example example = new Example(User.class);
+        String verificationCodeCache = userCache.getCache(userPhone);
+        if (!verificationCode.equals(verificationCodeCache)) {
+            return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
+        }
+        /*Example example = new Example(User.class);
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("verificationCode", verificationCode);
         List<User> users = userMapper.selectByExample(example);
         if (users==null) {
             return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
-        }
+        }*/
         Example example1 = new Example(User.class);
         example1.createCriteria().andEqualTo("userPhone", userPhone);
         List<User> users1 = userMapper.selectByExample(example1);
@@ -182,21 +179,17 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
             for (User user : users1) {
                 user.setEmail(email);
                 userMapper.updateByPrimaryKeySelective(user);
-                for (User user1 : users) {
-                    userMapper.deleteByPrimaryKey(user1);
-                }
                 return CommonUtil.SUCCESS(new FormerResult(),"用户绑定手机号码成功",user.getAppUserId());
             }
         }else {
-            for (User user : users) {
-                user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setVerificationCode(verificationCode).setAppUserId(user.getAppUserId()).setAge(age);
-                StringBuffer url = request.getRequestURL();
-                /** 拼接 **/
-                String text = "/userHeadPhotos/touxiang.png";
-                String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
-                user.setHeadPhoto(tempContextUrl + text).setEmail(email);
-                return getResult(user);
-            }
+            User user = new User();
+            user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date())).setAge(age);
+            StringBuffer url = request.getRequestURL();
+            /** 拼接 **/
+            String text = "/userHeadPhotos/touxiang.png";
+            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+            user.setHeadPhoto(tempContextUrl + text).setEmail(email);
+            return getResult(user);
         }
         return null;
     }
@@ -224,6 +217,47 @@ public class WeChatLoginServiceImpl implements IWeChatLoginService {
         return new FormerResult("success",0,null,user.getAppUserId());
     }
 
-
+    /**
+     * @param： userPhone
+     * @param： verificationCode
+     * @param： passWord
+     * @Description: 苹果普通注册
+     * @Author: LxH
+     * @Date: 2020/9/15 15:59
+     */
+    @Override
+    public FormerResult commonRegister(String userPhone, String verificationCode, String passWord,HttpServletRequest request) {
+        String verificationCodeCache = userCache.getCache(userPhone);
+        if (!verificationCode.equals(verificationCodeCache)) {
+            return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
+        }
+        /*Example example = new Example(User.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("verificationCode", verificationCode);
+        List<User> users = userMapper.selectByExample(example);
+        if (users==null) {
+            return CommonUtil.FAIL(new FormerResult(),"验证码错误!",null);
+        }*/
+        Example example1 = new Example(User.class);
+        example1.createCriteria().andEqualTo("userPhone", userPhone);
+        List<User> users1 = userMapper.selectByExample(example1);
+        if (users1.size()!=0) {
+            for (User user : users1) {
+                user.setUserPassword(passWord);
+                userMapper.updateByPrimaryKeySelective(user);
+                return CommonUtil.SUCCESS(new FormerResult(),"用户注册成功",user.getAppUserId());
+            }
+        }else {
+            User user = new User();
+            user.setNickName("懒人家Apple用户").setActive(1).setIsCheck(1).setUserPhone(userPhone).setCreateTime(DateUtils.formatDate(new Date()));
+            StringBuffer url = request.getRequestURL();
+            /** 拼接 **/
+            String text = "/userHeadPhotos/touxiang.png";
+            String tempContextUrl = url.delete(url.length() - request.getRequestURI().length(), url.length()).toString();
+            user.setHeadPhoto(tempContextUrl + text).setUserPassword(passWord);
+            return getResult(user);
+        }
+        return null;
+    }
 }
 
