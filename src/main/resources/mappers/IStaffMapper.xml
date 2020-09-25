@@ -12,7 +12,6 @@
 	<!--通过登录名查询员工信息-->
 	<select id="findStaffInfoByLoginInfo" parameterType="java.lang.String" resultType="com.lrj.VO.StaffInfoVo">
 		SELECT * FROM app_staff WHERE telephone=#{loginName}
-		AND active=1
 	</select>
 	<!--更改密码-->
 	<update id="updateStaffPassWord" parameterType="java.util.HashMap">
@@ -34,9 +33,25 @@
 		<trim prefix="set" suffixOverrides=",">
 			<if test="#{money} !=null">money=#{money},</if>
 			<if test="#{serviceTime} !=null">service_time=#{serviceTime},</if>
-			<if test="#{service_count} !=null">service_count=#{serviceCount},</if>
+			<if test="#{serviceCount} !=null">service_count=#{serviceCount},</if>
 		</trim>
 		WHERE app_staff_id=#{appStaffId}
+	</update>
+	<!--添加员工支付宝账号-->
+	<update id="updateStaffInfoAliAccount" parameterType="com.lrj.VO.StaffInfoVo" useGeneratedKeys="true" keyProperty="appStaffId">
+		UPDATE app_staff SET reality_name=#{realityName},ali_account=#{aliAccount}
+		WHERE app_staff_id=#{appStaffId}
+	</update>
+
+	<!--员工提现申请-->
+	<insert id="staffWithdraw" parameterType="com.lrj.VO.StaffRebateVo" useGeneratedKeys="true" keyProperty="id">
+		insert into staff_rebate (staff_id,back_money,create_time,reservation_id) values (#{staffId},#{backMoney},#{createTime},#{reservationId});
+	</insert>
+
+	<!--提现后清空该员工的收益记录，记录信息-->
+	<update id="removeStaffInfoRebateInfo" parameterType="java.lang.Integer">
+		UPDATE app_staff SET money=NULL,service_time=NULL,service_count=NULL
+		WHERE app_staff_id=#{staffId}
 	</update>
 	<!--留着以后用  -->
 </mapper>

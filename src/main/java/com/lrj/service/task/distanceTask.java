@@ -86,13 +86,17 @@ public class distanceTask {
         Reservation reservation = reservationMapper.getReservationByReservationId(reservationId);
         switch (staffType){
             case 1:
-                if (distance <= 20){
-                    return new FormerResult("SUCCESS", 0, "已取单", true);
+                if (distance <= 200){
+                    if(reservation.getTrackingStatus()==1 || reservation.getTrackingStatus()==10){
+                        return new FormerResult("SUCCESS", 0, "已取单", true);
+                    }else if(reservation.getTrackingStatus()==3 || reservation.getTrackingStatus()==11){
+                        return new FormerResult("SUCCESS", 0, "已完成送回", true);
+                    }
                 }else {
                     return new FormerResult("SUCCESS", 1, "未到目的地，不可点击！", false);
                 }
             case 3:
-                if(distance <= 50){
+                if(distance <= 200){
                     if(reservation.getTrackingStatus()==1){
                         return new FormerResult("SUCCESS", 0, "已开始服务并计时！", true);
                     }else if(reservation.getTrackingStatus() ==33){

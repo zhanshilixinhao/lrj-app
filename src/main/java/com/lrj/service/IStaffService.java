@@ -48,4 +48,24 @@ public interface IStaffService {
      * @param staffInfoVo
      */
     void updateStaffInfoAfterEnd(StaffInfoVo staffInfoVo);
+
+    /**
+     * 添加员工账号
+     * @param staffInfoVo
+     * @return
+     */
+    Integer updateStaffInfoAliAccount(StaffInfoVo staffInfoVo);
+
+    /**
+     * 员工提现申请
+     * @param staffRebateVo
+     * @return
+     */
+    Integer staffWithdraw(StaffRebateVo staffRebateVo);
+
+    /**
+     * 清空该员工的收益，记录信息等
+     * @param staffId
+     */
+    void removeStaffInfoRebateInfo(Integer staffId);
 }

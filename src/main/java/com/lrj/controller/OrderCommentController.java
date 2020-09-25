@@ -7,6 +7,7 @@ import com.lrj.pojo.Reservation;
 import com.lrj.service.IOrderCommentService;
 import com.lrj.service.IStaffService;
 import com.lrj.util.DateUtils;
+import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -76,10 +77,10 @@ public class OrderCommentController {
         orderCommentVo.setReservationId(reservationId);
         orderCommentVo.setStar(star);
         orderCommentVo.setRemark(remark);
+        Reservation reservation = reservationMapper.getReservationByReservationId(reservationId);
+        orderCommentVo.setStaffId(reservation.getGrabOrderIdTake());
         commentService.addReservationComment(orderCommentVo);
         //验收完成后  结算本次服务佣金 存入员工账户
-        Reservation reservation = reservationMapper.getReservationByReservationId(reservationId);
-        //洗衣单
         BigDecimal money = null;
         Double moneyDouble = 0.00;
          if(reservation.getOrderType() == 3 || reservation.getOrderType() ==4){
@@ -92,20 +93,43 @@ public class OrderCommentController {
             if(starEnd >= 4.5){
                long serviceTimeLong  = DateUtils.formatStringToDate(reservation.getHouseServiceEndTime()).getTime()-DateUtils.formatStringToDate(reservation.getHouseServiceBeginTime()).getTime();
                 Integer serviceTimeInt = Integer.parseInt(String.valueOf(serviceTimeLong / (60*1000)));
-                money = new BigDecimal(serviceTimeInt*(32/60));
+                moneyDouble = (serviceTimeInt.doubleValue())*(32.00/60.00);
                 StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(reservation.getGrabOrderIdTake());
+                //null 转化为0
+                if(staffInfoVo.getMoney()==null){
+                    money = new BigDecimal(0.00+moneyDouble).setScale(2,BigDecimal.ROUND_HALF_UP);
+                }else {
+                    money = new BigDecimal(staffInfoVo.getMoney().doubleValue() + moneyDouble).setScale(2,BigDecimal.ROUND_HALF_UP);
+                }
                 staffInfoVo.setMoney(money);
+                if(staffInfoVo.getServiceTime()==null){
+                    staffInfoVo.setServiceTime(0);
+                }
                 staffInfoVo.setServiceTime(staffInfoVo.getServiceTime() + serviceTimeInt);
                 staffService.updateStaffInfoAfterEnd(staffInfoVo);
             }else if(starEnd < 4.5){
                 long serviceTimeLong  = DateUtils.formatStringToDate(reservation.getHouseServiceEndTime()).getTime()-DateUtils.formatStringToDate(reservation.getHouseServiceBeginTime()).getTime();
                 Integer serviceTimeInt = Integer.parseInt(String.valueOf(serviceTimeLong / (60*1000)));
-                money = new BigDecimal(serviceTimeInt*(27/60));
+                moneyDouble = serviceTimeInt.doubleValue()*(27.00/60.00);
                 StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(reservation.getGrabOrderIdTake());
+                //null 转化为0
+                if(staffInfoVo.getMoney()==null){
+                    money = new BigDecimal(0.00+moneyDouble).setScale(2,BigDecimal.ROUND_HALF_UP);
+                }else {
+                    money = new BigDecimal(staffInfoVo.getMoney().doubleValue() + moneyDouble).setScale(2,BigDecimal.ROUND_HALF_UP);
+                }
                 staffInfoVo.setMoney(money);
+                if(staffInfoVo.getServiceTime()==null){
+                    staffInfoVo.setServiceTime(0);
+                }
                 staffInfoVo.setServiceTime(staffInfoVo.getServiceTime() + serviceTimeInt);
                 staffService.updateStaffInfoAfterEnd(staffInfoVo);
             }
+             Map<String, Object> params = new HashMap<>();
+             params.put("staffId",reservation.getGrabOrderIdTake());
+             params.put("reservationId",reservationId);
+             params.put("traceStatus",35);
+             reservationMapper.updateReservationTrackingStatus(params);
         }
 
         return new ResultVo("SUCCESS", 0, "评论成功", null);

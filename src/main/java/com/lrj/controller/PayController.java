@@ -8,11 +8,10 @@ import com.alipay.api.request.AlipayTradeAppPayRequest;
 import com.alipay.api.response.AlipayTradeAppPayResponse;
 import com.lrj.VO.*;
 import com.lrj.config.PayConfig;
+import com.lrj.mapper.IItemJSONMapper;
 import com.lrj.mapper.ReservationMapper;
-import com.lrj.pojo.BalanceRecord;
-import com.lrj.pojo.PayOperation;
+import com.lrj.pojo.*;
 import com.lrj.service.*;
-import com.lrj.pojo.Balance;
 import com.lrj.service.IBalanceService;
 import com.lrj.service.IOrderService;
 import com.lrj.service.IPayService;
@@ -62,6 +61,8 @@ public class PayController {
     private ReservationMapper reservationMapper;
     @Resource
     private IUserService userService;
+    @Resource
+    private IItemJSONMapper itemJSONMapper;
 
     public PayController(RebateService rebateService) {
         this.rebateService = rebateService;
@@ -228,6 +229,34 @@ public class PayController {
                     params.put("status", 3);
                     Integer updateNum = reservationMapper.updateReservationStatus(params);
                 }
+                //推送服务订单通知
+                jiGuangJPUSHPost.doPostForHelpStaff();
+                //发送短信(订单支付成功（预约不触发，下单商品含袋洗不触发）)
+                List<ItemJSON> itemJSONList = null;
+                switch (orderVo.getOrderType()){
+                    case 1:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                        break;
+                    case 2:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                        break;
+                    case 3:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                        break;
+                    case 4:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                        break;
+                }
+                int count = 0;
+                for (ItemJSON itemJSON : itemJSONList){
+                    if (itemJSON.getItemId()==391 || itemJSON.getItemId()==393){
+                        count+=1;
+                    }
+                }
+                UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+                if(count ==0){
+                    jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184740,"");
+                }
                 new FormerResult("success", 1, "请求支付完成", null);
             } else {
                 double payMoney = orderVo.getTotalPrice().doubleValue() - userBalance.getBalance().doubleValue();
@@ -241,15 +270,15 @@ public class PayController {
                 balanceRecord.setUserId(orderVo.getUserId());
                 payService.addUserBalanceRecord(balanceRecord);
                 if(payType == 1){   //微信支付
-                    appWXPay(request, orderNumber, payMoney);
+                    FormerResult formerResult = appWXPay(request, orderNumber, payMoney);
+                    return formerResult;
                 }else if(payType == 2){   //支付宝支付
-                    appAliPay(request, orderNumber, payMoney);
+                    FormerResult formerResult = appAliPay(request, orderNumber, payMoney);
+                    return formerResult;
                 }else {
                     return new FormerResult("SUCCESS", 1, "请求支付异常", null);
                 }
-               return new FormerResult("success", 0, "请求支付完成", null);
             }
-            return new FormerResult("success", 0, "请求支付完成", null);
         }
         return new FormerResult("success", 0, "请求支付完成", null);
     }
@@ -504,6 +533,34 @@ public class PayController {
                                 params.put("status", 3);
                                 Integer updateNum = reservationMapper.updateReservationStatus(params);
                             }
+                            //推送服务订单通知
+                            jiGuangJPUSHPost.doPostForHelpStaff();
+                            //发送短信(订单支付成功（预约不触发，下单商品含袋洗不触发）)
+                            List<ItemJSON> itemJSONList = null;
+                            switch (orderVo.getOrderType()){
+                                case 1:
+                                    itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                                    break;
+                                case 2:
+                                    itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                                    break;
+                                case 3:
+                                    itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                                    break;
+                                case 4:
+                                    itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                                    break;
+                            }
+                            int count = 0;
+                            for (ItemJSON itemJSON : itemJSONList){
+                                if (itemJSON.getItemId()==391 || itemJSON.getItemId()==393){
+                                    count+=1;
+                                }
+                            }
+                            UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+                            if(count ==0){
+                                jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184740,"");
+                            }
                         }
                     }
                 }
@@ -687,6 +744,34 @@ public class PayController {
                     param.put("orderNumber", orderVo.getOrderNumber());
                     param.put("status", 3);
                     Integer updateNum = reservationMapper.updateReservationStatus(param);
+                }
+                //推送服务订单通知
+                jiGuangJPUSHPost.doPostForHelpStaff();
+                //发送短信(订单支付成功（预约不触发，下单商品含袋洗不触发）)
+                List<ItemJSON> itemJSONList = null;
+                switch (orderVo.getOrderType()){
+                    case 1:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                        break;
+                    case 2:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                        break;
+                    case 3:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                        break;
+                    case 4:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                        break;
+                }
+                int count = 0;
+                for (ItemJSON itemJSON : itemJSONList){
+                    if (itemJSON.getItemId()==391 || itemJSON.getItemId()==393){
+                        count+=1;
+                    }
+                }
+                UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+                if(count ==0){
+                    jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184740,"");
                 }
             }
         }

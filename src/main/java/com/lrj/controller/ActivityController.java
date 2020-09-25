@@ -111,12 +111,19 @@ public class ActivityController {
         if(orderVoList==null){
             return new FormerResult("SUCCESS", 0, "可以参与！", null);
         }else {
+            Integer count=0;
             for(OrderVo orderVo : orderVoList){
-                if(orderVo.getActivity()==14){
-                    return new FormerResult("SUCCESS", 1, "您已享受过改活动，不可再参与！", null);
+                if(orderVo.getActivity()==null){
+                    continue;
+                }else if(orderVo.getActivity()==14){
+                    count+=1;
                 }
             }
+            if(count>0){
+                return new FormerResult("SUCCESS", 1, "您已享受过该活动，不可再参与！", null);
+            }else {
+                return new FormerResult("SUCCESS", 0, "可以参与！", null);
+            }
         }
-        return new FormerResult("SUCCESS", 0, "可以参与！", null);
     }
 }

@@ -49,14 +49,15 @@ public class LaundryAppointmentServiceImpl implements LaundryAppointmentService{
             Order_washingVo washingOrderVo = orderMapper.getWashingOrderByOrderNumber(orderNumber);
             reservation.setOrderType(orderVo.getOrderType());
             reservation.setReservationJson(washingOrderVo.getShoppingJson());
+            reservation.setGetClothesTime(reservationMap.get("takeTime").toString());
             //服务费判断
-            if(washingOrderVo.getServicePrice().equals("8.00")){
+            if(washingOrderVo.getServicePrice().doubleValue()==12.00){
                 reservation.setIsService(1);
             }else {
                 reservation.setIsService(0);
             }
             //加急费判断
-            if(washingOrderVo.getServicePrice().equals("50.00")){
+            if(washingOrderVo.getUrgentPrice().doubleValue()==50.00){
                 reservation.setIsUrgent(1);
             }else {
                 reservation.setIsUrgent(0);

@@ -39,6 +39,8 @@ public class OrderVo {
 
     //销售商家信息
     private Integer merchantId;//商家Id
+    //下单来源平台
+    private Integer platform; //下单平台 1：IOS 2：Android 3：小程序
 
     public static final int WASHING = 1;
     public static final int MONTH_WASHING = 2;

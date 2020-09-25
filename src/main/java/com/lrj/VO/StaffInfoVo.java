@@ -30,7 +30,9 @@ public class StaffInfoVo {
     private String address;
     private Integer type;
     private BigDecimal money;
-    private String serviceTime;
+    private Integer serviceTime;
     private Integer serviceCount;
+    private String realityName;
+    private String aliAccount;
 
 }

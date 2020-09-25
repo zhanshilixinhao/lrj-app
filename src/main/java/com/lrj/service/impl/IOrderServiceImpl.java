@@ -8,6 +8,7 @@ import com.lrj.mapper.*;
 import com.lrj.pojo.*;
 import com.lrj.service.*;
 import com.lrj.util.DateUtils;
+import com.lrj.util.jiGuangSMSSend;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -98,6 +99,7 @@ public class IOrderServiceImpl implements IOrderService{
                 reservationMap.put("userName",userInfoVo.getNickname());
                 reservationMap.put("takeConsigneeId",typeParams.get("takeConsigneeId"));
                 reservationMap.put("orderNumber", orderVo.getOrderNumber());
+                reservationMap.put("takeTime", typeParams.get("takeTime"));
                 insertId = laundryAppointmentService.createWashingAppoint(reservationMap);
                 //保存商品与订单关系到jsonOnly表
                 for (ItemJSON itemJSON1 : itemJSONList){
@@ -174,7 +176,7 @@ public class IOrderServiceImpl implements IOrderService{
                 customHouseServiceOrder.setHouseArea((String) typeParams.get("houseArea"));
                 customHouseServiceOrder.setServiceCycle((Integer) typeParams.get("serviceCycle"));
                 customHouseServiceOrder.setBaseServicePrice((BigDecimal) typeParams.get("baseServicePrice"));
-                customHouseServiceOrder.setOpenTime(DateUtils.getNowTime("yyyy-MM-DD HH:mm:ss"));
+                customHouseServiceOrder.setOpenTime(DateUtils.getNowDateTime());
                 customHouseServiceOrder.setEndTime(DateUtils.getParamDateAfterNMonthDate(customHouseServiceOrder.getOpenTime(),(int)typeParams.get("serviceCycle")));
 
                 itemJSONList = (List<ItemJSON>) typeParams.get("itemJSONList");
@@ -220,6 +222,10 @@ public class IOrderServiceImpl implements IOrderService{
             params.put("reservationId", reservationId);
             params.put("staffId", staffId);
             reservationMapper.lockReservation(params);
+            if(reservation.getOrderType()==3 || reservation.getOrderType()==4){
+                UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
+                jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184743,"");
+            }
             return true;
             }
     }

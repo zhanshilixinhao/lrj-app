@@ -111,7 +111,8 @@ public class LaundryAppointmentController {
                             Map<String, Object> params = new HashMap<>();
                             params.put("orderNumber", itemJSON1.getOrderNumber());
                             params.put("itemId", itemJSON1.getItemId());
-                            params.put("quentity", itemJSON1.getQuentity() - itemJSON.getQuentity());
+                            params.put("quentity", itemJSON1.getQuentity()-itemJSON.getQuentity());
+                            System.out.println("1111111:"+(itemJSON1.getQuentity()-itemJSON.getQuentity()));
                             itemJSONMapper.updateJSONManyByOrderNumberAndItemId(params);
                         }else {
                             continue;
@@ -120,7 +121,8 @@ public class LaundryAppointmentController {
                 }
                 //如果月卡商品使用完毕，则更新月卡为不可用
                 int count = 0;
-                for (ItemJSON itemJSON : itemJSONList) {
+                List<ItemJSON> itemJSONListMany2  = itemJSONMapper.getItemJSONByOrderNumber(monthCardOrder.getOrderNumber());
+                for (ItemJSON itemJSON : itemJSONListMany2) {
                    if(itemJSON.getQuentity()>0){
                        count +=1;
                    }
@@ -155,7 +157,9 @@ public class LaundryAppointmentController {
         //判断定制家政是否可用
         if(customHouseServiceOrder.getActive() ==0){
             return new FormerResult("SUCCESS", 1, "您的月卡已经到期或使用次数不够,请联系客服", null);
-        }else {
+        }else if (customHouseServiceOrder.getBaseServiceCount()==0){
+            return new FormerResult("SUCCESS", 1, "您本月定制家政服务使用次数已完结，请下个月再重试", null);
+        } else {
             //效验预约时间是否符合购买时的选择时间
             int visitTimeSubYear = Integer.parseInt(visitTime.substring(0, 4));
             int visitTimeSubMonth = Integer.parseInt(visitTime.substring(5, 7));
@@ -181,6 +185,20 @@ public class LaundryAppointmentController {
             Integer insertId = laundryAppointmentService.createHouseServiceAppoint(reservationMap);
             //封装定制家政预约商品数据
             JSONArray jsonArray = JSONArray.fromObject(reservationJson);
+            JSONObject jsonObject1 = null;
+            JSONObject jsonObject2 = null;
+            if(customHouseServiceOrder.getHouseArea().equals("基础面积（90）")){
+                jsonObject1= new JSONObject().element("itemId",545).element("quentity",1);
+                jsonObject2 = new JSONObject().element("itemId",548).element("quentity",1);
+            }else if(customHouseServiceOrder.getHouseArea().equals("基础面积（90~170）")){
+                jsonObject1 = new JSONObject().element("itemId",546).element("quentity",1);
+                jsonObject2 = new JSONObject().element("itemId",549).element("quentity",1);
+            }else if(customHouseServiceOrder.getHouseArea().equals("基础面积（170以上）")){
+                jsonObject1 = new JSONObject().element("itemId",547).element("quentity",1);
+                jsonObject2 = new JSONObject().element("itemId",550).element("quentity",1);
+            }
+            jsonArray.add(jsonObject1);
+            jsonArray.add(jsonObject2);
             List<ItemJSON> itemJSONList = new ArrayList<>();
             for (int i=0;i<jsonArray.size();i++){
                 ItemJSON itemJSON = new ItemJSON();
@@ -222,8 +240,6 @@ public class LaundryAppointmentController {
                         }
                     }
                 }
-            }else {
-                return new FormerResult("SUCCESS", 1, "您本月月卡使用次数已完结，请下个月再重试", null);
             }
         }
         return new FormerResult("SUCCESS", 0, "本次预约已成功！请等待家政人员上门服务", null);

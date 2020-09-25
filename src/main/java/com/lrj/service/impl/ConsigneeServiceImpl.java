@@ -68,7 +68,7 @@ public class ConsigneeServiceImpl implements IConsigneeService {
         criteria.andEqualTo("userId",userId).andEqualTo("active",1);
         List<Consignee> consigneeList = consigneeMapper.selectByExample(example);
         for (Consignee consignee : consigneeList){
-            if(consignee.getAppConsigneeId() == appConsigneeId){
+            if(consignee.getAppConsigneeId().equals(appConsigneeId)){
                 Map<String, Object> params = new HashMap<>();
                 params.put("appConsigneeId", appConsigneeId);
                 params.put("isDefault", 1);

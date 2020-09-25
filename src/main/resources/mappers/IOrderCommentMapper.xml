@@ -27,16 +27,17 @@
             reservation_id AS reservationId,
             star AS star,
             comment_content AS commentContent,
-            commentImage AS commentImage,
+            comment_image AS commentImage,
             create_time AS createTime,
-            remark AS remark
+            remark AS remark,
+            staff_id AS staffId
       FROM order_comment WHERE isVisible=1 AND staff_id=#{staffId}
     </select>
 
     <!--添加 服务单评论-->
     <insert id="addReservationComment" parameterType="com.lrj.VO.OrderCommentVo">
-        INSERT INTO order_comment(user_id,reservation_id,star,comment_content,isVisible,create_time,remark)
-        VALUES (#{userId},#{reservationId},#{star},#{commentContent},1,#{createTime},#{remark})
+        INSERT INTO order_comment(user_id,reservation_id,star,comment_content,isVisible,create_time,remark,staff_id)
+        VALUES (#{userId},#{reservationId},#{star},#{commentContent},1,#{createTime},#{remark},#{staffId})
     </insert>
 
     <!--添加服务单评论 图片路径-->

@@ -97,8 +97,17 @@ public interface ReservationMapper extends Mapper<Reservation>, MySqlMapper<Rese
     List<Reservation> getReservationByStatus3(Map<String, Object> params);
 
     /**
+     *  通过ID 和 对应状态查询家政人员对应的单
+     * @param params
+     * @return
+     */
+    List<Reservation> getReservationByStatus4(Map<String, Object> params);
+
+    /**
      * 保存计算出的服务单与配送站的距离等信息
      * @param reservation
      */
     void updateReservationDistribution(Reservation reservation);
+
+
 }

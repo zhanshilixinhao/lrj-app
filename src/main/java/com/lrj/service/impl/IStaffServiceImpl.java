@@ -42,9 +42,38 @@ public class IStaffServiceImpl implements IStaffService {
         return staffMapper.staffRegister(params);
     }
 
+
     @Override
     public void updateStaffInfoAfterEnd(StaffInfoVo staffInfoVo) {
         staffMapper.updateStaffInfoAfterEnd(staffInfoVo);
+    }
+
+    /**
+     * 添加员工支付宝账号
+     * @param staffInfoVo
+     */
+    @Override
+    public Integer updateStaffInfoAliAccount(StaffInfoVo staffInfoVo) {
+        return staffMapper.updateStaffInfoAliAccount(staffInfoVo);
+    }
+
+    /**
+     * 员工提现申请
+     * @param staffRebateVo
+     * @return
+     */
+    @Override
+    public Integer staffWithdraw(StaffRebateVo staffRebateVo) {
+        return staffMapper.staffWithdraw(staffRebateVo);
+    }
+
+    /**
+     * 清空该员工的收益，记录信息等
+     * @param staffId
+     */
+    @Override
+    public void removeStaffInfoRebateInfo(Integer staffId) {
+        staffMapper.removeStaffInfoRebateInfo(staffId);
     }
 
     /**

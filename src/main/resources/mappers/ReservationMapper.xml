@@ -10,25 +10,29 @@
 	</select>
 	<!--根据追踪状态和Id 查询员工对应的待取服务单-->
 	<select id="getReservationByStatus1" parameterType="java.util.HashMap" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE tracking_status IN (1,10)AND grab_order_id_take=#{staffId} OR grab_order_id_send=#{staffId}
+		SELECT * FROM reservation WHERE tracking_status IN (1,10)AND grab_order_id_take=#{staffId} OR grab_order_id_send=#{staffId} ORDER BY create_time DESC
 	</select>
 	<!--根据追踪状态和Id 查询员工对应的待送服务单-->
 	<select id="getReservationByStatus2" parameterType="java.util.HashMap" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE tracking_status IN (3,11)AND grab_order_id_take=#{staffId} OR grab_order_id_send=#{staffId}
+		SELECT * FROM reservation WHERE tracking_status IN (3,11)AND grab_order_id_take=#{staffId} OR grab_order_id_send=#{staffId} ORDER BY create_time DESC
 	</select>
 	<!--根据追踪状态和Id 查询员工 对应状态的单（唯一的通用状态）-->
 	<select id="getReservationByStatus3" parameterType="java.util.HashMap" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE 4&lt;=tracking_status AND grab_order_id_take=#{staffId} OR grab_order_id_send=#{staffId}
+		SELECT * FROM reservation WHERE 4&lt;=tracking_status AND grab_order_id_take=#{staffId} OR grab_order_id_send=#{staffId} ORDER BY create_time DESC
+	</select>
+	<!-- 通过ID 和 对应状态查询家政阿姨对应的单-->
+	<select id="getReservationByStatus4" parameterType="java.util.HashMap" resultType="com.lrj.pojo.Reservation">
+		SELECT * FROM reservation WHERE tracking_status =#{trackingStatus} AND grab_order_id_take=#{staffId} ORDER BY create_time DESC
 	</select>
 	<!--根据预约单Id 查询该预约单-->
 	<select id="getReservationByReservationId" parameterType="java.lang.Integer" resultType="com.lrj.pojo.Reservation">
 		SELECT * FROM reservation WHERE reservation_id=#{reservationId}
 	</select>
 	<select id="getWashingOrderList" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE  order_type IN (1,2) AND status=3 AND tracking_status IN (0,9)
+		SELECT * FROM reservation WHERE  order_type IN (1,2) AND status=3 AND tracking_status IN (0,9) ORDER BY create_time DESC
 	</select>
 	<select id="getHouseServiceOrderList" resultType="com.lrj.pojo.Reservation">
-		SELECT * FROM reservation WHERE order_type IN (3,4) AND status=3 AND tracking_status IN (0)
+		SELECT * FROM reservation WHERE order_type IN (3,4) AND status=3 AND tracking_status IN (0) ORDER BY create_time DESC
 	</select>
 	<!--保存预约单-->
 	<insert id="insertReservation" parameterType="com.lrj.pojo.Reservation" useGeneratedKeys="true" keyProperty="reservationId">
@@ -74,7 +78,7 @@
 
 	<!--保存计算出的服务单与配送站的距离等信息-->
 	<update id="updateReservationDistribution" parameterType="com.lrj.pojo.Reservation">
-		UPDATE reservation SET beeline=#{beeline},distribution_name=#{distributionName},distribution_address=#{distributionAddress}
+		UPDATE reservation SET beeline=#{beeline},distribution_name=#{distributionName},distribution_address=#{distributionAddress},distribution_id=#{distributionId}
 		WHERE reservation_id=#{reservationId}
 	</update>
 </mapper>

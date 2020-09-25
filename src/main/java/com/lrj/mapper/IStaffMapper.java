@@ -46,4 +46,23 @@ public interface IStaffMapper extends Mapper<User>, MySqlMapper<User> {
      * @param staffInfoVo
      */
     void updateStaffInfoAfterEnd(StaffInfoVo staffInfoVo);
+
+    /**
+     * 添加员工支付宝账号
+     * @param staffInfoVo
+     * @return
+     */
+    Integer updateStaffInfoAliAccount(StaffInfoVo staffInfoVo);
+
+    /**
+     * 员工提现申请
+     * @param staffRebateVo
+     * @return
+     */
+    Integer staffWithdraw(StaffRebateVo staffRebateVo);
+
+    /**
+     *提现后清空该员工的收益记录，记录信息
+     */
+    void removeStaffInfoRebateInfo(Integer staffId);
 }

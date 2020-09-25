@@ -63,9 +63,14 @@ public class Reservation{
     private String unit;//单位
     @Transient
     private BigDecimal originalPrice;//商品原价
-    private Integer beeline; //距离最近的配送站的距
+    private Integer beeline; //距离最近的配送站的距离
+    private Integer distributionId;//最近的配送站的Id
     private String distributionName;//最近的配送站的名字
     private String distributionAddress; //最近的配送站的地址
+    private String distributionLongitude;//最近的配送的经度
+    private String distributionLatitude;//最近的配送的纬度
     private String houseServiceBeginTime;//家政开始服务时间
     private String houseServiceEndTime;//家政服务结束时间
+
+    private String houseArea;//房屋面积
 }

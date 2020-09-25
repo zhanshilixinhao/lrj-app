@@ -64,6 +64,7 @@ public class OrderController {
         Integer userId = Integer.parseInt(request.getParameter("userId"));
         Integer merchantId = Integer.parseInt(request.getParameter("merchantId"));
         Integer couponIdInt = 0;
+        Integer platform = Integer.parseInt(request.getParameter("platform"));
 
         OrderVo orderVo = new OrderVo();
         // 生成订单号
@@ -72,6 +73,7 @@ public class OrderController {
         orderVo.setOrderNumber(orderNum);
         orderVo.setUserId(userId);
         orderVo.setCreateTime(DateUtils.getNowtime());
+        orderVo.setPlatform(platform);
         //建立不同类型订单，不同参数Map
         Map<String, Object> typeParams = new HashMap<>();
         //如果是销售商家订单，替换order数据来源（不同参数）
@@ -204,11 +206,15 @@ public class OrderController {
                                             }
                                         }
                                     }
+                                    //转化当减免金额=下单金额而不收费时，避免支付出错，强制0.01元
+                                    if(totalPrice.doubleValue()==0){
+                                        totalPrice = new BigDecimal(0.01);
+                                    }
                                 }else if(orderVoList.size()==0){ //新用户
                                     if(totalPrice.doubleValue() - orderVo1.getTotalPrice().doubleValue() >=0){  //减免全部或分享单金额
                                         totalPrice = new BigDecimal(totalPrice.doubleValue()-orderVo1.getTotalPrice().doubleValue());
                                     }else {
-                                        totalPrice = new BigDecimal(0.00); //减免全部
+                                        totalPrice = new BigDecimal(0.01); //减免全部
                                     }
                                 }
                             }else {
@@ -351,7 +357,11 @@ public class OrderController {
             reservationListVo.setTotalPrice(reservation.getTotalPrice());
             //转化json 为JSONArray 用于计算
             List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByReservationId(reservation.getReservationId());
-            reservationListVo.setCount(itemJSONList.size());
+            Integer count=0;
+            for(ItemJSON itemJSON : itemJSONList){
+                count+=itemJSON.getQuentity();
+            }
+            reservationListVo.setCount(count);
             //局部变量
             Integer itemId = null;
             AppItemVo appItemVo = null;
@@ -369,7 +379,7 @@ public class OrderController {
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
                 case 2:
-                    reservationListVo.setPicture("");
+                    reservationListVo.setPicture("https://www.51lrj.com/othersImg/huiyuanka-img@3x.png");
                     reservationListVo.setUnit("件");
                     reservationListVo.setTotalPrice(new BigDecimal(0.00).setScale(2));
                     break;
@@ -384,7 +394,7 @@ public class OrderController {
                     reservationListVo.setTotalPrice(reservation.getTotalPrice());
                     break;
                 case 4:
-                    reservationListVo.setPicture("");
+                    reservationListVo.setPicture("https://www.51lrj.com/othersImg/huiyuanka-img@3x.png");
                     reservationListVo.setUnit("次");
                     reservationListVo.setTotalPrice(new BigDecimal(0.00).setScale(2));
                     break;
@@ -447,6 +457,7 @@ public class OrderController {
         if (userId == null || userId==0 || type==null || type==0) {
             return new FormerResult("SUCCESS", 1, "缺少必须参数", null);
         }
+
         if(type==1){
             Order_monthCardVo monthCardVo = orderMapper.getMonthCatdOrderByUserId(userId);
             if(monthCardVo == null || monthCardVo.equals("")){

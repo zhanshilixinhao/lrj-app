@@ -73,7 +73,7 @@ public class Constant {
     public static final int ORDER_TRANSSTATUS_TAKED_PACK_FINISH = 9;//已出厂 为出厂单
     public static final int ORDER_TRANSSTATUS_TAKED_PACK = 10;//送件单绑定成功
     public static final int ORDER_TRANSSTATUS_RECEIVEING = 11; //已取出厂单
-    public static final int ORDER_TRANSSTATUS_RECEIVETAKE = 11; //已送回厂单
+    public static final int ORDER_TRANSSTATUS_RECEIVETAKE = 12; //已送回厂单
 
     /**服务单追踪状态:家政**/
     public static final int ORDER_TRANSSTATUS_HOUSESERVICE_BEGIN= 33;//已开始服务

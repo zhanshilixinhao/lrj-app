@@ -1,28 +1,29 @@
 package com.lrj.controller;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.lrj.VO.*;
 import com.lrj.constant.Constant;
+import com.lrj.mapper.IHouseServiceMapper;
 import com.lrj.mapper.IItemJSONMapper;
+import com.lrj.mapper.IOrderMapper;
 import com.lrj.mapper.ReservationMapper;
 import com.lrj.pojo.DistributionStation;
 import com.lrj.pojo.ItemJSON;
+import com.lrj.pojo.PayOperation;
 import com.lrj.pojo.Reservation;
 import com.lrj.service.*;
 import com.lrj.util.*;
+import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import okhttp3.Response;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.omg.CORBA.OBJ_ADAPTER;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,6 +47,8 @@ public class EnterpriseController {
     private ReservationMapper reservationMapper;
     @Resource
     private IOrderService orderService;
+    @Resource
+    private IOrderMapper orderMapper;
    @Resource
    private IStaffService staffService;
    @Resource
@@ -56,6 +59,8 @@ public class EnterpriseController {
    private IUserService userService;
    @Resource
    private IItemJSONMapper itemJSONMapper;
+   @Resource
+   private IHouseServiceMapper houseServiceMapper;
 
 
     /**
@@ -139,7 +144,11 @@ public class EnterpriseController {
         StaffInfoVo staffInfoVo = staffService.findStaffInfoByLoginInfo(parMap);
 
         if (staffInfoVo != null) {
-            return new FormerResult("SUCCESS", 0, "登录成功", staffInfoVo);
+            if(staffInfoVo.getActive()==0){
+                return new FormerResult("SUCCESS", 1, "您的账号正在审核中。。。请联系工作人员！", staffInfoVo);
+            }else {
+                return new FormerResult("SUCCESS", 0, "登录成功", staffInfoVo);
+            }
         } else {
             return new FormerResult("SUCCESS",1,"登录名或密码错误",null);
         }
@@ -149,11 +158,12 @@ public class EnterpriseController {
      * @return
      */
     @RequestMapping(value = "/getStaffOrderList",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getWashingOrderList(Integer staffType,HttpServletRequest request){
+    public FormerResult getWashingOrderList(Integer staffType,HttpServletRequest request,Integer pageNum,Integer pageSize,Integer navigatePages){
         /** 校验必须参数 **/
         if (staffType == null || staffType == 0) {
-            return new ResultVo("success", 1, "参数有误,请检查参数", null);
+            return new FormerResult("success", 1, "参数有误,请检查参数", null);
         }
+        PageHelper.startPage(pageNum, pageSize);
         List<Reservation> reservationList = null;
         //计算两个坐标之间的实际距离
         String key = "81b5d90e4a546330f9e0672877299bc0"; //此key 为高德地图提供，使用API接口必传的key
@@ -211,11 +221,12 @@ public class EnterpriseController {
                             return (o1.getValue() - o2.getValue());
                         }
                     });
+                    //保存最短配送站信息
                     reservation.setBeeline(list_Data.get(0).getValue());
                     DistributionStation distributionStation = distributionStationService.getDistriButionStationById(list_Data.get(0).getKey());
                     reservation.setDistributionAddress(distributionStation.getDistributionStationAddress());
                     reservation.setDistributionName(distributionStation.getDistributionName());
-                    //保存最短配送站信息
+                    reservation.setDistributionId(distributionStation.getDistributionStationId());
                     reservationMapper.updateReservationDistribution(reservation);
                     UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
                     reservation.setUserName(userInfoVo.getNickname());
@@ -244,6 +255,11 @@ public class EnterpriseController {
                     UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
                     reservation.setUserName(userInfoVo.getNickname());
                     reservation.setUserPhone(userInfoVo.getUserPhone());
+                    //拼接 定制家政房屋面积展示
+                    if(reservation.getOrderType()==4){
+                        Order_custom_houseServiceVo customHouseServiceVo = orderMapper.getCustomHouseServiceOrderByUserId(reservation.getUserId());
+                        reservation.setHouseArea(customHouseServiceVo.getHouseArea());
+                    }
                     //拼接商品信息
                     List<ItemJSON> itemJSONList = itemJSONMapper.getItemJSONByReservationId(reservation.getReservationId());
                     //拼接商品信息
@@ -262,7 +278,8 @@ public class EnterpriseController {
             case 4:break;
 
         }
-        return new ResultVo("SUCCESS", 0, "查询成功",reservationList);
+        PageInfo page = new PageInfo(reservationList, navigatePages);
+        return new FormerResult("SUCCESS", 0, "查询成功",page.getList());
     }
 
     /**
@@ -290,11 +307,12 @@ public class EnterpriseController {
      * 根据员工Id和状态查询对应的服务单
      */
     @RequestMapping(value = "/getReservationByStatus",method = {RequestMethod.GET,RequestMethod.POST})
-    public ResultVo getReservationByStatus(Integer trackingStatus,Integer staffId) {
+    public FormerResult getReservationByStatus(Integer trackingStatus,Integer staffId,Integer pageNum,Integer pageSize,Integer navigatePages) {
         /** 校验必须参数 **/
         if (trackingStatus == null || trackingStatus == 0 || staffId == null || staffId == 0) {
-            return new ResultVo("SUCCESS", 1, "参数有误,请检查参数", null);
+            return new FormerResult("SUCCESS", 1, "参数有误,请检查参数", null);
         }
+        PageHelper.startPage(pageNum, pageSize);
         Map<String, Object> params = new HashMap<>();
         params.put("staffId", staffId);
         params.put("trackingStatus", trackingStatus);
@@ -305,17 +323,26 @@ public class EnterpriseController {
             reservationList = reservationMapper.getReservationByStatus2(params);
         }else if(trackingStatus == 3){
             reservationList = reservationMapper.getReservationByStatus3(params);
+        }else if(trackingStatus == 33 || trackingStatus==34 || trackingStatus==35){
+            reservationList = reservationMapper.getReservationByStatus4(params);
         }
         if(reservationList ==null){
-            return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
+            return new FormerResult("SUCCESS", 0, "查询成功", reservationList);
         }else {
             for(Reservation reservation : reservationList){
+                //如果是配送单（计算配送站经纬度）
+                if(reservation.getOrderType()==1 || reservation.getOrderType()==2){
+                    DistributionStation distributionStation = distributionStationService.getDistriButionStationById(reservation.getDistributionId().toString());
+                    reservation.setDistributionLongitude(distributionStation.getLongitude());
+                    reservation.setDistributionLatitude(distributionStation.getLatitude());
+                }
                 UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
                 reservation.setUserName(userInfoVo.getNickname());
                 reservation.setUserPhone(userInfoVo.getUserPhone());
             }
         }
-        return new ResultVo("SUCCESS", 0, "查询成功", reservationList);
+        PageInfo page = new PageInfo(reservationList, navigatePages);
+        return new FormerResult("SUCCESS", 0, "查询成功", page.getList());
     }
 
     /**
@@ -355,33 +382,57 @@ public class EnterpriseController {
         params.put("staffId",staffId);
         params.put("reservationId",reservationId);
         params.put("traceStatus",traceStatus);
+        StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(staffId);
         //如果为家政服务状态，则记录服务时间
         if(traceStatus == Constant.ORDER_TRANSSTATUS_HOUSESERVICE_BEGIN){
             params.put("houseServiceBeginTime", DateUtils.getNowDateTime());
+            //发送短信
+            Reservation reservation = reservationMapper.getReservationByReservationId(Integer.parseInt(reservationId));
+            UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
+            JSONObject temp_para = new JSONObject();
+            temp_para.put("staffname", staffInfoVo.getStaffName());
+            jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184773,temp_para.toString());
         }else if(traceStatus == Constant.ORDER_TRANSSTATUS_HOUSESERVICE_END){
             params.put("houseServiceEndTime", DateUtils.getNowDateTime());
+            //发送短信
+            Reservation reservation = reservationMapper.getReservationByReservationId(Integer.parseInt(reservationId));
+            UserInfoVo userInfoVo = userService.findUserInfoByUserId(reservation.getUserId());
+            JSONObject temp_para = new JSONObject();
+            temp_para.put("staffname", staffInfoVo.getStaffName());
+            jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184774,temp_para.toString());
         //如果为洗衣配送单完成状态
         }else if(traceStatus == 4 || traceStatus==35){
             Reservation reservation = reservationMapper.getReservationByReservationId(Integer.parseInt(reservationId));
             Double moneyDouble = 0.00;
             BigDecimal money = null;
-            Integer sendDistance = reservation.getSendDistance();
-            if(sendDistance < 1000){
+            Integer beeline = reservation.getBeeline();
+            if(beeline < 1000){
                 moneyDouble = 6.00;
-            }else if(1000 <= sendDistance && sendDistance <2000){
-                moneyDouble = 6.00+((sendDistance-1000)/1000)*1;
-            }else if(2000 <= sendDistance && sendDistance <3000){
-                moneyDouble = 7.00+((sendDistance-2000)/1000)*2;
-            }else if(3000 <= sendDistance && sendDistance <4000){
-                moneyDouble = 9.00+((sendDistance-3000)/1000)*2;
-            }else if(4000 <= sendDistance && sendDistance <5000){
-                moneyDouble =11.00+((sendDistance-4000)/1000)*2;
-            }else if(5000 < sendDistance && sendDistance <6000){
-                moneyDouble = 13.00+((sendDistance-5000)/1000)*2;
+            }else if(1000 <= beeline && beeline <2000){
+                System.out.println("111111111111:"+(beeline.doubleValue()-1000.00)/1000);
+                moneyDouble = 6.00+((beeline.doubleValue()-1000.00)/1000)*1;
+            }else if(2000 <= beeline && beeline <3000){
+                moneyDouble = 7.00+((beeline.doubleValue()-2000.00)/1000)*2;
+            }else if(3000 <= beeline && beeline <4000){
+                moneyDouble = 9.00+((beeline.doubleValue()-3000.00)/1000)*2;
+            }else if(4000 <= beeline && beeline <5000){
+                moneyDouble =11.00+((beeline.doubleValue()-4000.00)/1000)*2;
+            }else if(5000 <= beeline && beeline <6000){
+                moneyDouble = 13.00+((beeline.doubleValue()-5000.00)/1000)*2;
+            }else if(6000<= beeline){
+                moneyDouble = 15.00+((beeline.doubleValue()-6000.00)/1000)*2;
             }
-            StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(reservation.getGrabOrderIdSend());
-            money = new BigDecimal(money.doubleValue() + moneyDouble).setScale(2, BigDecimal.ROUND_HALF_UP);
+            //null 转化为0
+            if(staffInfoVo.getMoney()==null){
+                money = new BigDecimal(0.00+moneyDouble).setScale(2,BigDecimal.ROUND_HALF_UP);
+            }else {
+                money = new BigDecimal(staffInfoVo.getMoney().doubleValue() + moneyDouble).setScale(2,BigDecimal.ROUND_HALF_UP);
+            }
             staffInfoVo.setMoney(money);
+            //null 转化为0
+            if(staffInfoVo.getServiceCount()==null){
+                staffInfoVo.setServiceCount(0);
+            }
             staffInfoVo.setServiceCount(staffInfoVo.getServiceCount() + 1);
             staffService.updateStaffInfoAfterEnd(staffInfoVo);
         }
@@ -484,4 +535,63 @@ public class EnterpriseController {
         StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(staffId);
         return new FormerResult("SUCCESS", 0, "查询成功！", staffInfoVo);
     }
+
+    /**
+     * 添加员工支付宝账号
+     */
+    @RequestMapping(value = "/addStaffAliAccount",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult addUserAliAccount(Integer staffId,String realityName,String aliAccount){
+        /** 校验必须参数 **/
+        if (staffId == null || staffId ==0 || realityName.equals("") || realityName==null || aliAccount.equals("") || aliAccount==null) {
+            return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        StaffInfoVo staffInfoVo = staffService.getStaffInfoByStaffId(staffId);
+        staffInfoVo.setRealityName(realityName);
+        staffInfoVo.setAliAccount(aliAccount);
+        Integer updateNum = staffService.updateStaffInfoAliAccount(staffInfoVo);
+        if(updateNum==1){
+            return new FormerResult("SUCCESS", 0, "添加完成", staffInfoVo);
+        }else {
+            return new FormerResult("SUCCESS", 1, "添加失败！", null);
+        }
+
+    }
+
+    /**
+     * 员工提现
+     */
+    @RequestMapping(value = "/staffWithdraw",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult userWithdraw(Integer staffId,String money){
+        /** 校验必须参数 **/
+        if (staffId == null || staffId ==0 || money.equals("") || money==null || money.equals("0")) {
+            return new FormerResult("SUCCESS", 1, "参数有误,请检查参数",null);
+        }
+        //员工提现申请
+        StaffRebateVo staffRebateVo = new StaffRebateVo();
+        staffRebateVo.setStaffId(staffId);
+        staffRebateVo.setBackMoney(new BigDecimal(money));
+        staffRebateVo.setCreateTime(DateUtils.getNowtime());
+        Integer insertNum = staffService.staffWithdraw(staffRebateVo);
+        if(insertNum ==1){
+            //清空该员工的收益清空，记录信息
+            staffService.removeStaffInfoRebateInfo(staffId);
+            return new FormerResult("SUCCESS", 0, "提现申请已成功，等待财务审核", null);
+        }else {
+            return new FormerResult("SUCCESS", 0, "提现发起失败，请联系客服或技术人员", null);
+        }
+    }
+
+    @RequestMapping(value = "/testJPUSH",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult testJPUSH(HttpServletRequest request){
+
+        jiGuangJPUSHPost.doPostForHelpStaff();
+        return new FormerResult("SUCCESS", 0, "推送调用成功！", null);
+
+    }
+
+    /*@RequestMapping(value = "/testSMS",method = {RequestMethod.GET,RequestMethod.POST})
+    public FormerResult testSMS(HttpServletRequest request){
+        jiGuangSMSSend.sendSMS();
+        return new FormerResult("SUCCESS", 0, "短信发送成功！", null);
+    }*/
 }
