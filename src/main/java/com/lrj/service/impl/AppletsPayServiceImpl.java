@@ -2,12 +2,14 @@ package com.lrj.service.impl;
 
 import com.lrj.VO.FormerResult;
 import com.lrj.VO.OrderVo;
+import com.lrj.VO.UserInfoVo;
 import com.lrj.common.Constant;
 import com.lrj.config.PayConfig;
 import com.lrj.mapper.*;
 import com.lrj.pojo.*;
 import com.lrj.service.AppletsPayService;
 import com.lrj.service.IOrderService;
+import com.lrj.service.IUserService;
 import com.lrj.service.RebateService;
 import com.lrj.util.*;
 import org.apache.http.HttpEntity;
@@ -85,6 +87,11 @@ public class AppletsPayServiceImpl implements AppletsPayService {
 
     @Resource
     private IOrderService orderService;
+
+    @Resource
+    private IUserService userService;
+    @Resource
+    private IItemJSONMapper itemJSONMapper;
 
     private static final Logger log = LoggerFactory.getLogger(AppletsPayServiceImpl.class);
 
@@ -261,6 +268,34 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                             reservationMapper.updateByPrimaryKeySelective(reservation);
                         }
                     }
+                }
+                //推送服务订单通知
+                jiGuangJPUSHPost.doPostForHelpStaff();
+                //发送短信(订单支付成功（预约不触发，下单商品含袋洗不触发）)
+                List<ItemJSON> itemJSONList = null;
+                switch (orderVo.getOrderType()){
+                    case 1:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                        break;
+                    case 2:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                        break;
+                    case 3:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumberFromItemJSONOnly(orderVo.getOrderNumber());
+                        break;
+                    case 4:
+                        itemJSONList = itemJSONMapper.getItemJSONByOrderNumber(orderVo.getOrderNumber());
+                        break;
+                }
+                int count = 0;
+                for (ItemJSON itemJSON : itemJSONList){
+                    if (itemJSON.getItemId()==391 || itemJSON.getItemId()==393){
+                        count+=1;
+                    }
+                }
+                UserInfoVo userInfoVo = userService.findUserInfoByUserId(orderVo.getUserId());
+                if(count ==0){
+                    jiGuangSMSSend.sendSMS(userInfoVo.getUserPhone(),15542,184740,"");
                 }
                 //通知微信服务器已经支付成功
                 resXml = "<xml>" + "<return_code><![CDATA[SUCCESS]]></return_code>"
