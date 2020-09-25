@@ -34,4 +34,11 @@ public interface IWeChatLoginService {
      * @Date: 2020/8/31 12:54
      */
     FormerResult buildUser(String email, HttpServletRequest request);
+
+    /**
+     * @Description: 苹果普通注册
+     * @Author: LxH
+     * @Date: 2020/9/15 15:59
+     */
+    FormerResult commonRegister(String userPhone, String verificationCode, String passWord,HttpServletRequest request);
 }

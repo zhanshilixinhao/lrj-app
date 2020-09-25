@@ -90,6 +90,8 @@ public class OneClickLogin {
              //已经注册过了
             }else {
                 for (User user : userList) {
+                    user.setHeadPhoto("http://www.51lrj.com/userHeadPhotos/touxiang.png");
+                    userMapper.updateByPrimaryKey(user);
                     return CommonUtil.SUCCESS(formerResult,"用户登录成功!",user);
                 }
             }
