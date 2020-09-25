@@ -249,14 +249,17 @@ public class AppletsPayServiceImpl implements AppletsPayService {
                     }
                     appRebateMapper.insertSelective(appRebate);
                 }*/
+
                 //更新预约表
-                Example example1 = new Example(Reservation.class);
-                example1.createCriteria().andEqualTo("orderNumber",reOrder.getOrderNumber());
-                List<Reservation> reservations = reservationMapper.selectByExample(example1);
-                if (reservations!=null||reservations.size()!=0) {
-                    for (Reservation reservation : reservations) {
-                        reservation.setStatus(3);
-                        reservationMapper.updateByPrimaryKeySelective(reservation);
+                if (reOrder.getOrderType()!=2&&reOrder.getOrderType()!=4) {
+                    Example example1 = new Example(Reservation.class);
+                    example1.createCriteria().andEqualTo("orderNumber",reOrder.getOrderNumber());
+                    List<Reservation> reservations = reservationMapper.selectByExample(example1);
+                    if (reservations!=null||reservations.size()!=0) {
+                        for (Reservation reservation : reservations) {
+                            reservation.setStatus(3);
+                            reservationMapper.updateByPrimaryKeySelective(reservation);
+                        }
                     }
                 }
                 //通知微信服务器已经支付成功

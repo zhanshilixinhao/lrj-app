@@ -1,11 +1,8 @@
 package com.lrj.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.lrj.VO.FormerResult;
-
 import com.lrj.VO.WxUserInfo;
 import com.lrj.pojo.User;
-import org.apache.http.HttpRequest;
 
 import javax.servlet.http.HttpServletRequest;
 

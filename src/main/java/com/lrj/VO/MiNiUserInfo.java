@@ -1,5 +1,6 @@
 package com.lrj.VO;
 
+import com.sun.org.apache.xerces.internal.impl.dv.util.Base64;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,4 +23,5 @@ public class MiNiUserInfo {
     private String language;
     private String nickname;
     private String province;
+    
 }

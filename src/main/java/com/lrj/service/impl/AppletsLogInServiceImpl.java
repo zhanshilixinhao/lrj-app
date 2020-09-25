@@ -6,21 +6,18 @@ import com.lrj.VO.MiNiUserInfo;
 import com.lrj.VO.RawData;
 import com.lrj.VO.WXResult;
 import com.lrj.common.Constant;
-import com.lrj.common.ErrorCode;
 import com.lrj.exception.ServiceException;
 import com.lrj.mapper.BalanceMapper;
 import com.lrj.mapper.ThirdAccMapper;
 import com.lrj.mapper.UserLevelMapper;
 import com.lrj.mapper.UserMapper;
 import com.lrj.pojo.Balance;
-import com.lrj.pojo.ThirdAcc;
 import com.lrj.pojo.User;
 import com.lrj.pojo.UserLevel;
 import com.lrj.service.AppletsLogInService;
 import com.lrj.util.*;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,7 +32,6 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static com.lrj.pojo.ThirdAcc.COLUMN_THIRDACC_OPEN_ID;
-import static com.lrj.pojo.ThirdAcc.COLUMN_THIRDACC_PHONE;
 import static com.lrj.pojo.User.COLUMN_USER_PHONE;
 
 /**
